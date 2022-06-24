@@ -8,7 +8,7 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} ORB_SLAM3::ORB_SLAM3)
 ----------------------------------
 # MORB-SLAM3
 
-![MORBSLAM](image/Morbslam.jpeg "MORB_SLAM")
+![MORBSLAM](image/Morbslam.jpeg)
 
 ### V1.0, December 22th, 2021
 **Authors:** Carlos Campos, Richard Elvira, Juan J. Gómez Rodríguez, [José M. M. Montiel](http://webdiis.unizar.es/~josemari/), [Juan D. Tardos](http://webdiis.unizar.es/~jdtardos/).
