@@ -190,15 +190,10 @@ configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/${PROJECT_NAME}Con
 )
 
 install(FILES
-    ${CMAKE_CURRENT_LIST_DIR}/cmake/FindDBO.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
     DESTINATION ${INSTALL_CONFIGDIR}
 )
-
-configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FindDBoW2.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/FindDBoW2.cmake
-    COPYONLY)
 
 export(EXPORT ${PROJECT_NAME}-targets
     FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake
