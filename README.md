@@ -2,8 +2,8 @@ This fork of MORB_SLAM converts it into a CMake package that can be imported int
 
 In your other projects, import using:
 ```
-find_package(ORB_SLAM3 REQUIRED)
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ORB_SLAM3::ORB_SLAM3)
+find_package(MORB_SLAM REQUIRED)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} NORB_SLAM::MORB_SLAM)
 ```
 ----------------------------------
 # MORB-SLAM3
