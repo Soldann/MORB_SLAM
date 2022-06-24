@@ -1,3 +1,11 @@
+This fork of ORB_SLAM3 converts it into a CMake package that can be imported into other projects. Run `build.sh` to install.
+
+In your other projects, import using:
+```
+find_package(ORB_SLAM3 REQUIRED)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ORB_SLAM3::ORB_SLAM3)
+```
+----------------------------------
 # ORB-SLAM3
 
 ### V1.0, December 22th, 2021
