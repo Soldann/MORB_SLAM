@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 cmake_policy(SET CMP0048 NEW)
-project(ORB_SLAM3 VERSION 1.0 LANGUAGES CXX)
+project(MORB_SLAM VERSION 1.0 LANGUAGES CXX)
 
 # IF(NOT CMAKE_BUILD_TYPE)
 #   SET(CMAKE_BUILD_TYPE Release)
@@ -172,9 +172,9 @@ install(EXPORT ${PROJECT_NAME}-targets
   FILE
       	${PROJECT_NAME}Targets.cmake
   NAMESPACE
-  	ORB_SLAM3::
+  	MORB_SLAM::
   DESTINATION
-  ${CMAKE_INSTALL_LIBDIR}/cmake/ORB_SLAM3
+  ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
 )
 
 include(CMakePackageConfigHelpers)
@@ -190,15 +190,10 @@ configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/${PROJECT_NAME}Con
 )
 
 install(FILES
-    ${CMAKE_CURRENT_LIST_DIR}/cmake/FindDBO.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
     DESTINATION ${INSTALL_CONFIGDIR}
 )
-
-configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FindDBoW2.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/FindDBoW2.cmake
-    COPYONLY)
 
 export(EXPORT ${PROJECT_NAME}-targets
     FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake
