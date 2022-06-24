@@ -7,6 +7,9 @@
 # Unignore all dirs
 !*/
 
+ssh_key
+ssh_key.pub
+
 CMakeLists.txt.user
 CMakeLists_modified.txt
 
