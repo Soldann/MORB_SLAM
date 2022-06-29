@@ -43,17 +43,17 @@ find_package(Eigen3 3.1.0 REQUIRED)
 find_package(Pangolin REQUIRED)
 find_package(realsense2)
 
-include_directories(
-${PROJECT_SOURCE_DIR}
-${PROJECT_SOURCE_DIR}/include
-${PROJECT_SOURCE_DIR}/include/CameraModels
-${PROJECT_SOURCE_DIR}/Thirdparty/Sophus
-${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/DBoW2
-${EIGEN3_INCLUDE_DIR}
-${Pangolin_INCLUDE_DIRS}
-)
+# include_directories(
+# ${PROJECT_SOURCE_DIR}
+# ${PROJECT_SOURCE_DIR}/include
+# ${PROJECT_SOURCE_DIR}/include/CameraModels
+# ${PROJECT_SOURCE_DIR}/Thirdparty/Sophus
+# ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/DBoW2
+# ${EIGEN3_INCLUDE_DIR}
+# ${Pangolin_INCLUDE_DIRS}
+# )
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
 add_library(${PROJECT_NAME} SHARED
 src/System.cc
@@ -172,9 +172,9 @@ install(EXPORT ${PROJECT_NAME}-targets
   FILE
       	${PROJECT_NAME}Targets.cmake
   NAMESPACE
-  	MORB_SLAM::
+        ${PROJECT_NAME}::
   DESTINATION
-  ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+        ${INSTALL_CONFIGDIR}
 )
 
 include(CMakePackageConfigHelpers)
