@@ -24,7 +24,7 @@ sudo apt install -y graphviz # after python-pydot and python-pydot-ng
 
 folder=${PWD##*/}
 folder=${result:-/}
-if [ "$folder" == "MORB_SLAM" ]
+if [ "$folder" == "MORB_SLAM" ]; then
 	cd ..
 fi
 
