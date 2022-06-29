@@ -94,7 +94,7 @@ Viewer.ViewpointF: 500.0
 
 
 # Save/load Map
-# System.LoadAtlasFromFile: "/home/MartinRea/maps"
+#System.LoadAtlasFromFile: "/home/MartinRea/maps"
 System.SaveAtlasToFile: "/home/MartinRea/maps"
 
 

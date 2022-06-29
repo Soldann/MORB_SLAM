@@ -1415,12 +1415,12 @@ void System::SaveAtlas(int type) {
     string pathSaveFileName = "./";
     pathSaveFileName = pathSaveFileName.append(mStrSaveAtlasToFile);
     std::cout << "string append\n";
-    pathSaveFileName = pathSaveFileName.append(".osa");
+    pathSaveFileName = "pants2.osa";  // pathSaveFileName.append(".osa");
 
     std::cout << "About to Calculate \n";
 
-    string strVocabularyChecksum =
-        CalculateCheckSum(mStrVocabularyFilePath, TEXT_FILE);
+    // string strVocabularyChecksum =
+    //     CalculateCheckSum(mStrVocabularyFilePath, TEXT_FILE);
 
     // std::cout << "Vocab checksum" << strVocabularyChecksum << std::endl;
     std::size_t found = mStrVocabularyFilePath.find_last_of("/\\");
@@ -1429,7 +1429,10 @@ void System::SaveAtlas(int type) {
     if (type == TEXT_FILE)  // File text
     {
       cout << "Starting to write the save text file " << endl;
-      std::remove(pathSaveFileName.c_str());
+
+      int rval = std::remove(pathSaveFileName.c_str());  // Deletes the file
+      std::cout << "remove's output is: " << rval << std::endl;
+
       std::ofstream ofs(pathSaveFileName, std::ios::binary);
       boost::archive::text_oarchive oa(ofs);
 
@@ -1440,11 +1443,17 @@ void System::SaveAtlas(int type) {
     } else if (type == BINARY_FILE)  // File binary
     {
       cout << "Starting to write the save binary file" << endl;
-      std::remove(pathSaveFileName.c_str());
+      int rval = std::remove(pathSaveFileName.c_str());  // Deletes the file
+      std::cerr << errno << std::endl;
+      std::cout << "remove's output is: " << rval << std::endl;
       std::ofstream ofs(pathSaveFileName, std::ios::binary);
+      std::cout << "bout to boost\n";
       boost::archive::binary_oarchive oa(ofs);
+      std::cout << "streaming\n";
       oa << strVocabularyName;
-      //   oa << strVocabularyChecksum;
+      std::cout << "streamed name\n";
+      //   oa << 100000;
+      std::cout << "streamed checksum\n";
       oa << mpAtlas;
       cout << "End to write save binary file" << endl;
     } else {
@@ -1459,7 +1468,7 @@ bool System::LoadAtlas(int type) {
 
   string pathLoadFileName = "./";
   pathLoadFileName = pathLoadFileName.append(mStrLoadAtlasFromFile);
-  pathLoadFileName = pathLoadFileName.append(".osa");
+  pathLoadFileName = "pantsnew.osa";  // pathLoadFileName.append(".osa");
 
   if (type == TEXT_FILE)  // File text
   {
@@ -1471,7 +1480,7 @@ bool System::LoadAtlas(int type) {
     }
     boost::archive::text_iarchive ia(ifs);
     ia >> strFileVoc;
-    ia >> strVocChecksum;
+    // ia >> strVocChecksum;
     ia >> mpAtlas;
     cout << "End to load the save text file " << endl;
     isRead = true;
@@ -1485,7 +1494,7 @@ bool System::LoadAtlas(int type) {
     }
     boost::archive::binary_iarchive ia(ifs);
     ia >> strFileVoc;
-    ia >> strVocChecksum;
+    // ia >> strVocChecksum;
     ia >> mpAtlas;
     cout << "End to load the save binary file" << endl;
     isRead = true;
@@ -1493,16 +1502,17 @@ bool System::LoadAtlas(int type) {
 
   if (isRead) {
     // Check if the vocabulary is the same
-    string strInputVocabularyChecksum =
-        CalculateCheckSum(mStrVocabularyFilePath, TEXT_FILE);
+    // string strInputVocabularyChecksum =
+    //     CalculateCheckSum(mStrVocabularyFilePath, TEXT_FILE);
 
-    if (strInputVocabularyChecksum.compare(strVocChecksum) != 0) {
-      cout << "The vocabulary load isn't the same which the load session was "
-              "created "
-           << endl;
-      cout << "-Vocabulary name: " << strFileVoc << endl;
-      return false;  // Both are differents
-    }
+    // if (strInputVocabularyChecksum.compare(strVocChecksum) != 0) {
+    //   cout << "The vocabulary load isn't the same which the load session was
+    //   "
+    //           "created "
+    //        << endl;
+    //   cout << "-Vocabulary name: " << strFileVoc << endl;
+    //   return false;  // Both are differents
+    // }
 
     mpAtlas->SetKeyFrameDababase(mpKeyFrameDatabase);
     mpAtlas->SetORBVocabulary(mpVocabulary);
