@@ -19,6 +19,44 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+    - name: Setup OpenCV
+      # You may pin to the exact commit or the version.
+      # uses: Dovyski/setup-opencv-action@24af96460aeb1d3127f13698550f6a21ebb6a22c
+      uses: Dovyski/setup-opencv-action@v1
+      with:
+        # OpenCV version to be installed.
+        opencv-version: 4.5.2
+        # If opencv-contrib (extra modules) should be included in the instalation.
+        opencv-extra-modules: true
+        # If dependencies should be installed as well.
+        install-deps: true
+        # 
+        # CMAKE_BUILD_TYPE: # optional, default is RELEASE
+        # 
+        # CMAKE_CXX_COMPILER: # optional, default is g++
+        # 
+        # CMAKE_INSTALL_PREFIX: # optional, default is /usr/local
+        # 
+        # WITH_TBB: # optional, default is true
+        # 
+        # WITH_IPP: # optional, default is true
+        # 
+        # BUILD_NEW_PYTHON_SUPPORT: # optional
+        # 
+        # WITH_V4L: # optional
+        # 
+        # ENABLE_PRECOMPILED_HEADERS: # optional, default is true
+        # 
+        # INSTALL_C_EXAMPLES: # optional
+        # 
+        # INSTALL_PYTHON_EXAMPLES: # optional
+        # 
+        # BUILD_EXAMPLES: # optional
+        # 
+        # WITH_QT: # optional
+        # 
+        # WITH_OPENGL: # optional
     
     - name: install dependencies
       run: ./morbslam_installer.sh
