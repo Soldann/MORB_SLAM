@@ -258,7 +258,7 @@ System::System(const string& strVocFile, const string& strSettingsFile,
 }
 
 Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
-                                 const double& timestamp,
+                                 const cv::Mat *mask, const double& timestamp,
                                  const vector<IMU::Point>& vImuMeas,
                                  string filename) {
   if (mSensor != STEREO && mSensor != IMU_STEREO) {
@@ -269,6 +269,10 @@ Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
   }
 
   cv::Mat imLeftToFeed, imRightToFeed;
+  cv::Mat maskToFeed;
+  if (mask != nullptr){
+    maskToFeed = mask->clone();
+  }
   if (settings_ && settings_->needToRectify()) {
     cv::Mat M1l = settings_->M1l();
     cv::Mat M2l = settings_->M2l();
@@ -280,6 +284,9 @@ Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
   } else if (settings_ && settings_->needToResize()) {
     cv::resize(imLeft, imLeftToFeed, settings_->newImSize());
     cv::resize(imRight, imRightToFeed, settings_->newImSize());
+    if (mask != nullptr){
+      cv::resize(*mask,maskToFeed,settings_->newImSize());
+    }
   } else {
     imLeftToFeed = imLeft.clone();
     imRightToFeed = imRight.clone();
@@ -324,7 +331,7 @@ Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
       mpTracker->GrabImuData(vImuMeas[i_imu]);
 
   // std::cout << "start GrabImageStereo" << std::endl;
-  Sophus::SE3f Tcw = mpTracker->GrabImageStereo(imLeftToFeed, imRightToFeed,
+  Sophus::SE3f Tcw = mpTracker->GrabImageStereo(imLeftToFeed, imRightToFeed, mask == nullptr ? nullptr : &maskToFeed,
                                                 timestamp, filename);
 
   // std::cout << "out grabber" << std::endl;
@@ -338,7 +345,7 @@ Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
 }
 
 Sophus::SE3f System::TrackRGBD(const cv::Mat& im, const cv::Mat& depthmap,
-                               const double& timestamp,
+                               const cv::Mat *mask, const double& timestamp,
                                const vector<IMU::Point>& vImuMeas,
                                string filename) {
   if (mSensor != RGBD && mSensor != IMU_RGBD) {
@@ -349,12 +356,18 @@ Sophus::SE3f System::TrackRGBD(const cv::Mat& im, const cv::Mat& depthmap,
 
   cv::Mat imToFeed = im.clone();
   cv::Mat imDepthToFeed = depthmap.clone();
+  cv::Mat maskToFeed;
+  if (mask != nullptr){
+    maskToFeed = mask->clone();
+  }
   if (settings_ && settings_->needToResize()) {
     cv::Mat resizedIm;
     cv::resize(im, resizedIm, settings_->newImSize());
     imToFeed = resizedIm;
 
     cv::resize(depthmap, imDepthToFeed, settings_->newImSize());
+    if (mask != nullptr)
+      cv::resize(*mask, maskToFeed, settings_->newImSize());
   }
 
   // Check mode change
@@ -396,7 +409,7 @@ Sophus::SE3f System::TrackRGBD(const cv::Mat& im, const cv::Mat& depthmap,
       mpTracker->GrabImuData(vImuMeas[i_imu]);
 
   Sophus::SE3f Tcw =
-      mpTracker->GrabImageRGBD(imToFeed, imDepthToFeed, timestamp, filename);
+      mpTracker->GrabImageRGBD(imToFeed, imDepthToFeed, mask == nullptr ? nullptr : &maskToFeed, timestamp, filename);
 
   unique_lock<mutex> lock2(mMutexState);
   mTrackingState = mpTracker->mState;
@@ -405,7 +418,7 @@ Sophus::SE3f System::TrackRGBD(const cv::Mat& im, const cv::Mat& depthmap,
   return Tcw;
 }
 
-Sophus::SE3f System::TrackMonocular(const cv::Mat& im, const double& timestamp,
+Sophus::SE3f System::TrackMonocular(const cv::Mat& im, const cv::Mat *mask, const double& timestamp,
                                     const vector<IMU::Point>& vImuMeas,
                                     string filename) {
   {
@@ -421,10 +434,18 @@ Sophus::SE3f System::TrackMonocular(const cv::Mat& im, const double& timestamp,
   }
 
   cv::Mat imToFeed = im.clone();
+  cv::Mat maskToFeed;
+  if (mask != nullptr) {
+    maskToFeed = mask->clone();
+  }
   if (settings_ && settings_->needToResize()) {
     cv::Mat resizedIm;
     cv::resize(im, resizedIm, settings_->newImSize());
     imToFeed = resizedIm;
+
+    if (mask != nullptr) {
+      cv::resize(*mask, maskToFeed, settings_->newImSize());
+    }
   }
 
   // Check mode change
@@ -467,7 +488,7 @@ Sophus::SE3f System::TrackMonocular(const cv::Mat& im, const double& timestamp,
       mpTracker->GrabImuData(vImuMeas[i_imu]);
 
   Sophus::SE3f Tcw =
-      mpTracker->GrabImageMonocular(imToFeed, timestamp, filename);
+      mpTracker->GrabImageMonocular(imToFeed, mask == nullptr ? nullptr : &maskToFeed, timestamp, filename);
 
   unique_lock<mutex> lock2(mMutexState);
   mTrackingState = mpTracker->mState;
