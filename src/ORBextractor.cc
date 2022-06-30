@@ -1086,7 +1086,7 @@ namespace ORB_SLAM3
     int ORBextractor::operator()( InputArray _image, InputArray _mask, vector<KeyPoint>& _keypoints,
                                   OutputArray _descriptors, std::vector<int> &vLappingArea)
     {
-        cout << "[ORBextractor]: Max Features: " << nfeatures << endl;
+        // cout << "[ORBextractor]: Max Features: " << nfeatures << endl;
         if(_image.empty())
             return -1;
 
@@ -1139,27 +1139,41 @@ namespace ORB_SLAM3
 
             offset += nkeypointsLevel;
 
+// filter keypoints based on mask
             cv::Size imgSize = image.size();
-            std::cout << "img size is " << imgSize << std::endl;
+            //std::cout << "img size is " << imgSize << std::endl;
             Mat mask = cv::Mat(imgSize, CV_8UC1, Scalar(0));
 
-            for (int i = 0; i < 50; ++i){
-                for (int j = 0; j < 50; ++j){
-                    mask.at<int>(i,j) = 255;
+            for (int i = 0; i < imgSize.height/2; ++i){
+                for (int j = 0; j < imgSize.width/2; ++j){
+                    mask.at<uint8_t>(i,j) = 255;
                 }
             }
 
             // segfault because keypoints are outside of the image.... but why >:(
+            float imgScale = mvScaleFactor[level];
+
             vector<cv::KeyPoint> newPoints;
-            std::copy_if(keypoints.begin(), keypoints.end(), std::back_inserter(newPoints), [&mask](cv::KeyPoint p){
-                std::cout << "x " << p.pt.x << " y " << p.pt.y << std::endl;
-                bool ret = mask.at<int>(p.pt.x,p.pt.y) == 255;
-                std::cout << ret << std::endl;
-                return ret;
+            std::copy_if(keypoints.begin(), keypoints.end(), std::back_inserter(newPoints), [&mask, &imgSize, &imgScale, &stereoIndex, &nkeypoints, &level](cv::KeyPoint p){
+                KeyPoint newPoint = p;
+                newPoint.pt *= imgScale;
+                if (newPoint.pt.x >= imgSize.width || newPoint.pt.y >= imgSize.height){
+                    //std::cout << "OUT OF BOUNDS: x " << newPoint.pt.x << " y " << newPoint.pt.y << std::endl;
+                    //std::cout << "S";
+                    --stereoIndex;
+                    --nkeypoints;
+                    return false;
+                } else {
+                    bool ret = mask.at<uint8_t>(newPoint.pt.y,newPoint.pt.x) == 255;
+                    //std::cout << ret << std::endl;
+                    return ret;
+                }
             });
 
+            //std::cout << "old size " << keypoints.size() << " new size " << newPoints.size() << std::endl;
             keypoints = newPoints;
-            std::cout << "new keypoints " << keypoints.size() << std::endl;
+            
+// end filter
 
             float scale = mvScaleFactor[level]; //getScale(level, firstLevel, scaleFactor);
             int i = 0;
