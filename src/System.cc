@@ -95,7 +95,7 @@ System::System(const string& strVocFile, const string& strSettingsFile,
     mStrLoadAtlasFromFile = settings_->atlasLoadFile();
     mStrSaveAtlasToFile = settings_->atlasSaveFile();
 
-    cout << (*settings_) << endl;
+    // cout << (*settings_) << endl;
   } else {
     settings_ = nullptr;
     cv::FileNode node = fsSettings["System.LoadAtlasFromFile"];
@@ -1415,7 +1415,7 @@ void System::SaveAtlas(int type) {
     string pathSaveFileName = "./";
     pathSaveFileName = pathSaveFileName.append(mStrSaveAtlasToFile);
     std::cout << "string append\n";
-    pathSaveFileName = "pants2.osa";  // pathSaveFileName.append(".osa");
+    pathSaveFileName = "stereoFiles.osa";  // pathSaveFileName.append(".osa");
 
     std::cout << "About to Calculate \n";
 
@@ -1466,9 +1466,9 @@ bool System::LoadAtlas(int type) {
   string strFileVoc, strVocChecksum;
   bool isRead = false;
 
-  string pathLoadFileName = "./";
+  string pathLoadFileName = "/";
   pathLoadFileName = pathLoadFileName.append(mStrLoadAtlasFromFile);
-  pathLoadFileName = "pantsnew.osa";  // pathLoadFileName.append(".osa");
+  pathLoadFileName = "stereoFiles.osa";  // pathLoadFileName.append(".osa");
 
   if (type == TEXT_FILE)  // File text
   {
