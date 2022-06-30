@@ -28,7 +28,7 @@ jobs:
         # Directory to clone OpenCV, required to cache path
         dir: opencv-install
         # Whether to build OpenCV completely again or just run make install from previously built binaries.
-        cached: false
+        cached: true
         # OpenCV version to be installed.
         opencv-version: 4.5.2
         # If opencv-contrib (extra modules) should be included in the instalation.
