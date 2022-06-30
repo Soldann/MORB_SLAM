@@ -1119,7 +1119,7 @@ namespace ORB_SLAM3
 
         int offset = 0;
         //Modified for speeding up stereo fisheye matching
-        int monoIndex = 0, stereoIndex = nkeypoints-1;
+        int monoIndex = 0, stereoIndexFromBack = 1;
         for (int level = 0; level < nlevels; ++level)
         {
             vector<KeyPoint>& keypoints = allKeypoints[level];
@@ -1154,18 +1154,17 @@ namespace ORB_SLAM3
             float imgScale = mvScaleFactor[level];
 
             vector<cv::KeyPoint> newPoints;
-            std::copy_if(keypoints.begin(), keypoints.end(), std::back_inserter(newPoints), [&mask, &imgSize, &imgScale, &stereoIndex, &nkeypoints, &level](cv::KeyPoint p){
+            std::copy_if(keypoints.begin(), keypoints.end(), std::back_inserter(newPoints), [&mask, &imgSize, &imgScale, &nkeypoints, &level](cv::KeyPoint p){
                 KeyPoint newPoint = p;
                 newPoint.pt *= imgScale;
                 if (newPoint.pt.x >= imgSize.width || newPoint.pt.y >= imgSize.height){
                     //std::cout << "OUT OF BOUNDS: x " << newPoint.pt.x << " y " << newPoint.pt.y << std::endl;
                     //std::cout << "S";
-                    --stereoIndex;
-                    --nkeypoints;
                     return false;
                 } else {
                     bool ret = mask.at<uint8_t>(newPoint.pt.y,newPoint.pt.x) == 255;
                     //std::cout << ret << std::endl;
+                    --nkeypoints;
                     return ret;
                 }
             });
@@ -1186,9 +1185,9 @@ namespace ORB_SLAM3
                 }
 
                 if(keypoint->pt.x >= vLappingArea[0] && keypoint->pt.x <= vLappingArea[1]){
-                    _keypoints.at(stereoIndex) = (*keypoint);
-                    desc.row(i).copyTo(descriptors.row(stereoIndex));
-                    stereoIndex--;
+                    _keypoints.at(nkeypoints - stereoIndexFromBack) = (*keypoint);
+                    desc.row(i).copyTo(descriptors.row(nkeypoints - stereoIndexFromBack));
+                    stereoIndexFromBack++;
                 }
                 else{
                     _keypoints.at(monoIndex) = (*keypoint);
