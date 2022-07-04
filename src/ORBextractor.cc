@@ -1083,7 +1083,7 @@ namespace ORB_SLAM3
             computeOrbDescriptor(keypoints[i], image, &pattern[0], descriptors.ptr((int)i));
     }
 
-    int ORBextractor::operator()( InputArray _image, InputArray _mask, vector<KeyPoint>& _keypoints,
+    int ORBextractor::operator()( InputArray _image, vector<KeyPoint>& _keypoints,
                                   OutputArray _descriptors, std::vector<int> &vLappingArea)
     {
         // cout << "[ORBextractor]: Max Features: " << nfeatures << endl;
@@ -1139,34 +1139,108 @@ namespace ORB_SLAM3
 
             offset += nkeypointsLevel;
 
-// filter keypoints based on mask
-            cv::Size imgSize = image.size();
-            //std::cout << "img size is " << imgSize << std::endl;
-            Mat mask = cv::Mat(imgSize, CV_8UC1, Scalar(0));
+            float scale = mvScaleFactor[level]; //getScale(level, firstLevel, scaleFactor);
+            int i = 0;
+            for (vector<KeyPoint>::iterator keypoint = keypoints.begin(),
+                         keypointEnd = keypoints.end(); keypoint != keypointEnd; ++keypoint){
 
-            for (int i = 0; i < imgSize.height/2; ++i){
-                for (int j = 0; j < imgSize.width/2; ++j){
-                    mask.at<uint8_t>(i,j) = 255;
+                // Scale keypoint coordinates
+                if (level != 0){
+                    keypoint->pt *= scale;
                 }
+
+                if(keypoint->pt.x >= vLappingArea[0] && keypoint->pt.x <= vLappingArea[1]){
+                    _keypoints.at(nkeypoints - stereoIndexFromBack) = (*keypoint);
+                    desc.row(i).copyTo(descriptors.row(nkeypoints - stereoIndexFromBack));
+                    stereoIndexFromBack++;
+                }
+                else{
+                    _keypoints.at(monoIndex) = (*keypoint);
+                    desc.row(i).copyTo(descriptors.row(monoIndex));
+                    monoIndex++;
+                }
+                i++;
             }
+        }
+        //cout << "[ORBextractor]: extracted " << _keypoints.size() << " KeyPoints" << endl;
+        return monoIndex;
+    }
+
+    int ORBextractor::operator()( InputArray _image, InputArray _mask, vector<KeyPoint>& _keypoints,
+                                  OutputArray _descriptors, std::vector<int> &vLappingArea)
+    {
+        // cout << "[ORBextractor]: Max Features: " << nfeatures << endl;
+        if(_image.empty())
+            return -1;
+
+        Mat image = _image.getMat();
+        assert(image.type() == CV_8UC1 );
+
+        Mat mask = _mask.getMat();
+        assert(image.size() == mask.size());
+        assert(mask.type() == CV_8UC1 );
+
+        // Pre-compute the scale pyramid
+        ComputePyramid(image);
+
+        vector < vector<KeyPoint> > allKeypoints;
+        ComputeKeyPointsOctTree(allKeypoints);
+        //ComputeKeyPointsOld(allKeypoints);
+
+        Mat descriptors;
+
+        int nkeypoints = 0;
+        for (int level = 0; level < nlevels; ++level)
+            nkeypoints += (int)allKeypoints[level].size();
+        if( nkeypoints == 0 )
+            _descriptors.release();
+        else
+        {
+            _descriptors.create(nkeypoints, 32, CV_8U);
+            descriptors = _descriptors.getMat();
+        }
+
+        //_keypoints.clear();
+        //_keypoints.reserve(nkeypoints);
+        _keypoints = vector<cv::KeyPoint>(nkeypoints);
+
+        int offset = 0;
+        //Modified for speeding up stereo fisheye matching
+        int monoIndex = 0, stereoIndexFromBack = 1;
+        for (int level = 0; level < nlevels; ++level)
+        {
+            vector<KeyPoint>& keypoints = allKeypoints[level];
+            int nkeypointsLevel = (int)keypoints.size();
+
+            if(nkeypointsLevel==0)
+                continue;
+
+            // preprocess the resized image
+            Mat workingMat = mvImagePyramid[level].clone();
+            GaussianBlur(workingMat, workingMat, Size(7, 7), 2, 2, BORDER_REFLECT_101);
+
+            // Compute the descriptors
+            //Mat desc = descriptors.rowRange(offset, offset + nkeypointsLevel);
+            Mat desc = cv::Mat(nkeypointsLevel, 32, CV_8U);
+            computeDescriptors(workingMat, keypoints, desc, pattern);
+
+            offset += nkeypointsLevel;
+
+// filter keypoints based on mask
 
             // segfault because keypoints are outside of the image.... but why >:(
-            float imgScale = mvScaleFactor[level];
+            float scale = mvScaleFactor[level];
 
             vector<cv::KeyPoint> newPoints;
-            std::copy_if(keypoints.begin(), keypoints.end(), std::back_inserter(newPoints), [&mask, &imgSize, &imgScale, &nkeypoints, &level](cv::KeyPoint p){
+            std::copy_if(keypoints.begin(), keypoints.end(), std::back_inserter(newPoints), [&mask, &scale, &nkeypoints, &level](cv::KeyPoint p){
                 KeyPoint newPoint = p;
-                newPoint.pt *= imgScale;
-                if (newPoint.pt.x >= imgSize.width || newPoint.pt.y >= imgSize.height){
-                    //std::cout << "OUT OF BOUNDS: x " << newPoint.pt.x << " y " << newPoint.pt.y << std::endl;
-                    //std::cout << "S";
-                    return false;
-                } else {
+                newPoint.pt *= scale;
+
                     bool ret = mask.at<uint8_t>(newPoint.pt.y,newPoint.pt.x) == 255;
                     //std::cout << ret << std::endl;
                     --nkeypoints;
                     return ret;
-                }
+                
             });
 
             //std::cout << "old size " << keypoints.size() << " new size " << newPoints.size() << std::endl;
@@ -1174,7 +1248,7 @@ namespace ORB_SLAM3
             
 // end filter
 
-            float scale = mvScaleFactor[level]; //getScale(level, firstLevel, scaleFactor);
+            //float scale = mvScaleFactor[level]; //getScale(level, firstLevel, scaleFactor);
             int i = 0;
             for (vector<KeyPoint>::iterator keypoint = keypoints.begin(),
                          keypointEnd = keypoints.end(); keypoint != keypointEnd; ++keypoint){
