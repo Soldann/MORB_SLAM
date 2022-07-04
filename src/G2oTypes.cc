@@ -713,8 +713,8 @@ void EdgeInertialGS::linearizeOplus()
 
     // Jacobians wrt scale factor
     _jacobianOplus[7].setZero();
-    _jacobianOplus[7].block<3,1>(3,0) = Rbw1*(VV2->estimate()-VV1->estimate());
-    _jacobianOplus[7].block<3,1>(6,0) = Rbw1*(VP2->estimate().twb-VP1->estimate().twb-VV1->estimate()*dt);
+    _jacobianOplus[7].block<3,1>(3,0) = s*Rbw1*(VV2->estimate()-VV1->estimate());
+    _jacobianOplus[7].block<3,1>(6,0) = s*Rbw1*(VP2->estimate().twb-VP1->estimate().twb-VV1->estimate()*dt);
 }
 
 EdgePriorPoseImu::EdgePriorPoseImu(ConstraintPoseImu *c)
