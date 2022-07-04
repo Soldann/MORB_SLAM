@@ -1,6 +1,6 @@
 # MORB_SLAM
 
-This fork of [ORB_SLAM3](https://github.com/UZ-SLAMLab/ORB_SLAM3) converts it into a CMake package that can be imported into other projects. Run `build.sh` to install.
+This fork of [ORB_SLAM3](https://github.com/UZ-SLAMLab/ORB_SLAM3) converts it into a CMake package that can be imported into other projects. Run `morbslam_installer.sh` to install.
 
 In your other projects, import using:
 ```
