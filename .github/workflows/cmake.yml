@@ -19,6 +19,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    
+    - name: Cache OpenCV
+      id: opencv-cache
+      uses: actions/cache@v2
+      with:
+        path: ./opencv-install
+        key: ${{ runner.os }}-opencv-cache
 
     - name: With OpenCV
       # You may pin to the exact commit or the version.
@@ -26,9 +33,9 @@ jobs:
       uses: rayandrew/with-opencv-action@v1
       with:
         # Directory to clone OpenCV, required to cache path
-        dir: opencv-install
+        dir: ./opencv-install
         # Whether to build OpenCV completely again or just run make install from previously built binaries.
-        cached: true
+        cached: ${{ steps.opencv-cache.outputs.cache-hit }}
         # OpenCV version to be installed.
         opencv-version: 4.5.2
         # If opencv-contrib (extra modules) should be included in the instalation.
