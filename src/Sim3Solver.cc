@@ -81,7 +81,7 @@ Sim3Solver::Sim3Solver(KeyFrame *pKF1, KeyFrame *pKF2, const vector<MapPoint *> 
             if(pMP1->isBad() || pMP2->isBad())
                 continue;
 
-            if(bDifferentKFs)
+            if(!bDifferentKFs)
                 pKFm = vpKeyFrameMatchedMP[i1];
 
             int indexKF1 = get<0>(pMP1->GetIndexInKeyFrame(pKF1));
