@@ -32,6 +32,8 @@
 #include <boost/archive/xml_oarchive.hpp>
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/string.hpp>
+#include <chrono>
+#include <ctime>
 #include <iomanip>
 #include <thread>
 
@@ -539,7 +541,7 @@ void System::Shutdown() {
 
   if (!mStrSaveAtlasToFile.empty()) {
     Verbose::PrintMess("Atlas saving to file " + mStrSaveAtlasToFile,
-                       Verbose::VERBOSITY_NORMAL);
+                       Verbose::VERBOSITY_DEBUG);
     SaveAtlas(FileType::BINARY_FILE);
   }
 
@@ -619,7 +621,7 @@ void System::SaveTrajectoryTUM(const string& filename) {
 
 void System::SaveKeyFrameTrajectoryTUM(const string& filename) {
   cout << endl
-       << "Saving keyframe trajectory to " << filename << " ..." << endl;
+       << "Saving keyframe trajectory to " << filename << " ... TUM" << endl;
 
   vector<KeyFrame*> vpKFs = mpAtlas->GetAllKeyFrames();
   sort(vpKFs.begin(), vpKFs.end(), KeyFrame::lId);
@@ -1065,7 +1067,7 @@ endl;
 
 void System::SaveKeyFrameTrajectoryEuRoC(const string& filename) {
   cout << endl
-       << "Saving keyframe trajectory to " << filename << " ..." << endl;
+       << "Saving keyframe trajectory to " << filename << " ... Euroc" << endl;
 
   vector<Map*> vpMaps = mpAtlas->GetAllMaps();
   Map* pBiggerMap;
@@ -1084,6 +1086,7 @@ void System::SaveKeyFrameTrajectoryEuRoC(const string& filename) {
 
   vector<KeyFrame*> vpKFs = pBiggerMap->GetAllKeyFrames();
   sort(vpKFs.begin(), vpKFs.end(), KeyFrame::lId);
+  std::cout << "sorted keyframes\n";
 
   // Transform all keyframes so that the first keyframe is at the origin.
   // After a loop closure the first keyframe might not be at the origin.
@@ -1404,6 +1407,7 @@ void System::InsertTrackTime(double& time) {
 #endif
 
 void System::SaveAtlas(int type) {
+  std::cout << "Thread ID is: " << std::this_thread::get_id() << std::endl;
   std::cout << "trying to save \n";
   if (!mStrSaveAtlasToFile.empty()) {
     std::cout << "not empty\n";
@@ -1415,7 +1419,11 @@ void System::SaveAtlas(int type) {
     string pathSaveFileName = "./";
     pathSaveFileName = pathSaveFileName.append(mStrSaveAtlasToFile);
     std::cout << "string append\n";
-    pathSaveFileName = "stereoFiles.osa";  // pathSaveFileName.append(".osa");
+    auto time = std::chrono::system_clock::now();
+    std::time_t time_time = std::chrono::system_clock::to_time_t(time);
+    std::string str_time = std::ctime(&time_time);
+    pathSaveFileName =
+        "stereoFiles" + str_time + ".osa";  // pathSaveFileName.append(".osa");
 
     std::cout << "About to Calculate \n";
 
@@ -1468,7 +1476,7 @@ bool System::LoadAtlas(int type) {
 
   string pathLoadFileName = "/";
   pathLoadFileName = pathLoadFileName.append(mStrLoadAtlasFromFile);
-  pathLoadFileName = "stereoFiles.osa";  // pathLoadFileName.append(".osa");
+  pathLoadFileName = pathLoadFileName.append(".osa");
 
   if (type == TEXT_FILE)  // File text
   {
