@@ -533,12 +533,12 @@ void System::Shutdown() {
                        Verbose::VERBOSITY_DEBUG);
     SaveAtlas(FileType::BINARY_FILE);
   }
-  if (mptLocalMapping->joinable()) {
-    mptLocalMapping->join();
-  }
-  if (mptLoopClosing->joinable()) {
-    mptLoopClosing->join();
-  }
+  // if (mptLocalMapping->joinable()) {
+  //   mptLocalMapping->join();
+  // }
+  // if (mptLoopClosing->joinable()) {
+  //   mptLoopClosing->join();
+  // }
 
   /*if(mpViewer)
       pangolin::BindToContext("ORB-SLAM2: Map Viewer");*/

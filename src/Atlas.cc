@@ -211,17 +211,19 @@ void Atlas::clearAtlas() {
   mnLastInitKFidMap = 0;
 }
 
-Map* Atlas::GetCurrentMap() {
+Map* Atlas::GetCurrentMap(System* sys) {
   unique_lock<mutex> lock(mMutexAtlas);
   if (!mpCurrentMap) CreateNewMap();
-  while (mpCurrentMap->IsBad()) usleep(3000);
+  while (mpCurrentMap->IsBad()) {
+    if (sys != nullptr && sys->isShutDown()) return nullptr;
+  }
 
   return mpCurrentMap;
 }
 
 void Atlas::SetMapBad(Map* pMap) {
   std::cout << "set map bad" << std::endl;
-  //mspMaps.erase(pMap);
+  // mspMaps.erase(pMap);
   pMap->SetBad();
 
   mspBadMaps.insert(pMap);

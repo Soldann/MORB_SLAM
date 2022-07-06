@@ -1809,7 +1809,7 @@ void Tracking::Track()
         return;
     }
 
-    Map* pCurrentMap = mpAtlas->GetCurrentMap();
+    Map* pCurrentMap = mpAtlas->GetCurrentMap(mpSystem);
     if(!pCurrentMap)
     {
         cout << "ERROR: There is not an active map in the atlas" << endl;

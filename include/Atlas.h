@@ -113,7 +113,7 @@ public:
 
     void clearAtlas();
 
-    Map* GetCurrentMap();
+    Map* GetCurrentMap(System * sys = nullptr);
 
     void SetMapBad(Map* pMap);
     void RemoveBadMaps();
