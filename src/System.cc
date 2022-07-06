@@ -508,7 +508,6 @@ void System::ResetActiveMap() {
 }
 
 void System::Shutdown() {
-
   cout << "Shutdown" << endl;
 
   mpLocalMapper->RequestFinish();
@@ -541,10 +540,9 @@ void System::Shutdown() {
     mptLoopClosing->join();
   }
 
-
   /*if(mpViewer)
       pangolin::BindToContext("ORB-SLAM2: Map Viewer");*/
-c
+
 #ifdef REGISTER_TIMES
   mpTracker->PrintTimeStats();
 #endif
@@ -553,8 +551,6 @@ c
     unique_lock<mutex> lock(mMutexReset);
     mbShutDown = true;
   }
-
-
 }
 
 bool System::isShutDown() {
