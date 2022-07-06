@@ -36,6 +36,7 @@ Atlas::Atlas(int initKFid) : mnLastInitKFidMap(initKFid), mHasViewer(false) {
 }
 
 Atlas::~Atlas() {
+  std::cout << "deleting atlas" << std::endl;
   for (std::set<Map*>::iterator it = mspMaps.begin(), end = mspMaps.end();
        it != end;) {
     Map* pMi = *it;
@@ -219,7 +220,8 @@ Map* Atlas::GetCurrentMap() {
 }
 
 void Atlas::SetMapBad(Map* pMap) {
-  mspMaps.erase(pMap);
+  std::cout << "set map bad" << std::endl;
+  //mspMaps.erase(pMap);
   pMap->SetBad();
 
   mspBadMaps.insert(pMap);

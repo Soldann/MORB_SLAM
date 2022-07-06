@@ -47,6 +47,7 @@ System::System(const string& strVocFile, const string& strSettingsFile,
                const eSensor sensor, const bool bUseViewer, const int initFr,
                const string& strSequence)
     : mSensor(sensor),
+      mpAtlas1(0),
       mpViewer(static_cast<Viewer*>(NULL)),
       mbReset(false),
       mbResetActiveMap(false),
@@ -140,7 +141,7 @@ System::System(const string& strVocFile, const string& strSettingsFile,
 
     // Create the Atlas
     cout << "Initialization of Atlas from scratch " << endl;
-    mpAtlas = new Atlas(0);
+    // mpAtlas = new Atlas(0);
   } else {
     // Load ORB Vocabulary
     cout << endl
@@ -507,50 +508,53 @@ void System::ResetActiveMap() {
 }
 
 void System::Shutdown() {
-  {
-    unique_lock<mutex> lock(mMutexReset);
-    mbShutDown = true;
-  }
 
   cout << "Shutdown" << endl;
 
   mpLocalMapper->RequestFinish();
   mpLoopCloser->RequestFinish();
-  /*if(mpViewer)
-  {
-      mpViewer->RequestFinish();
-      while(!mpViewer->isFinished())
-          usleep(5000);
-  }*/
 
   // Wait until all thread have effectively stopped
-  /*while(!mpLocalMapper->isFinished() || !mpLoopCloser->isFinished() ||
-  mpLoopCloser->isRunningGBA())
-  {
-      if(!mpLocalMapper->isFinished())
-          cout << "mpLocalMapper is not finished" << endl;*/
-  /*if(!mpLoopCloser->isFinished())
+  /*while (!mpLocalMapper->isFinished() || !mpLoopCloser->isFinished() ||
+         mpLoopCloser->isRunningGBA()) {
+    if (!mpLocalMapper->isFinished())
+      cout << "mpLocalMapper is not finished" << endl;
+    if (!mpLoopCloser->isFinished())
       cout << "mpLoopCloser is not finished" << endl;
-  if(mpLoopCloser->isRunningGBA()){
+    if (mpLoopCloser->isRunningGBA()) {
       cout << "mpLoopCloser is running GBA" << endl;
       cout << "break anyway..." << endl;
-      break;
+      // break;
+    }
+    usleep(5000);
   }*/
-  /*usleep(5000);
-}*/
 
   if (!mStrSaveAtlasToFile.empty()) {
     Verbose::PrintMess("Atlas saving to file " + mStrSaveAtlasToFile,
                        Verbose::VERBOSITY_DEBUG);
     SaveAtlas(FileType::BINARY_FILE);
   }
+  if (mptLocalMapping->joinable()) {
+    mptLocalMapping->join();
+  }
+  if (mptLoopClosing->joinable()) {
+    mptLoopClosing->join();
+  }
+
 
   /*if(mpViewer)
       pangolin::BindToContext("ORB-SLAM2: Map Viewer");*/
-
+c
 #ifdef REGISTER_TIMES
   mpTracker->PrintTimeStats();
 #endif
+
+  {
+    unique_lock<mutex> lock(mMutexReset);
+    mbShutDown = true;
+  }
+
+
 }
 
 bool System::isShutDown() {
@@ -1461,7 +1465,7 @@ void System::SaveAtlas(int type) {
       oa << strVocabularyName;
       std::cout << "streamed name\n";
       //   oa << 100000;
-      std::cout << "streamed checksum\n";
+      // std::cout << "streamed checksum\n";
       oa << mpAtlas;
       cout << "End to write save binary file" << endl;
     } else {

@@ -65,6 +65,7 @@ Map::Map(int initKFid)
 }
 
 Map::~Map() {
+  std::cout << "deleting map" << std::endl;
   // TODO: erase all points from memory
   mspMapPoints.clear();
 
@@ -112,6 +113,7 @@ bool Map::isImuInitialized() {
 
 void Map::EraseMapPoint(MapPoint* pMP) {
   unique_lock<mutex> lock(mMutexMap);
+  std::cout << "erasing map point" << std::endl;
   mspMapPoints.erase(pMP);
 
   // TODO: This only erase the pointer.
@@ -211,6 +213,7 @@ void Map::clear() {
     //        delete *sit;
   }
 
+  std::cout << "clearing map" << std::endl;
   mspMapPoints.clear();
   mspKeyFrames.clear();
   mnMaxKFid = mnInitKFid;
@@ -323,21 +326,22 @@ void Map::PreSave(std::set<GeometricCamera*>& spCams) {
   std::cout << "Presaving a map\n";
   int nMPWithoutObs = 0;
 
-  std::set<MapPoint*> tmp_mspMapPoints;
-  tmp_mspMapPoints.insert(mspMapPoints.begin(), mspMapPoints.end());
+  //   std::set<MapPoint*> tmp_mspMapPoints;
+  //   tmp_mspMapPoints.insert(mspMapPoints.begin(), mspMapPoints.end());
 
-  for (MapPoint* pMPi : tmp_mspMapPoints) {
+  for (MapPoint* pMPi : mspMapPoints) {
     if (!pMPi || pMPi->isBad()) continue;
 
     if (pMPi->GetObservations().size() == 0) {
       nMPWithoutObs++;
     }
     map<KeyFrame*, std::tuple<int, int>> mpObs = pMPi->GetObservations();
-    std::cout << "getting observations\n";
+    // std::cout << "getting observations\n";
     for (map<KeyFrame*, std::tuple<int, int>>::iterator it = mpObs.begin(),
                                                         end = mpObs.end();
          it != end; ++it) {
       if (it->first->GetMap() != this || it->first->isBad()) {
+        std::cout << "keyframe is about to be erased\n";
         pMPi->EraseObservation(it->first);
       }
     }
@@ -355,10 +359,10 @@ void Map::PreSave(std::set<GeometricCamera*>& spCams) {
   std::cout << "backing up the map points\n";
   mvpBackupMapPoints.clear();
 
-  tmp_mspMapPoints.clear();
-  tmp_mspMapPoints.insert(mspMapPoints.begin(), mspMapPoints.end());
+  //   tmp_mspMapPoints.clear();
+  //   tmp_mspMapPoints.insert(mspMapPoints.begin(), mspMapPoints.end());
 
-  for (MapPoint* pMPi : tmp_mspMapPoints) {
+  for (MapPoint* pMPi : mspMapPoints) {
     if (!pMPi || pMPi->isBad()) continue;
 
     mvpBackupMapPoints.push_back(pMPi);

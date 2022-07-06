@@ -349,14 +349,16 @@ void Viewer::Run() {
 
       // Save camera trajectory
 
-      auto time = std::chrono::system_clock::now();
-      std::time_t time_time = std::chrono::system_clock::to_time_t(time);
-      std::string str_time = std::ctime(&time_time);
+    //   auto time = std::chrono::system_clock::now();
+    //   std::time_t time_time = std::chrono::system_clock::to_time_t(time);
+    //   std::string str_time = std::ctime(&time_time);
 
-      mpSystem->SaveTrajectoryEuRoC("CameraTrajectory" + str_time + ".txt");
-      mpSystem->SaveKeyFrameTrajectoryEuRoC("KeyFrameTrajectory" + str_time +
-                                            ".txt");
+      //   mpSystem->SaveTrajectoryEuRoC("CameraTrajectory" + str_time +
+      //   ".txt"); mpSystem->SaveKeyFrameTrajectoryEuRoC("KeyFrameTrajectory" +
+      //   str_time +
+      //                                         ".txt");
       menuStop = false;
+      break;
     }
 
     if (Stop()) {

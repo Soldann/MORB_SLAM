@@ -282,7 +282,7 @@ void MapPoint::SetBadFlag() {
     }
   }
 
-  mpMap->EraseMapPoint(this);
+  // mpMap->EraseMapPoint(this);
 }
 
 MapPoint* MapPoint::GetReplaced() {
@@ -597,8 +597,8 @@ void MapPoint::PreSave(set<KeyFrame*>& spKF, set<MapPoint*>& spMP) {
   mBackupObservationsId1.clear();
   mBackupObservationsId2.clear();
 
-  std::map<KeyFrame*, std::tuple<int, int>> tmp_mObservations;
-  tmp_mObservations.insert(mObservations.begin(), mObservations.end());
+    std::map<KeyFrame*, std::tuple<int, int>> tmp_mObservations;
+    tmp_mObservations.insert(mObservations.begin(), mObservations.end());
 
   // Save the id and position in each KF who view it
   for (std::map<KeyFrame*, std::tuple<int, int>>::const_iterator
@@ -610,7 +610,9 @@ void MapPoint::PreSave(set<KeyFrame*>& spKF, set<MapPoint*>& spMP) {
       mBackupObservationsId1[it->first->mnId] = get<0>(it->second);
       mBackupObservationsId2[it->first->mnId] = get<1>(it->second);
     } else {
-      EraseObservation(pKFi);
+      std::cout << "keyframe is about to be erased but from MapPoint\n";
+      EraseObservation(pKFi);  // iterate -- afterwards to pull back once
+      //   it--;
     }
   }
 
