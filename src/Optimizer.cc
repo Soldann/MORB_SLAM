@@ -414,7 +414,7 @@ void Optimizer::FullInertialBA(Map *pMap, int its, const bool bFixLocal, const l
     int nNonFixed = 0;
 
     // Set KeyFrame vertices
-    KeyFrame* pIncKF;
+    KeyFrame* pIncKF = nullptr;
     for(size_t i=0; i<vpKFs.size(); i++)
     {
         KeyFrame* pKFi = vpKFs[i];
@@ -453,7 +453,7 @@ void Optimizer::FullInertialBA(Map *pMap, int its, const bool bFixLocal, const l
         }
     }
 
-    if (bInit)
+    if (bInit && pIncKF != nullptr)
     {
         VertexGyroBias* VG = new VertexGyroBias(pIncKF);
         VG->setId(4*maxKFid+2);
