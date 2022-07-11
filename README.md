@@ -10,7 +10,7 @@ find_package(MORB_SLAM REQUIRED)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} MORB_SLAM::MORB_SLAM)
 ```
 
-![MORBSLAM](images/Morbslam.jpeg)
+![MORBSLAM](images/Morbslam.jpg)
 
 ----------------------------------
 
