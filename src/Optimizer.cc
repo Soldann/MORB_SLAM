@@ -5363,7 +5363,6 @@ void Optimizer::OptimizeEssentialGraph4DoF(Map* pMap, KeyFrame* pLoopKF, KeyFram
     Eigen::Matrix<double,6,6> matLambda = Eigen::Matrix<double,6,6>::Identity();
     matLambda(0,0) = 1e3;
     matLambda(1,1) = 1e3;
-    matLambda(0,0) = 1e3;
 
     // Set Loop edges
     Edge4DoF* e_loop;
