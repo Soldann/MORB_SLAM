@@ -47,14 +47,14 @@ cv::BFMatcher Frame::BFmatcher = cv::BFMatcher(cv::NORM_HAMMING);
 
 Frame::Frame()
     : mpcpi(NULL),
+      mbHasPose(false),
+      mbHasVelocity(false),
       mpImuPreintegrated(NULL),
       mpPrevFrame(NULL),
       mpImuPreintegratedFrame(NULL),
       mpReferenceKF(static_cast<KeyFrame *>(NULL)),
       mbIsSet(false),
-      mbImuPreintegrated(false),
-      mbHasPose(false),
-      mbHasVelocity(false) {
+      mbImuPreintegrated(false) {
 #ifdef REGISTER_TIMES
   mTimeStereoMatch = 0;
   mTimeORB_Ext = 0;
@@ -64,6 +64,13 @@ Frame::Frame()
 // Copy Constructor
 Frame::Frame(const Frame &frame)
     : mpcpi(frame.mpcpi),
+      mTlr(frame.mTlr),
+      mRlr(frame.mRlr),
+      mtlr(frame.mtlr),
+      mTrl(frame.mTrl),
+      mTcw(frame.mTcw),
+      mbHasPose(false),
+      mbHasVelocity(false),
       mpORBvocabulary(frame.mpORBvocabulary),
       mpORBextractorLeft(frame.mpORBextractorLeft),
       mpORBextractorRight(frame.mpORBextractorRight),
@@ -78,19 +85,23 @@ Frame::Frame(const Frame &frame)
       mvKeys(frame.mvKeys),
       mvKeysRight(frame.mvKeysRight),
       mvKeysUn(frame.mvKeysUn),
+      mvpMapPoints(frame.mvpMapPoints),
       mvuRight(frame.mvuRight),
       mvDepth(frame.mvDepth),
       mBowVec(frame.mBowVec),
       mFeatVec(frame.mFeatVec),
       mDescriptors(frame.mDescriptors.clone()),
       mDescriptorsRight(frame.mDescriptorsRight.clone()),
-      mvpMapPoints(frame.mvpMapPoints),
       mvbOutlier(frame.mvbOutlier),
-      mImuCalib(frame.mImuCalib),
       mnCloseMPs(frame.mnCloseMPs),
-      mpImuPreintegrated(frame.mpImuPreintegrated),
-      mpImuPreintegratedFrame(frame.mpImuPreintegratedFrame),
+      mPredBias(frame.mPredBias),
       mImuBias(frame.mImuBias),
+      mImuCalib(frame.mImuCalib),
+      mpImuPreintegrated(frame.mpImuPreintegrated),
+      mpLastKeyFrame(frame.mpLastKeyFrame),
+      mpPrevFrame(frame.mpPrevFrame),
+      mpImuPreintegratedFrame(frame.mpImuPreintegratedFrame),
+      nNextId(frame.nNextId),
       mnId(frame.mnId),
       mpReferenceKF(frame.mpReferenceKF),
       mnScaleLevels(frame.mnScaleLevels),
@@ -98,12 +109,10 @@ Frame::Frame(const Frame &frame)
       mfLogScaleFactor(frame.mfLogScaleFactor),
       mvScaleFactors(frame.mvScaleFactors),
       mvInvScaleFactors(frame.mvInvScaleFactors),
-      mNameFile(frame.mNameFile),
-      mnDataset(frame.mnDataset),
       mvLevelSigma2(frame.mvLevelSigma2),
       mvInvLevelSigma2(frame.mvInvLevelSigma2),
-      mpPrevFrame(frame.mpPrevFrame),
-      mpLastKeyFrame(frame.mpLastKeyFrame),
+      mNameFile(frame.mNameFile),
+      mnDataset(frame.mnDataset),
       mbIsSet(frame.mbIsSet),
       mbImuPreintegrated(frame.mbImuPreintegrated),
       mpMutexImu(frame.mpMutexImu),
@@ -115,14 +124,7 @@ Frame::Frame(const Frame &frame)
       monoRight(frame.monoRight),
       mvLeftToRightMatch(frame.mvLeftToRightMatch),
       mvRightToLeftMatch(frame.mvRightToLeftMatch),
-      mvStereo3Dpoints(frame.mvStereo3Dpoints),
-      mTlr(frame.mTlr),
-      mRlr(frame.mRlr),
-      mtlr(frame.mtlr),
-      mTrl(frame.mTrl),
-      mTcw(frame.mTcw),
-      mbHasPose(false),
-      mbHasVelocity(false) {
+      mvStereo3Dpoints(frame.mvStereo3Dpoints) {
   for (int i = 0; i < FRAME_GRID_COLS; i++)
     for (int j = 0; j < FRAME_GRID_ROWS; j++) {
       mGrid[i][j] = frame.mGrid[i][j];
@@ -153,6 +155,8 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
              GeometricCamera *pCamera, Frame *pPrevF,
              const IMU::Calib &ImuCalib)
     : mpcpi(NULL),
+      mbHasPose(false),
+      mbHasVelocity(false),
       mpORBvocabulary(voc),
       mpORBextractorLeft(extractorLeft),
       mpORBextractorRight(extractorRight),
@@ -170,9 +174,7 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
       mbIsSet(false),
       mbImuPreintegrated(false),
       mpCamera(pCamera),
-      mpCamera2(nullptr),
-      mbHasPose(false),
-      mbHasVelocity(false) {
+      mpCamera2(nullptr) {
   // Frame ID
   mnId = nNextId++;
 
@@ -277,6 +279,8 @@ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth,
              const float &thDepth, GeometricCamera *pCamera, Frame *pPrevF,
              const IMU::Calib &ImuCalib)
     : mpcpi(NULL),
+      mbHasPose(false),
+      mbHasVelocity(false),
       mpORBvocabulary(voc),
       mpORBextractorLeft(extractor),
       mpORBextractorRight(static_cast<ORBextractor *>(NULL)),
@@ -294,9 +298,7 @@ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth,
       mbIsSet(false),
       mbImuPreintegrated(false),
       mpCamera(pCamera),
-      mpCamera2(nullptr),
-      mbHasPose(false),
-      mbHasVelocity(false) {
+      mpCamera2(nullptr) {
   // Frame ID
   mnId = nNextId++;
 
@@ -387,6 +389,8 @@ Frame::Frame(const cv::Mat &imGray, const double &timeStamp,
              GeometricCamera *pCamera, cv::Mat &distCoef, const float &bf,
              const float &thDepth, Frame *pPrevF, const IMU::Calib &ImuCalib)
     : mpcpi(NULL),
+      mbHasPose(false),
+      mbHasVelocity(false),
       mpORBvocabulary(voc),
       mpORBextractorLeft(extractor),
       mpORBextractorRight(static_cast<ORBextractor *>(NULL)),
@@ -404,9 +408,7 @@ Frame::Frame(const cv::Mat &imGray, const double &timeStamp,
       mbIsSet(false),
       mbImuPreintegrated(false),
       mpCamera(pCamera),
-      mpCamera2(nullptr),
-      mbHasPose(false),
-      mbHasVelocity(false) {
+      mpCamera2(nullptr) {
   // Frame ID
   mnId = nNextId++;
 
@@ -1096,6 +1098,8 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
              GeometricCamera *pCamera, GeometricCamera *pCamera2,
              Sophus::SE3f &Tlr, Frame *pPrevF, const IMU::Calib &ImuCalib)
     : mpcpi(NULL),
+      mbHasPose(false),
+      mbHasVelocity(false),
       mpORBvocabulary(voc),
       mpORBextractorLeft(extractorLeft),
       mpORBextractorRight(extractorRight),
@@ -1112,9 +1116,7 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
       mpReferenceKF(static_cast<KeyFrame *>(NULL)),
       mbImuPreintegrated(false),
       mpCamera(pCamera),
-      mpCamera2(pCamera2),
-      mbHasPose(false),
-      mbHasVelocity(false)
+      mpCamera2(pCamera2)
 
 {
   imgLeft = imLeft.clone();

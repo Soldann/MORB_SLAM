@@ -45,8 +45,8 @@ class KannalaBrandt8 : public GeometricCamera {
   }
   KannalaBrandt8(const std::vector<float> _vParameters)
       : GeometricCamera(_vParameters),
-        precision(1e-6),
         mvLappingArea(2, 0),
+        precision(1e-6),
         tvr(nullptr) {
     assert(mvParameters.size() == 8);
     mnId = nNextId++;
@@ -55,16 +55,16 @@ class KannalaBrandt8 : public GeometricCamera {
 
   KannalaBrandt8(const std::vector<float> _vParameters, const float _precision)
       : GeometricCamera(_vParameters),
-        precision(_precision),
-        mvLappingArea(2, 0) {
+        mvLappingArea(2, 0),
+        precision(_precision) {
     assert(mvParameters.size() == 8);
     mnId = nNextId++;
     mnType = CAM_FISHEYE;
   }
   KannalaBrandt8(KannalaBrandt8* pKannala)
       : GeometricCamera(pKannala->mvParameters),
-        precision(pKannala->precision),
         mvLappingArea(2, 0),
+        precision(pKannala->precision),
         tvr(nullptr) {
     assert(mvParameters.size() == 8);
     mnId = nNextId++;

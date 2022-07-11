@@ -41,31 +41,34 @@ KeyFrame::KeyFrame()
       mnFuseTargetForKF(0),
       mnBALocalForKF(0),
       mnBAFixedForKF(0),
-      mnBALocalForMerge(0),
+      mnNumberOfOpt(0),
       mnLoopQuery(0),
       mnLoopWords(0),
       mnRelocQuery(0),
       mnRelocWords(0),
       mnMergeQuery(0),
       mnMergeWords(0),
+      mnPlaceRecognitionQuery(0),
+      mnPlaceRecognitionWords(0),
+      mPlaceRecognitionScore(0),
+      mbCurrentPlaceRecognition(false),
       mnBAGlobalForKF(0),
+      mnMergeCorrectedForKF(0),
+      mnBALocalForMerge(0),
       fx(0),
       fy(0),
       cx(0),
       cy(0),
       invfx(0),
       invfy(0),
-      mnPlaceRecognitionQuery(0),
-      mnPlaceRecognitionWords(0),
-      mPlaceRecognitionScore(0),
       mbf(0),
       mb(0),
       mThDepth(0),
       N(0),
-      mvKeys(static_cast<vector<cv::KeyPoint>>(NULL)),
+      /*mvKeys(static_cast<vector<cv::KeyPoint>>(NULL)),
       mvKeysUn(static_cast<vector<cv::KeyPoint>>(NULL)),
       mvuRight(static_cast<vector<float>>(NULL)),
-      mvDepth(static_cast<vector<float>>(NULL)),
+      mvDepth(static_cast<vector<float>>(NULL)),*/
       mnScaleLevels(0),
       mfScaleFactor(0),
       mfLogScaleFactor(0),
@@ -78,18 +81,15 @@ KeyFrame::KeyFrame()
       mnMaxY(0),
       mPrevKF(static_cast<KeyFrame *>(NULL)),
       mNextKF(static_cast<KeyFrame *>(NULL)),
+      mbHasVelocity(false),
       mbFirstConnection(true),
       mpParent(NULL),
       mbNotErase(false),
       mbToBeErased(false),
       mbBad(false),
       mHalfBaseline(0),
-      mbCurrentPlaceRecognition(false),
-      mnMergeCorrectedForKF(0),
       NLeft(0),
-      NRight(0),
-      mnNumberOfOpt(0),
-      mbHasVelocity(false) {}
+      NRight(0) {}
 
 KeyFrame::KeyFrame(Frame &F, Map *pMap, KeyFrameDatabase *pKFDB)
     : bImu(pMap->isImuInitialized()),
@@ -388,8 +388,8 @@ void KeyFrame::EraseMapPointMatch(const int &idx) {
 }
 
 void KeyFrame::EraseMapPointMatch(MapPoint *pMP) {
-  tuple<size_t, size_t> indexes = pMP->GetIndexInKeyFrame(this);
-  size_t leftIndex = get<0>(indexes), rightIndex = get<1>(indexes);
+  tuple<int, int> indexes = pMP->GetIndexInKeyFrame(this);
+  int leftIndex = get<0>(indexes), rightIndex = get<1>(indexes);
   if (leftIndex != -1) mvpMapPoints[leftIndex] = static_cast<MapPoint *>(NULL);
   if (rightIndex != -1)
     mvpMapPoints[rightIndex] = static_cast<MapPoint *>(NULL);
