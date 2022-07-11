@@ -356,7 +356,7 @@ void Viewer::Run() {
       //   mpSystem->SaveTrajectoryEuRoC("CameraTrajectory" + str_time +
       //   ".txt"); mpSystem->SaveKeyFrameTrajectoryEuRoC("KeyFrameTrajectory" +
       //   str_time +
-      //                                         ".txt");
+      //        isStopped                                 ".txt");
       menuStop = false;
       break;
     }

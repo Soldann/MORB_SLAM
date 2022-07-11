@@ -1427,10 +1427,10 @@ void System::SaveAtlas(int type) {
 
     std::cout << "About to Calculate \n";
 
-    // string strVocabularyChecksum =
-    //     CalculateCheckSum(mStrVocabularyFilePath, TEXT_FILE);
+    string strVocabularyChecksum =
+        CalculateCheckSum(mStrVocabularyFilePath, TEXT_FILE);
 
-    // std::cout << "Vocab checksum" << strVocabularyChecksum << std::endl;
+    std::cout << "Vocab checksum`" << strVocabularyChecksum << std::endl;
     std::size_t found = mStrVocabularyFilePath.find_last_of("/\\");
     string strVocabularyName = mStrVocabularyFilePath.substr(found + 1);
     std::cout << "Type is of: " << type << std::endl;
@@ -1445,7 +1445,7 @@ void System::SaveAtlas(int type) {
       boost::archive::text_oarchive oa(ofs);
 
       oa << strVocabularyName;
-      //   oa << strVocabularyChecksum;
+      oa << strVocabularyChecksum;
       oa << mpAtlas;
       cout << "End to write the save text file" << endl;
     } else if (type == BINARY_FILE)  // File binary
@@ -1460,8 +1460,8 @@ void System::SaveAtlas(int type) {
       std::cout << "streaming\n";
       oa << strVocabularyName;
       std::cout << "streamed name\n";
-      //   oa << 100000;
-      // std::cout << "streamed checksum\n";
+      oa << strVocabularyChecksum;
+      std::cout << "streamed checksum\n";
       oa << mpAtlas;
       cout << "End to write save binary file" << endl;
     } else {
@@ -1488,7 +1488,7 @@ bool System::LoadAtlas(int type) {
     }
     boost::archive::text_iarchive ia(ifs);
     ia >> strFileVoc;
-    // ia >> strVocChecksum;
+    ia >> strVocChecksum;
     ia >> mpAtlas;
     cout << "End to load the save text file " << endl;
     isRead = true;
@@ -1502,7 +1502,7 @@ bool System::LoadAtlas(int type) {
     }
     boost::archive::binary_iarchive ia(ifs);
     ia >> strFileVoc;
-    // ia >> strVocChecksum;
+    ia >> strVocChecksum;
     ia >> mpAtlas;
     cout << "End to load the save binary file" << endl;
     isRead = true;
@@ -1510,17 +1510,16 @@ bool System::LoadAtlas(int type) {
 
   if (isRead) {
     // Check if the vocabulary is the same
-    // string strInputVocabularyChecksum =
-    //     CalculateCheckSum(mStrVocabularyFilePath, TEXT_FILE);
+    string strInputVocabularyChecksum =
+        CalculateCheckSum(mStrVocabularyFilePath, TEXT_FILE);
 
-    // if (strInputVocabularyChecksum.compare(strVocChecksum) != 0) {
-    //   cout << "The vocabulary load isn't the same which the load session was
-    //   "
-    //           "created "
-    //        << endl;
-    //   cout << "-Vocabulary name: " << strFileVoc << endl;
-    //   return false;  // Both are differents
-    // }
+    if (strInputVocabularyChecksum.compare(strVocChecksum) != 0) {
+      cout << "The vocabulary load isn't the same which the load session was "
+              "created "
+           << endl;
+      cout << "-Vocabulary name: " << strFileVoc << endl;
+      return false;  // Both are differents
+    }
 
     mpAtlas->SetKeyFrameDababase(mpKeyFrameDatabase);
     mpAtlas->SetORBVocabulary(mpVocabulary);
@@ -1559,7 +1558,7 @@ string System::CalculateCheckSum(string filename, int type) {
   std::cout << "just initialized MD5\n";
   while (int count = f.readsome(buffer, sizeof(buffer))) {
     MD5_Update(&md5Context, buffer, count);
-    std::cout << buffer;
+    // std::cout << buffer;
   }
   std::cout << "about to close\n";
 
