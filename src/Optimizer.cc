@@ -229,7 +229,7 @@ void Optimizer::BundleAdjustment(const vector<KeyFrame *> &vpKFs, const vector<M
             if(pKF->mpCamera2){
                 int rightIndex = get<1>(mit->second);
 
-                if(rightIndex != -1 && rightIndex < pKF->mvKeysRight.size()){
+                if(rightIndex != -1 && rightIndex < static_cast<int>(pKF->mvKeysRight.size())){
                     rightIndex -= pKF->NLeft;
 
                     Eigen::Matrix<double,2,1> obs;
@@ -494,8 +494,8 @@ void Optimizer::FullInertialBA(Map *pMap, int its, const bool bFixLocal, const l
 
                 g2o::HyperGraph::Vertex* VG1;
                 g2o::HyperGraph::Vertex* VA1;
-                g2o::HyperGraph::Vertex* VG2;
-                g2o::HyperGraph::Vertex* VA2;
+                g2o::HyperGraph::Vertex* VG2 = nullptr;
+                g2o::HyperGraph::Vertex* VA2 = nullptr;
                 if (!bInit)
                 {
                     VG1 = optimizer.vertex(maxKFid+3*(pKFi->mPrevKF->mnId)+2);
@@ -681,7 +681,7 @@ void Optimizer::FullInertialBA(Map *pMap, int its, const bool bFixLocal, const l
                 if(pKFi->mpCamera2){ // Monocular right observation
                     int rightIndex = get<1>(mit->second);
 
-                    if(rightIndex != -1 && rightIndex < pKFi->mvKeysRight.size()){
+                    if(rightIndex != -1 && rightIndex < static_cast<int>(pKFi->mvKeysRight.size())){
                         rightIndex -= pKFi->NLeft;
 
                         Eigen::Matrix<double,2,1> obs;
@@ -2501,7 +2501,7 @@ void Optimizer::LocalInertialBA(KeyFrame *pKF, bool *pbStopFlag, Map *pMap, int&
             break;
     }
 
-    bool bNonFixed = (lFixedKeyFrames.size() == 0);
+    // bool bNonFixed = (lFixedKeyFrames.size() == 0); // UNUSED
 
     // Setup optimizer
     g2o::SparseOptimizer optimizer;
@@ -3199,7 +3199,7 @@ void Optimizer::InertialOptimization(Map *pMap, Eigen::Matrix3d &Rwg, double &sc
     Rwg = VGDir->estimate().Rwg;
 
     //Keyframes velocities and biases
-    const int N = vpKFs.size();
+    const size_t N = vpKFs.size();
     for(size_t i=0; i<N; i++)
     {
         KeyFrame* pKFi = vpKFs[i];
@@ -3364,7 +3364,7 @@ void Optimizer::InertialOptimization(Map *pMap, Eigen::Vector3d &bg, Eigen::Vect
     IMU::Bias b (vb[3],vb[4],vb[5],vb[0],vb[1],vb[2]);
 
     //Keyframes velocities and biases
-    const int N = vpKFs.size();
+    const size_t N = vpKFs.size();
     for(size_t i=0; i<N; i++)
     {
         KeyFrame* pKFi = vpKFs[i];
@@ -3486,10 +3486,10 @@ void Optimizer::InertialOptimization(Map *pMap, Eigen::Matrix3d &Rwg, double &sc
     optimizer.setVerbose(false);
     optimizer.initializeOptimization();
     optimizer.computeActiveErrors();
-    float err = optimizer.activeRobustChi2();
+    /*float err = */optimizer.activeRobustChi2();
     optimizer.optimize(its);
     optimizer.computeActiveErrors();
-    float err_end = optimizer.activeRobustChi2();
+    /*float err_end = */optimizer.activeRobustChi2();
     // Recover optimized data
     scale = VS->estimate();
     Rwg = VGDir->estimate().Rwg;
@@ -3497,7 +3497,7 @@ void Optimizer::InertialOptimization(Map *pMap, Eigen::Matrix3d &Rwg, double &sc
 
 void Optimizer::LocalBundleAdjustment(KeyFrame* pMainKF,vector<KeyFrame*> vpAdjustKF, vector<KeyFrame*> vpFixedKF, bool *pbStopFlag)
 {
-    bool bShowImages = false;
+    // bool bShowImages = false; // UNUSED
 
     vector<MapPoint*> vpMPs;
 
@@ -4044,8 +4044,8 @@ void Optimizer::MergeInertialBA(KeyFrame* pCurrKF, KeyFrame* pMergeKF, bool *pbS
         {
             // Using mnBALocalForKF we avoid redundance here, one MP can not be added several times to lLocalMapPoints
             MapPoint* pMP = *vit;
-            if(pMP)
-                if(!pMP->isBad())
+            if(pMP){
+                if(!pMP->isBad()){
                     if(pMP->mnBALocalForKF!=pCurrKF->mnId)
                     {
                         mLocalObs[pMP]=1;
@@ -4055,6 +4055,8 @@ void Optimizer::MergeInertialBA(KeyFrame* pCurrKF, KeyFrame* pMergeKF, bool *pbS
                     else {
                         mLocalObs[pMP]++;
                     }
+                }
+            }
         }
     }
 
@@ -5294,7 +5296,7 @@ void Optimizer::OptimizeEssentialGraph4DoF(Map* pMap, KeyFrame* pLoopKF, KeyFram
                                        const LoopClosing::KeyFrameAndPose &CorrectedSim3,
                                        const map<KeyFrame *, set<KeyFrame *> > &LoopConnections)
 {
-    typedef g2o::BlockSolver< g2o::BlockSolverTraits<4, 4> > BlockSolver_4_4;
+    // typedef g2o::BlockSolver< g2o::BlockSolverTraits<4, 4> > BlockSolver_4_4; // UNUSED
 
     // Setup optimizer
     g2o::SparseOptimizer optimizer;
@@ -5366,7 +5368,7 @@ void Optimizer::OptimizeEssentialGraph4DoF(Map* pMap, KeyFrame* pLoopKF, KeyFram
     matLambda(0,0) = 1e3;
 
     // Set Loop edges
-    Edge4DoF* e_loop;
+    // Edge4DoF* e_loop; // UNUSED
     for(map<KeyFrame *, set<KeyFrame *> >::const_iterator mit = LoopConnections.begin(), mend=LoopConnections.end(); mit!=mend; mit++)
     {
         KeyFrame* pKF = mit->first;
@@ -5392,7 +5394,7 @@ void Optimizer::OptimizeEssentialGraph4DoF(Map* pMap, KeyFrame* pLoopKF, KeyFram
             e->setVertex(0, dynamic_cast<g2o::OptimizableGraph::Vertex*>(optimizer.vertex(nIDi)));
 
             e->information() = matLambda;
-            e_loop = e;
+            // e_loop = e; // UNUSED
             optimizer.addEdge(e);
 
             sInsertedEdges.insert(make_pair(min(nIDi,nIDj),max(nIDi,nIDj)));

@@ -107,7 +107,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
 
     mStrVocabularyFilePath = strVocFile;
 
-    bool loadedAtlas = false;
+    // bool loadedAtlas = false; // UNUSED
 
     if(mStrLoadAtlasFromFile.empty())
     {
@@ -166,7 +166,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
 
         //cout << "KF in DB: " << mpKeyFrameDatabase->mnNumKFs << "; words: " << mpKeyFrameDatabase->mnNumWords << endl;
 
-        loadedAtlas = true;
+        // loadedAtlas = true; // UNUSED
 
         mpAtlas->CreateNewMap();
 
@@ -670,8 +670,8 @@ void System::SaveTrajectoryEuRoC(const string &filename)
     }*/
 
     vector<Map*> vpMaps = mpAtlas->GetAllMaps();
-    int numMaxKFs = 0;
-    Map* pBiggerMap;
+    size_t numMaxKFs = 0;
+    Map* pBiggerMap = nullptr;
     std::cout << "There are " << std::to_string(vpMaps.size()) << " maps in the atlas" << std::endl;
     for(Map* pMap :vpMaps)
     {
@@ -681,6 +681,11 @@ void System::SaveTrajectoryEuRoC(const string &filename)
             numMaxKFs = pMap->GetAllKeyFrames().size();
             pBiggerMap = pMap;
         }
+    }
+
+    if(pBiggerMap == nullptr){
+        cerr << "SaveTrajectoryEuRoC has no map to save a trajectory for!";
+        return;
     }
 
     vector<KeyFrame*> vpKFs = pBiggerMap->GetAllKeyFrames();
@@ -786,7 +791,7 @@ void System::SaveTrajectoryEuRoC(const string &filename, Map* pMap)
         return;
     }*/
 
-    int numMaxKFs = 0;
+    // int numMaxKFs = 0; // UNUSED
 
     vector<KeyFrame*> vpKFs = pMap->GetAllKeyFrames();
     sort(vpKFs.begin(),vpKFs.end(),KeyFrame::lId);
@@ -1059,8 +1064,8 @@ void System::SaveKeyFrameTrajectoryEuRoC(const string &filename)
     cout << endl << "Saving keyframe trajectory to " << filename << " ..." << endl;
 
     vector<Map*> vpMaps = mpAtlas->GetAllMaps();
-    Map* pBiggerMap;
-    int numMaxKFs = 0;
+    Map* pBiggerMap = nullptr;
+    size_t numMaxKFs = 0;
     for(Map* pMap :vpMaps)
     {
         if(pMap && pMap->GetAllKeyFrames().size() > numMaxKFs)
@@ -1070,7 +1075,7 @@ void System::SaveKeyFrameTrajectoryEuRoC(const string &filename)
         }
     }
 
-    if(!pBiggerMap)
+    if(pBiggerMap == nullptr)
     {
         std::cout << "There is not a map!!" << std::endl;
         return;
