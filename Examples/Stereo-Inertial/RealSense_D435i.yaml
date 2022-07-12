@@ -82,9 +82,9 @@ Viewer.ViewpointZ: -3.5
 Viewer.ViewpointF: 500.0
 
 # Save/load Map
-System.LoadAtlasFromFile: "/home/ryan/MartinRea/MORB_SLAM/beauty"
+# System.LoadAtlasFromFile: "/home/ryan/MartinRea/MORB_SLAM/beauty"
 # System.LoadAtlasFromFile: "/home/ryan/MartinRea/MORB_SLAM/loopy"
-System.SaveAtlasToFile: "/home/ryan/MartinRea/MORB_SLAM/pants2"
+System.SaveAtlasToFile: "/home/ryan/MartinRea/MORB_SLAM/rando"
 
 
 
