@@ -47,7 +47,7 @@ System::System(const string& strVocFile, const string& strSettingsFile,
                const eSensor sensor, const bool bUseViewer, const int initFr,
                const string& strSequence)
     : mSensor(sensor),
-      mpAtlas1(0),
+      mpAtlas(0),
       mpViewer(static_cast<Viewer*>(NULL)),
       mbReset(false),
       mbResetActiveMap(false),
@@ -180,7 +180,7 @@ System::System(const string& strVocFile, const string& strSettingsFile,
 
     loadedAtlas = true;
 
-    mpAtlas->CreateNewMap();
+    mpAtlas.CreateNewMap();
 
     // clock_t timeElapsed = clock() - start;
     // unsigned msElapsed = timeElapsed / (CLOCKS_PER_SEC / 1000);
@@ -190,23 +190,23 @@ System::System(const string& strVocFile, const string& strSettingsFile,
   }
 
   if (mSensor == IMU_STEREO || mSensor == IMU_MONOCULAR || mSensor == IMU_RGBD)
-    mpAtlas->SetInertialSensor();
+    mpAtlas.SetInertialSensor();
 
   // Create Drawers. These are used by the Viewer
-  mpFrameDrawer = new FrameDrawer(mpAtlas);
-  mpMapDrawer = new MapDrawer(mpAtlas, strSettingsFile, settings_);
+  mpFrameDrawer = new FrameDrawer(&mpAtlas);
+  mpMapDrawer = new MapDrawer(&mpAtlas, strSettingsFile, settings_);
 
   // Initialize the Tracking thread
   //(it will live in the main thread of execution, the one that called this
   // constructor)
   cout << "Seq. Name: " << strSequence << endl;
   mpTracker = new Tracking(this, mpVocabulary, mpFrameDrawer, mpMapDrawer,
-                           mpAtlas, mpKeyFrameDatabase, strSettingsFile,
+                           &mpAtlas, mpKeyFrameDatabase, strSettingsFile,
                            mSensor, settings_, strSequence);
 
   // Initialize the Local Mapping thread and launch
   mpLocalMapper = new LocalMapping(
-      this, mpAtlas, mSensor == MONOCULAR || mSensor == IMU_MONOCULAR,
+      this, &mpAtlas, mSensor == MONOCULAR || mSensor == IMU_MONOCULAR,
       mSensor == IMU_MONOCULAR || mSensor == IMU_STEREO || mSensor == IMU_RGBD,
       strSequence);
   mptLocalMapping = new thread(&ORB_SLAM3::LocalMapping::Run, mpLocalMapper);
@@ -225,7 +225,7 @@ System::System(const string& strVocFile, const string& strSettingsFile,
   // Initialize the Loop Closing thread and launch
   // mSensor!=MONOCULAR && mSensor!=IMU_MONOCULAR
   mpLoopCloser =
-      new LoopClosing(mpAtlas, mpKeyFrameDatabase, mpVocabulary,
+      new LoopClosing(&mpAtlas, mpKeyFrameDatabase, mpVocabulary,
                       mSensor != MONOCULAR, activeLC);  // mSensor!=MONOCULAR);
   mptLoopClosing = new thread(&ORB_SLAM3::LoopClosing::Run, mpLoopCloser);
 
@@ -489,7 +489,7 @@ void System::DeactivateLocalizationMode() {
 
 bool System::MapChanged() {
   static int n = 0;
-  int curn = mpAtlas->GetLastBigChangeIdx();
+  int curn = mpAtlas.GetLastBigChangeIdx();
   if (n < curn) {
     n = curn;
     return true;
@@ -565,7 +565,7 @@ void System::SaveTrajectoryTUM(const string& filename) {
     return;
   }
 
-  vector<KeyFrame*> vpKFs = mpAtlas->GetAllKeyFrames();
+  vector<KeyFrame*> vpKFs = mpAtlas.GetAllKeyFrames();
   sort(vpKFs.begin(), vpKFs.end(), KeyFrame::lId);
 
   // Transform all keyframes so that the first keyframe is at the origin.
@@ -623,7 +623,7 @@ void System::SaveKeyFrameTrajectoryTUM(const string& filename) {
   cout << endl
        << "Saving keyframe trajectory to " << filename << " ... TUM" << endl;
 
-  vector<KeyFrame*> vpKFs = mpAtlas->GetAllKeyFrames();
+  vector<KeyFrame*> vpKFs = mpAtlas.GetAllKeyFrames();
   sort(vpKFs.begin(), vpKFs.end(), KeyFrame::lId);
 
   // Transform all keyframes so that the first keyframe is at the origin.
@@ -658,7 +658,7 @@ void System::SaveTrajectoryEuRoC(const string& filename) {
   endl; return;
   }*/
 
-  vector<Map*> vpMaps = mpAtlas->GetAllMaps();
+  vector<Map*> vpMaps = mpAtlas.GetAllMaps();
   int numMaxKFs = 0;
   Map* pBiggerMap;
   std::cout << "There are " << std::to_string(vpMaps.size())
@@ -883,7 +883,7 @@ void System::SaveTrajectoryEuRoC(const string& filename, Map* pMap) {
 endl; return;
     }
 
-    vector<Map*> vpMaps = mpAtlas->GetAllMaps();
+    vector<Map*> vpMaps = mpAtlas.GetAllMaps();
     Map* pBiggerMap;
     int numMaxKFs = 0;
     for(Map* pMap :vpMaps)
@@ -1010,7 +1010,7 @@ endl;
     cout << endl << "Saving keyframe trajectory to " << filename << " ..." <<
 endl;
 
-    vector<Map*> vpMaps = mpAtlas->GetAllMaps();
+    vector<Map*> vpMaps = mpAtlas.GetAllMaps();
     Map* pBiggerMap;
     int numMaxKFs = 0;
     for(Map* pMap :vpMaps)
@@ -1069,7 +1069,7 @@ void System::SaveKeyFrameTrajectoryEuRoC(const string& filename) {
   cout << endl
        << "Saving keyframe trajectory to " << filename << " ... Euroc" << endl;
 
-  vector<Map*> vpMaps = mpAtlas->GetAllMaps();
+  vector<Map*> vpMaps = mpAtlas.GetAllMaps();
   Map* pBiggerMap;
   int numMaxKFs = 0;
   for (Map* pMap : vpMaps) {
@@ -1169,7 +1169,7 @@ endl; if(mSensor==MONOCULAR)
 endl; return;
     }
 
-    vector<KeyFrame*> vpKFs = mpAtlas->GetAllKeyFrames();
+    vector<KeyFrame*> vpKFs = mpAtlas.GetAllKeyFrames();
     sort(vpKFs.begin(),vpKFs.end(),KeyFrame::lId);
 
     // Transform all keyframes so that the first keyframe is at the origin.
@@ -1228,7 +1228,7 @@ void System::SaveTrajectoryKITTI(const string& filename) {
     return;
   }
 
-  vector<KeyFrame*> vpKFs = mpAtlas->GetAllKeyFrames();
+  vector<KeyFrame*> vpKFs = mpAtlas.GetAllKeyFrames();
   sort(vpKFs.begin(), vpKFs.end(), KeyFrame::lId);
 
   // Transform all keyframes so that the first keyframe is at the origin.
@@ -1360,14 +1360,14 @@ vector<cv::KeyPoint> System::GetTrackedKeyPointsUn() {
 
 double System::GetTimeFromIMUInit() {
   double aux = mpLocalMapper->GetCurrKFTime() - mpLocalMapper->mFirstTs;
-  if ((aux > 0.) && mpAtlas->isImuInitialized())
+  if ((aux > 0.) && mpAtlas.isImuInitialized())
     return mpLocalMapper->GetCurrKFTime() - mpLocalMapper->mFirstTs;
   else
     return 0.f;
 }
 
 bool System::isLost() {
-  if (!mpAtlas->isImuInitialized())
+  if (!mpAtlas.isImuInitialized())
     return false;
   else {
     if ((mpTracker->mState ==
@@ -1381,7 +1381,7 @@ bool System::isLost() {
 bool System::isFinished() { return (GetTimeFromIMUInit() > 0.1); }
 
 void System::ChangeDataset() {
-  if (mpAtlas->GetCurrentMap()->KeyFramesInMap() < 12) {
+  if (mpAtlas.GetCurrentMap()->KeyFramesInMap() < 12) {
     mpTracker->ResetActiveMap();
   } else {
     mpTracker->CreateMapInAtlas();
@@ -1414,7 +1414,7 @@ void System::SaveAtlas(int type) {
     // clock_t start = clock();
 
     // Save the current session
-    mpAtlas->PreSave();
+    mpAtlas.PreSave();
     std::cout << "presaved\n";
     string pathSaveFileName = "./";
     pathSaveFileName = pathSaveFileName.append(mStrSaveAtlasToFile);
@@ -1521,9 +1521,9 @@ bool System::LoadAtlas(int type) {
       return false;  // Both are differents
     }
 
-    mpAtlas->SetKeyFrameDababase(mpKeyFrameDatabase);
-    mpAtlas->SetORBVocabulary(mpVocabulary);
-    mpAtlas->PostLoad();
+    mpAtlas.SetKeyFrameDababase(mpKeyFrameDatabase);
+    mpAtlas.SetORBVocabulary(mpVocabulary);
+    mpAtlas.PostLoad();
 
     return true;
   }
