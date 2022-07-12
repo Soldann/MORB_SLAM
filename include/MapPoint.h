@@ -131,7 +131,7 @@ public:
     void SetBadFlag();
     bool isBad();
 
-    void Replace(MapPoint* pMP);    
+    void Replace(MapPoint* pMP);
     MapPoint* GetReplaced();
 
     void IncreaseVisible(int n=1);
@@ -187,7 +187,7 @@ public:
     // Variables used by loop closing
     long unsigned int mnLoopPointForKF;
     long unsigned int mnCorrectedByKF;
-    long unsigned int mnCorrectedReference;    
+    long unsigned int mnCorrectedReference;
     Eigen::Vector3f mPosGBA;
     long unsigned int mnBAGlobalForKF;
     long unsigned int mnBALocalForMerge;
@@ -207,7 +207,7 @@ public:
 
     unsigned int mnOriginMapId;
 
-protected:    
+protected:
 
      // Position in absolute coordinates
      Eigen::Vector3f mWorldPos;
