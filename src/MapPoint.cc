@@ -610,7 +610,6 @@ void MapPoint::PreSave(set<KeyFrame*>& spKF, set<MapPoint*>& spMP) {
       mBackupObservationsId1[it->first->mnId] = get<0>(it->second);
       mBackupObservationsId2[it->first->mnId] = get<1>(it->second);
     } else {
-      std::cout << "keyframe is about to be erased but from MapPoint\n";
       EraseObservation(pKFi);  // iterate -- afterwards to pull back once
       //   it--;
     }

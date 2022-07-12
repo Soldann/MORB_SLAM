@@ -213,7 +213,6 @@ void Map::clear() {
     //        delete *sit;
   }
 
-  std::cout << "clearing map" << std::endl;
   mspMapPoints.clear();
   mspKeyFrames.clear();
   mnMaxKFid = mnInitKFid;
@@ -323,7 +322,6 @@ void Map::SetLastMapChange(int currentChangeId) {
 }
 
 void Map::PreSave(std::set<GeometricCamera*>& spCams) {
-  std::cout << "Presaving a map\n";
   int nMPWithoutObs = 0;
 
   std::set<MapPoint*> tmp_mspMapPoints;
@@ -341,14 +339,12 @@ void Map::PreSave(std::set<GeometricCamera*>& spCams) {
                                                         end = mpObs.end();
          it != end; ++it) {
       if (it->first->GetMap() != this || it->first->isBad()) {
-        std::cout << "keyframe is about to be erased\n";
         pMPi->EraseObservation(it->first);
       }
     }
   }
 
   // Saves the id of KF origins
-  std::cout << "saving the keypoints\n";
   mvBackupKeyFrameOriginsId.clear();
   mvBackupKeyFrameOriginsId.reserve(mvpKeyFrameOrigins.size());
   for (int i = 0, numEl = mvpKeyFrameOrigins.size(); i < numEl; ++i) {
@@ -356,7 +352,6 @@ void Map::PreSave(std::set<GeometricCamera*>& spCams) {
   }
 
   // Backup of MapPoints
-  std::cout << "backing up the map points\n";
   mvpBackupMapPoints.clear();
 
   tmp_mspMapPoints.clear();
@@ -370,7 +365,6 @@ void Map::PreSave(std::set<GeometricCamera*>& spCams) {
   }
 
   // Backup of KeyFrames
-  std::cout << "backed up the keyframes\n";
   mvpBackupKeyFrames.clear();
   for (KeyFrame* pKFi : mspKeyFrames) {
     if (!pKFi || pKFi->isBad()) continue;

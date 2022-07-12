@@ -903,10 +903,6 @@ bool LoopClosing::DetectCommonRegionsFromBoW(
             }
           }
         }
-      } else {
-        std::cout
-            << "\033[92mBoW candidate: it don't match with the current one "
-            << std::endl;
       }
     }
     index++;
@@ -2116,8 +2112,6 @@ void LoopClosing::MergeLocal2() {
     mpLocalMapper->Release();
     return;
   }
-
-  std::cout << "numKFnew: " << numKFnew << std::endl;
 
   /*good = pCurrentMap->CheckEssentialGraph();
   if(!good)

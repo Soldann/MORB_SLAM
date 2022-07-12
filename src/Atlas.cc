@@ -222,7 +222,6 @@ Map* Atlas::GetCurrentMap(System* sys) {
 }
 
 void Atlas::SetMapBad(Map* pMap) {
-  std::cout << "set map bad" << std::endl;
   // mspMaps.erase(pMap);
   pMap->SetBad();
 
@@ -264,7 +263,6 @@ void Atlas::PreSave() {
       mnLastInitKFidMap = mpCurrentMap->GetMaxKFid() +
                           1;  // The init KF is the next of current maximum
   }
-  std::cout << "in the presave\n";
 
   struct compFunctor {
     inline bool operator()(Map* elem1, Map* elem2) {
@@ -273,10 +271,8 @@ void Atlas::PreSave() {
   };
   std::copy(mspMaps.begin(), mspMaps.end(), std::back_inserter(mvpBackupMaps));
   sort(mvpBackupMaps.begin(), mvpBackupMaps.end(), compFunctor());
-  std::cout << "copied\n";
   std::set<GeometricCamera*> spCams(mvpCameras.begin(), mvpCameras.end());
 
-  std::cout << "geometric cam\n";
   for (Map* pMi : mvpBackupMaps) {
     if (!pMi || pMi->IsBad()) continue;
 
@@ -285,9 +281,7 @@ void Atlas::PreSave() {
       SetMapBad(pMi);
       continue;
     }
-    std::cout << "saving another map\n";
     pMi->PreSave(spCams);
-    std::cout << "saved it\n";
   }
   RemoveBadMaps();
 }

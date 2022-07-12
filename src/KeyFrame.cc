@@ -858,7 +858,6 @@ void KeyFrame::UpdateMap(Map *pMap) {
 
 void KeyFrame::PreSave(set<KeyFrame *> &spKF, set<MapPoint *> &spMP,
                        set<GeometricCamera *> &spCam) {
-  std::cout << "PreSaving the keyframes\n";
   // Save the id of each MapPoint in this KF, there can be null
   // pointer in the vector
   mvBackupMapPointsId.clear();
