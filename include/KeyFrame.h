@@ -192,10 +192,6 @@ class KeyFrame {
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   KeyFrame();
   KeyFrame(Frame& F, Map* pMap, KeyFrameDatabase* pKFDB);
-  ~KeyFrame() {
-    std::cerr << "\033[22;34mDELETING KEYFRAME" << std::endl;
-    // throw 1;
-  }
 
   // Pose functions
   void SetPose(const Sophus::SE3f& Tcw);
