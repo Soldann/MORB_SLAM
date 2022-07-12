@@ -2,7 +2,9 @@ if [ $# == "1" ]; then
     if [ "$1" == "-a" ]; then
         echo cleaning all
         rm -r Thirdparty/DBoW2/build  2> /dev/null
+        rm -r Thirdparty/DBoW2/lib  2> /dev/null
         rm -r Thirdparty/g2o/build  2> /dev/null
+        rm -r Thirdparty/g2o/lib  2> /dev/null
         rm -r Thirdparty/Sophus/build  2> /dev/null
         rm Vocabulary/ORBvoc.txt  2> /dev/null
     else
@@ -13,5 +15,42 @@ else
 fi
 
 rm -r build  2> /dev/null
+
+# Clean executable examples
+rm Examples/RGB-D/rgbd_tum \
+    Examples/RGB-D/rgbd_realsense_D435i \
+    Examples/RGB-D-Inertial/rgbd_inertial_realsense_D435i \
+    Examples/Monocular/mono_realsense_D435i \
+    Examples/Monocular/mono_euroc \
+    Examples/Monocular/mono_kitti \
+    Examples/Monocular/mono_tum \
+    Examples/Monocular/mono_tum_vi \
+    Examples/Monocular/mono_realsense_t265 \
+    Examples/Stereo/stereo_euroc \
+    Examples/Stereo/stereo_kitti \
+    Examples/Stereo/stereo_tum_vi \
+    Examples/Stereo/stereo_realsense_t265 \
+    Examples/Stereo/stereo_realsense_D435i \
+    Examples/Monocular-Inertial/mono_inertial_euroc \
+    Examples/Monocular-Inertial/mono_inertial_tum_vi \
+    Examples/Monocular-Inertial/mono_inertial_realsense_t265 \
+    Examples/Monocular-Inertial/mono_inertial_realsense_D435i \
+    Examples/Monocular-Inertial/mono_inertial_realsense_D435i_2 \
+    Examples/Stereo-Inertial/stereo_inertial_euroc \
+    Examples/Stereo-Inertial/stereo_inertial_tum_vi \
+    Examples/Stereo-Inertial/stereo_inertial_realsense_t265 \
+    Examples/Stereo-Inertial/stereo_inertial_realsense_D435i \
+    Examples/ROS/ORB_SLAM3/Mono \
+    Examples/ROS/ORB_SLAM3/Mono_Inertial \
+    Examples/ROS/ORB_SLAM3/MonoAR \
+    Examples/ROS/ORB_SLAM3/RGBD \
+    Examples/ROS/ORB_SLAM3/Stereo \
+    Examples/ROS/ORB_SLAM3/Stereo_Inertial \
+    Examples/Calibration/recorder_realsense_D435i \
+    Examples/Tests/viewer_dataset \
+    Examples/Tests/sophus_test \
+    2> /dev/null
+
+rm -r Examples/ROS/ORB_SLAM3/build 2> /dev/null
 
 echo cleaning complete
