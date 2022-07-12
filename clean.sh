@@ -47,6 +47,7 @@ rm Examples/RGB-D/rgbd_tum \
     Examples/ROS/ORB_SLAM3/Stereo \
     Examples/ROS/ORB_SLAM3/Stereo_Inertial \
     Examples/Calibration/recorder_realsense_D435i \
+    Examples/Calibration/recorder_realsense_T265 \
     Examples/Tests/viewer_dataset \
     Examples/Tests/sophus_test \
     2> /dev/null
