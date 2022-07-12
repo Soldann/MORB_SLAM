@@ -615,7 +615,7 @@ bool LoopClosing::DetectCommonRegionsFromBoW(
     std::vector<KeyFrame*>& vpBowCand, KeyFrame*& pMatchedKF2,
     KeyFrame*& pLastCurrentKF, g2o::Sim3& g2oScw, int& nNumCoincidences,
     std::vector<MapPoint*>& vpMPs, std::vector<MapPoint*>& vpMatchedMPs) {
-  int nBoWMatches = 20;
+  int nBoWMatches = 10;  // lower this and try again
   int nBoWInliers = 15;
   int nSim3Inliers = 20;
   int nProjMatches = 50;
@@ -903,12 +903,11 @@ bool LoopClosing::DetectCommonRegionsFromBoW(
             }
           }
         }
+      } else {
+        std::cout
+            << "\033[92mBoW candidate: it don't match with the current one "
+            << std::endl;
       }
-      /*else
-      {
-          Verbose::PrintMess("BoW candidate: it don't match with the current
-      one", Verbose::VERBOSITY_DEBUG);
-      }*/
     }
     index++;
   }
