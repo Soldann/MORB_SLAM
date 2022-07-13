@@ -1003,7 +1003,7 @@ static void computeDescriptors(const Mat& image, vector<KeyPoint>& keypoints,
                          descriptors.ptr((int)i));
 }
 
-int ORBextractor::operator()(InputArray _image, InputArray *_mask,
+int ORBextractor::operator()(InputArray _image, const cv::Mat *_mask,
                              vector<KeyPoint>& _keypoints,
                              OutputArray _descriptors,
                              std::vector<int>& vLappingArea) {
@@ -1015,7 +1015,7 @@ int ORBextractor::operator()(InputArray _image, InputArray *_mask,
 
   Mat mask;
   if (_mask != nullptr){
-    mask = _mask->getMat();
+    mask = *_mask;
     assert(image.size() == mask.size());
     assert(mask.type() == CV_8UC1 );
   }
