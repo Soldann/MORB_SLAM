@@ -46,7 +46,7 @@ cv::Mat FrameDrawer::DrawFrame(float imageScale) {
   vector<pair<cv::Point2f, cv::Point2f> > vTracks;
   int state;  // Tracking state
   vector<float> vCurrentDepth;
-  float thDepth;
+  // float thDepth; // UNUSED
 
   Frame currentFrame;
   vector<MapPoint *> vpLocalMap;
@@ -88,7 +88,7 @@ cv::Mat FrameDrawer::DrawFrame(float imageScale) {
       mMatchedInImage = mmMatchedInImage;
 
       vCurrentDepth = mvCurrentDepth;
-      thDepth = mThDepth;
+      // thDepth = mThDepth; // UNUSED
 
     } else if (mState == Tracking::LOST) {
       vCurrentKeys = mvCurrentKeys;

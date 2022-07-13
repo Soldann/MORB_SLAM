@@ -676,20 +676,20 @@ void KeyFrameDatabase::DetectNBestCandidates(KeyFrame* pKF,
   vpLoopCand.reserve(nNumCandidates);
   vpMergeCand.reserve(nNumCandidates);
   set<KeyFrame*> spAlreadyAddedKF;
-  int i = 0;
+  size_t i = 0;
   list<pair<float, KeyFrame*> >::iterator it = lAccScoreAndMatch.begin();
   while (i < lAccScoreAndMatch.size() &&
-         (vpLoopCand.size() < nNumCandidates ||
-          vpMergeCand.size() < nNumCandidates)) {
+         (static_cast<int>(vpLoopCand.size()) < nNumCandidates ||
+          static_cast<int>(vpMergeCand.size()) < nNumCandidates)) {
     KeyFrame* pKFi = it->second;
     if (pKFi->isBad()) continue;
 
     if (!spAlreadyAddedKF.count(pKFi)) {
       if (pKF->GetMap() == pKFi->GetMap() &&
-          vpLoopCand.size() < nNumCandidates) {
+          static_cast<int>(vpLoopCand.size()) < nNumCandidates) {
         vpLoopCand.push_back(pKFi);
       } else if (pKF->GetMap() != pKFi->GetMap() &&
-                 vpMergeCand.size() < nNumCandidates &&
+                 static_cast<int>(vpMergeCand.size()) < nNumCandidates &&
                  !pKFi->GetMap()->IsBad()) {
         vpMergeCand.push_back(pKFi);
       }

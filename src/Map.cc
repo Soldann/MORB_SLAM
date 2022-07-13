@@ -28,16 +28,16 @@ namespace ORB_SLAM3 {
 long unsigned int Map::nNextId = 0;
 
 Map::Map()
-    : mnMaxKFid(0),
-      mnBigChangeIdx(0),
+    : mpFirstRegionKF(static_cast<KeyFrame*>(NULL)),
+      mbFail(false),
       mbImuInitialized(false),
       mnMapChange(0),
-      mpFirstRegionKF(static_cast<KeyFrame*>(NULL)),
-      mbFail(false),
+      mnMapChangeNotified(0),
+      mnMaxKFid(0),
+      mnBigChangeIdx(0),
       mIsInUse(false),
       mHasTumbnail(false),
       mbBad(false),
-      mnMapChangeNotified(0),
       mbIsInertial(false),
       mbIMU_BA1(false),
       mbIMU_BA2(false) {
@@ -46,17 +46,18 @@ Map::Map()
 }
 
 Map::Map(int initKFid)
-    : mnInitKFid(initKFid),
+    : mpFirstRegionKF(static_cast<KeyFrame*>(NULL)),
+      mbFail(false),
+      mbImuInitialized(false),
+      /*mnLastLoopKFid(initKFid),*/
+      mnMapChange(0),
+      mnMapChangeNotified(0),
+      mnInitKFid(initKFid),
       mnMaxKFid(initKFid),
-      /*mnLastLoopKFid(initKFid),*/ mnBigChangeIdx(0),
+      mnBigChangeIdx(0),
       mIsInUse(false),
       mHasTumbnail(false),
       mbBad(false),
-      mbImuInitialized(false),
-      mpFirstRegionKF(static_cast<KeyFrame*>(NULL)),
-      mnMapChange(0),
-      mbFail(false),
-      mnMapChangeNotified(0),
       mbIsInertial(false),
       mbIMU_BA1(false),
       mbIMU_BA2(false) {
@@ -65,7 +66,6 @@ Map::Map(int initKFid)
 }
 
 Map::~Map() {
-  std::cout << "deleting map" << std::endl;
   // TODO: erase all points from memory
   mspMapPoints.clear();
 
@@ -436,7 +436,7 @@ void Map::PostLoad(
 
   mvpKeyFrameOrigins.clear();
   mvpKeyFrameOrigins.reserve(mvBackupKeyFrameOriginsId.size());
-  for (int i = 0; i < mvBackupKeyFrameOriginsId.size(); ++i) {
+  for (size_t i = 0; i < mvBackupKeyFrameOriginsId.size(); ++i) {
     mvpKeyFrameOrigins.push_back(mpKeyFrameId[mvBackupKeyFrameOriginsId[i]]);
   }
 

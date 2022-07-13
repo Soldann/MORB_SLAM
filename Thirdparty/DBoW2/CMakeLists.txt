@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.16)
 project(DBoW2)
 
 if(NOT CMAKE_BUILD_TYPE)

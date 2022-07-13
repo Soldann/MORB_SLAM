@@ -169,8 +169,8 @@ protected:
     KeyFrame* mpKFinitial;
     KeyFrame* mpKFlowerID;
 
-    unsigned long int mnBackupKFinitialID;
-    unsigned long int mnBackupKFlowerID;
+    long int mnBackupKFinitialID;
+    long int mnBackupKFlowerID;
 
     std::vector<MapPoint*> mvpReferenceMapPoints;
 
