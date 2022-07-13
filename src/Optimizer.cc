@@ -3137,7 +3137,7 @@ void Optimizer::InertialOptimization(Map* pMap, Eigen::Matrix3d& Rwg,
   Rwg = VGDir->estimate().Rwg;
 
   // Keyframes velocities and biases
-  const int N = vpKFs.size();
+  const size_t N = vpKFs.size();
   for (size_t i = 0; i < N; i++) {
     KeyFrame* pKFi = vpKFs[i];
     if (pKFi->mnId > maxKFid) continue;
