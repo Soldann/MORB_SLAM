@@ -678,7 +678,7 @@ bool LoopClosing::DetectCommonRegionsFromBoW(
     }
 
     for (size_t j = 0; j < vpCovKFi.size(); ++j) {
-      for (int k = 0; k < vvpMatchedMPs[j].size(); ++k) {
+      for (size_t k = 0; k < vvpMatchedMPs[j].size(); ++k) {
         MapPoint* pMPi_j = vvpMatchedMPs[j][k];
         if (!pMPi_j || pMPi_j->isBad()) continue;
 
@@ -906,6 +906,7 @@ bool LoopClosing::DetectCommonRegionsFromBoW(
     }
   }
   */
+  }
   return false;
 }
 
@@ -941,7 +942,7 @@ int LoopClosing::FindMatchesByProjection(
       vector<KeyFrame*> vpKFs =
           vpCovKFm[i]->GetBestCovisibilityKeyFrames(nNumCovisibles);
       int nInserted = 0;
-      for (size_t j < vpKFs.size() && nInserted < nNumCovisibles; ++j) {
+      for (size_t j = 0; j < vpKFs.size() && nInserted < nNumCovisibles; ++j) {
         if (spCheckKFs.find(vpKFs[j]) == spCheckKFs.end() &&
             spCurrentCovisbles.find(vpKFs[j]) == spCurrentCovisbles.end()) {
           spCheckKFs.insert(vpKFs[j]);
@@ -1343,7 +1344,7 @@ void LoopClosing::MergeLocal() {
   spLocalWindowKFs.insert(vpCovisibleKFs.begin(), vpCovisibleKFs.end());
   spLocalWindowKFs.insert(mpCurrentKF);
   const int nMaxTries = 5;
-  while (size_t nNumTries = 0; spLocalWindowKFs.size() < numTemporalKFs && nNumTries < nMaxTries; ++nNumTries) {
+  for (size_t nNumTries = 0; static_cast<int>(spLocalWindowKFs.size()) < numTemporalKFs && nNumTries < nMaxTries; ++nNumTries) {
     vector<KeyFrame*> vpNewCovKFs;
     vpNewCovKFs.empty();
     for (KeyFrame* pKFi : spLocalWindowKFs) {
@@ -1395,7 +1396,7 @@ void LoopClosing::MergeLocal() {
       mpMergeMatchedKF->GetBestCovisibilityKeyFrames(numTemporalKFs);
   spMergeConnectedKFs.insert(vpCovisibleKFs.begin(), vpCovisibleKFs.end());
   spMergeConnectedKFs.insert(mpMergeMatchedKF);
-  while (size_t nNumTries = 0; spMergeConnectedKFs.size() < numTemporalKFs && nNumTries < nMaxTries; ++nNumTries) {
+  for (size_t nNumTries = 0; static_cast<int>(spMergeConnectedKFs.size()) < numTemporalKFs && nNumTries < nMaxTries; ++nNumTries) {
     vector<KeyFrame*> vpNewCovKFs;
     for (KeyFrame* pKFi : spMergeConnectedKFs) {
       vector<KeyFrame*> vpKFiCov =

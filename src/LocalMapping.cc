@@ -37,7 +37,7 @@ LocalMapping::LocalMapping(System* pSys, Atlas* pAtlas, const float bMonocular,
     : mScale(1.0),
       mInitSect(0),
       mIdxInit(0),
-      nmMatchesInliers(0),
+      mnMatchesInliers(0),
       mIdxIteration(0),
       mbNotBA1(true),
       mbNotBA2(true),
@@ -62,7 +62,7 @@ LocalMapping::LocalMapping(System* pSys, Atlas* pAtlas, const float bMonocular,
       bInitializing(false),
       infoInertial(Eigen::MatrixXd::Zero(9, 9)),
       mNumLM(0),
-      nNumKFCulling(0),
+      mNumKFCulling(0),
       mTinit(0.f) {
 }
 
@@ -1292,7 +1292,6 @@ void LocalMapping::InitializeIMU(float priorG, float priorA, bool bFIBA) {
                              Verbose::VERBOSITY_NORMAL);
         }
 
-<<<<<<< HEAD
         pChild->mBiasGBA = pChild->GetImuBias();
         pChild->mnBAGlobalForKF = GBAid;
       }
@@ -1301,20 +1300,6 @@ void LocalMapping::InitializeIMU(float priorG, float priorA, bool bFIBA) {
 
     pKF->mTcwBefGBA = pKF->GetPose();
     pKF->SetPose(pKF->mTcwGBA);
-=======
-    // std::chrono::steady_clock::time_point t4 = std::chrono::steady_clock::now(); // UNUSED
-    if (bFIBA)
-    {
-        if (priorA!=0.f)
-            Optimizer::FullInertialBA(mpAtlas->GetCurrentMap(), 100, false, mpCurrentKeyFrame->mnId, NULL, true, priorG, priorA);
-        else
-            Optimizer::FullInertialBA(mpAtlas->GetCurrentMap(), 100, false, mpCurrentKeyFrame->mnId, NULL, false);
-    }
-
-    // std::chrono::steady_clock::time_point t5 = std::chrono::steady_clock::now(); // UNUSED
-
-    Verbose::PrintMess("Global Bundle Adjustment finished\nUpdating map ...", Verbose::VERBOSITY_NORMAL);
->>>>>>> All 'easy' to solve warnings resolved
 
     if (pKF->bImu) {
       pKF->mVwbBefGBA = pKF->GetVelocity();
