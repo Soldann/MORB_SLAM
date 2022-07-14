@@ -93,7 +93,7 @@ KeyFrame::KeyFrame()
 
 KeyFrame::KeyFrame(Frame &F, Map *pMap, KeyFrameDatabase *pKFDB)
     : bImu(pMap->isImuInitialized()),
-      mnFrameId(F.mnId), 
+      mnFrameId(F.mnId),
       mTimeStamp(F.mTimeStamp),
       mnGridCols(FRAME_GRID_COLS),
       mnGridRows(FRAME_GRID_ROWS),
@@ -156,7 +156,7 @@ KeyFrame::KeyFrame(Frame &F, Map *pMap, KeyFrameDatabase *pKFDB)
       mpKeyFrameDB(pKFDB),
       mpORBvocabulary(F.mpORBvocabulary),
       mbFirstConnection(true),
-      mpParent(NULL), 
+      mpParent(NULL),
       mbNotErase(false),
       mbToBeErased(false),
       mbBad(false),
@@ -958,6 +958,10 @@ void KeyFrame::PostLoad(map<long unsigned int, KeyFrame *> &mpKFid,
            end = mBackupConnectedKeyFrameIdWeights.end();
        it != end; ++it) {
     KeyFrame *pKFi = mpKFid[it->first];
+    if (pKFi == nullptr) {
+      std::cout << "KeyFrame doesn't exist smh" << std::endl;
+      continue;
+    }
     mConnectedKeyFrameWeights[pKFi] = it->second;
   }
 
