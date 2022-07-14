@@ -68,7 +68,7 @@ class Map
     }
 
 public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    
     Map();
     Map(int initKFid);
     ~Map();

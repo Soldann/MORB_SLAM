@@ -90,7 +90,7 @@ namespace g2o {
       JacobianXiOplusType _jacobianOplusXi;
 
     public:
-      EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+      
   };
 
 #include "base_unary_edge.hpp"

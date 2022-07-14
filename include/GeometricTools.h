@@ -32,7 +32,7 @@ class KeyFrame;
 
 class GeometricTools {
  public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  
   // Compute the Fundamental matrix between KF1 and KF2
   static Eigen::Matrix3f ComputeF12(KeyFrame *&pKF1, KeyFrame *&pKF2);
 

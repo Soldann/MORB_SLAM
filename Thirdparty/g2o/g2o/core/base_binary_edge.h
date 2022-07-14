@@ -109,7 +109,7 @@ namespace g2o {
       JacobianXjOplusType _jacobianOplusXj;
 
     public:
-      EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+      
   };
 
 #include "base_binary_edge.hpp"

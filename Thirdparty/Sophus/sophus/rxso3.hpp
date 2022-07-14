@@ -90,7 +90,7 @@ class RxSO3Base {
   using Adjoint = Matrix<Scalar, DoF, DoF>;
 
   struct TangentAndTheta {
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    
 
     Tangent tangent;
     Scalar theta;
@@ -425,7 +425,7 @@ class RxSO3 : public RxSO3Base<RxSO3<Scalar_, Options>> {
 
   using Base::operator=;
 
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  
 
   /// Default constructor initializes quaternion to identity rotation and scale
   /// to 1.

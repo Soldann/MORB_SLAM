@@ -33,7 +33,7 @@ namespace ORB_SLAM3
         typedef std::pair<int,int> Match;
 
     public:
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+        
         // Fix the reference frame
         TwoViewReconstruction(const Eigen::Matrix3f& k, float sigma = 1.0, int iterations = 200);
 

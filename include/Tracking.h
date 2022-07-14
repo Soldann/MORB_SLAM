@@ -54,7 +54,7 @@ class Settings;
 
 class Tracking {
  public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  
   Tracking(System* pSys, ORBVocabulary* pVoc, FrameDrawer* pFrameDrawer,
            MapDrawer* pMapDrawer, Atlas* pAtlas, KeyFrameDatabase* pKFDB,
            const string& strSettingPath, const int sensor, Settings* settings,

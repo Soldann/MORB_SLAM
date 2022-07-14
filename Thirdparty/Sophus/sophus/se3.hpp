@@ -441,7 +441,7 @@ class SE3 : public SE3Base<SE3<Scalar_, Options>> {
 
   using Base::operator=;
 
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  
 
   /// Default constructor initializes rigid body motion to the identity.
   ///

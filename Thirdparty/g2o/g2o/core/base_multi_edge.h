@@ -103,7 +103,7 @@ namespace g2o {
       void computeQuadraticForm(const InformationType& omega, const ErrorVector& weightedError);
 
     public:
-      EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+      
   };
 
 #include "base_multi_edge.hpp"

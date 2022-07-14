@@ -58,7 +58,7 @@ typedef Matrix<double, 6, 6> Matrix6d;
  */
 class  VertexSE3Expmap : public BaseVertex<6, SE3Quat>{
 public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  
 
   VertexSE3Expmap();
 
@@ -83,7 +83,7 @@ public:
 class EdgeSE3 : public BaseBinaryEdge<6, SE3Quat, VertexSE3Expmap, VertexSE3Expmap>
 {
 public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  
   EdgeSE3();
   virtual bool read(std::istream& is);
   virtual bool write(std::ostream& os) const;
@@ -113,7 +113,7 @@ public:
 
 class  EdgeSE3ProjectXYZ: public  BaseBinaryEdge<2, Vector2d, VertexSBAPointXYZ, VertexSE3Expmap>{
 public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  
 
   EdgeSE3ProjectXYZ();
 
@@ -145,7 +145,7 @@ public:
 
 class  EdgeStereoSE3ProjectXYZ: public  BaseBinaryEdge<3, Vector3d, VertexSBAPointXYZ, VertexSE3Expmap>{
 public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  
 
   EdgeStereoSE3ProjectXYZ();
 
@@ -176,7 +176,7 @@ public:
 
 class  EdgeSE3ProjectXYZOnlyPose: public  BaseUnaryEdge<2, Vector2d, VertexSE3Expmap>{
 public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  
 
   EdgeSE3ProjectXYZOnlyPose(){}
 
@@ -207,7 +207,7 @@ public:
 
 class  EdgeStereoSE3ProjectXYZOnlyPose: public  BaseUnaryEdge<3, Vector3d, VertexSE3Expmap>{
 public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  
 
   EdgeStereoSE3ProjectXYZOnlyPose(){}
 
