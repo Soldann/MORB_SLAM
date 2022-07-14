@@ -351,7 +351,7 @@ class SO2 : public SO2Base<SO2<Scalar_, Options>> {
 
   using Base::operator=;
 
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  
 
   /// Default constructor initializes unit complex number to identity rotation.
   ///

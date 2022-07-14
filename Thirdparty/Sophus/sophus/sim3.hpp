@@ -363,7 +363,7 @@ class Sim3 : public Sim3Base<Sim3<Scalar_, Options>> {
 
   using Base::operator=;
 
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  
 
   /// Default constructor initializes similarity transform to the identity.
   ///

@@ -40,7 +40,7 @@ class Atlas;
 
 class LocalMapping {
  public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  
   LocalMapping(System* pSys, Atlas* pAtlas, const float bMonocular,
                bool bInertial, const string& _strSeqName = std::string());
 

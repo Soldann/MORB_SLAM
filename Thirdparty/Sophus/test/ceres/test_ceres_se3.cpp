@@ -28,7 +28,7 @@ struct cast_impl<ceres::Jet<T, N>, NewType> {
 }  // namespace Eigen
 
 struct TestSE3CostFunctor {
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  
   TestSE3CostFunctor(Sophus::SE3d T_aw) : T_aw(T_aw) {}
 
   template <class T>
@@ -51,7 +51,7 @@ struct TestSE3CostFunctor {
 };
 
 struct TestPointCostFunctor {
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  
   TestPointCostFunctor(Sophus::SE3d T_aw, Eigen::Vector3d point_a)
       : T_aw(T_aw), point_a(point_a) {}
 

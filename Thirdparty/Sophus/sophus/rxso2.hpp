@@ -388,7 +388,7 @@ class RxSO2 : public RxSO2Base<RxSO2<Scalar_, Options>> {
 
   using Base::operator=;
 
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  
 
   /// Default constructor initializes complex number to identity rotation and
   /// scale to 1.

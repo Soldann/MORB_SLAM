@@ -109,7 +109,7 @@ namespace g2o {
     EstimateType _estimate;
     BackupStackType _backup;
   public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    
 };
 
 #include "base_vertex.hpp"

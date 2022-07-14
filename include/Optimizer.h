@@ -135,7 +135,7 @@ class Optimizer {
   void static InertialOptimization(Map *pMap, Eigen::Matrix3d &Rwg,
                                    double &scale);
 
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
+  ;
 };
 
 }  // namespace ORB_SLAM3

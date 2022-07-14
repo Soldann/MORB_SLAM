@@ -363,7 +363,7 @@ class Sim2 : public Sim2Base<Sim2<Scalar_, Options>> {
 
   using Base::operator=;
 
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  
 
   /// Default constructor initializes similarity transform to the identity.
   ///

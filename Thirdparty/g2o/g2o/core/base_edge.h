@@ -102,7 +102,7 @@ namespace g2o {
       }
 
     public:
-      EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+      
   };
 
 } // end namespace g2o

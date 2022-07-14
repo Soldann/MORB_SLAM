@@ -61,7 +61,7 @@
 namespace ORB_SLAM3 {
 class MLPnPsolver {
  public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  
 
   MLPnPsolver(const Frame& F, const vector<MapPoint*>& vpMapPointMatches);
 
