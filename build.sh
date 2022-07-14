@@ -36,5 +36,5 @@ echo "Configuring and building ORB_SLAM3 ..."
 
 mkdir build 2> /dev/null
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release # RelWithDebInfo
+cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
 make -j$(nproc)
