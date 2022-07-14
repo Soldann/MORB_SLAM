@@ -39,10 +39,6 @@ namespace g2o {
   typedef Matrix<double, 7, 1> Vector7d;
 
   class SE3Quat {
-    public:
-      ;
-
-
     protected:
 
       Quaterniond _r;
