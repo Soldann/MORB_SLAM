@@ -97,7 +97,6 @@ class LocalMapping {
   int mnMatchesInliers;
 
   // For debugging (erase in normal mode)
-  int mInitFr;
   int mIdxIteration;
   string strSequence;
 

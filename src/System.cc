@@ -44,7 +44,7 @@ namespace ORB_SLAM3 {
 Verbose::eLevel Verbose::th = Verbose::VERBOSITY_NORMAL;
 
 System::System(const string& strVocFile, const string& strSettingsFile,
-               const eSensor sensor, const bool bUseViewer, const int initFr,
+               const eSensor sensor, const bool bUseViewer,
                const string& strSequence)
     : mSensor(sensor),
       mpAtlas(0),
@@ -210,7 +210,6 @@ System::System(const string& strVocFile, const string& strSettingsFile,
       mSensor == IMU_MONOCULAR || mSensor == IMU_STEREO || mSensor == IMU_RGBD,
       strSequence);
   mptLocalMapping = new thread(&ORB_SLAM3::LocalMapping::Run, mpLocalMapper);
-  mpLocalMapper->mInitFr = initFr;
   if (settings_)
     mpLocalMapper->mThFarPoints = settings_->thFarPoints();
   else
