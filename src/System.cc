@@ -22,6 +22,7 @@
 #include "System.h"
 
 #include <openssl/md5.h>
+#include <opencv2/opencv.hpp>
 #include <pangolin/pangolin.h>
 
 #include "ImprovedTypes.hpp"
@@ -252,10 +253,10 @@ Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
 
   cv::Mat imLeftToFeed, imRightToFeed;
   if (settings_ && settings_->needToRectify()) {
-    cv::Mat M1l = settings_->M1l();
-    cv::Mat M2l = settings_->M2l();
-    cv::Mat M1r = settings_->M1r();
-    cv::Mat M2r = settings_->M2r();
+    const cv::Mat &M1l = settings_->M1l();
+    const cv::Mat &M2l = settings_->M2l();
+    const cv::Mat &M1r = settings_->M1r();
+    const cv::Mat &M2r = settings_->M2r();
 
     cv::remap(imLeft, imLeftToFeed, M1l, M2l, cv::INTER_LINEAR);
     cv::remap(imRight, imRightToFeed, M1r, M2r, cv::INTER_LINEAR);
@@ -263,8 +264,8 @@ Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
     cv::resize(imLeft, imLeftToFeed, settings_->newImSize());
     cv::resize(imRight, imRightToFeed, settings_->newImSize());
   } else {
-    imLeftToFeed = imLeft.clone();
-    imRightToFeed = imRight.clone();
+    imLeftToFeed = imLeft;
+    imRightToFeed = imRight;
   }
 
   // Check mode change

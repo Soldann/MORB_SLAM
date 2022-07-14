@@ -1363,7 +1363,7 @@ void Tracking::SetLoopClosing(LoopClosing* pLoopClosing) {
 Sophus::SE3f Tracking::GrabImageStereo(const cv::Mat& imRectLeft,
                                        const cv::Mat& imRectRight,
                                        const double& timestamp,
-                                       string filename) {
+                                       const string &filename) {
   // cout << "GrabImageStereo" << endl;
 
   mImGray = imRectLeft;
@@ -1428,7 +1428,7 @@ Sophus::SE3f Tracking::GrabImageStereo(const cv::Mat& imRectLeft,
 }
 
 Sophus::SE3f Tracking::GrabImageRGBD(const cv::Mat& imRGB, const cv::Mat& imD,
-                                     const double& timestamp, string filename) {
+                                     const double& timestamp, const string &filename) {
   mImGray = imRGB;
   cv::Mat imDepth = imD;
 
@@ -1470,7 +1470,7 @@ Sophus::SE3f Tracking::GrabImageRGBD(const cv::Mat& imRGB, const cv::Mat& imD,
 
 Sophus::SE3f Tracking::GrabImageMonocular(const cv::Mat& im,
                                           const double& timestamp,
-                                          string filename) {
+                                          const string &filename) {
   mImGray = im;
   if (mImGray.channels() == 3) {
     if (mbRGB)

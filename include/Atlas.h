@@ -25,6 +25,8 @@
 #include <boost/serialization/vector.hpp>
 #include <mutex>
 #include <set>
+#include <map>
+#include <vector>
 
 #include "GeometricCamera.h"
 #include "KannalaBrandt8.h"
@@ -101,7 +103,7 @@ class Atlas {
   std::vector<MapPoint*> GetAllMapPoints();
   std::vector<MapPoint*> GetReferenceMapPoints();
 
-  vector<Map*> GetAllMaps();
+  std::vector<Map*> GetAllMaps();
 
   int CountMaps();
 
@@ -123,7 +125,7 @@ class Atlas {
   void PreSave();
   void PostLoad();
 
-  map<long unsigned int, KeyFrame*> GetAtlasKeyframes();
+  std::map<long unsigned int, KeyFrame*> GetAtlasKeyframes();
 
   void SetKeyFrameDababase(KeyFrameDatabase* pKFDB);
   KeyFrameDatabase* GetKeyFrameDatabase();

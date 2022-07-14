@@ -17,8 +17,7 @@
 */
 
 
-#ifndef FRAME_H
-#define FRAME_H
+#pragma once
 
 #include<vector>
 
@@ -370,5 +369,3 @@ public:
 };
 
 }// namespace ORB_SLAM
-
-#endif // FRAME_H
