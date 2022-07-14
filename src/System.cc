@@ -509,6 +509,7 @@ void System::ResetActiveMap() {
 
 void System::Shutdown() {
   cout << "Shutdown" << endl;
+  unique_lock<mutex> lock(mMutexReset);
 
   mpLocalMapper->RequestFinish();
   mpLoopCloser->RequestFinish();
@@ -547,10 +548,7 @@ void System::Shutdown() {
   mpTracker->PrintTimeStats();
 #endif
 
-  {
-    unique_lock<mutex> lock(mMutexReset);
-    mbShutDown = true;
-  }
+  mbShutDown = true;
 }
 
 bool System::isShutDown() {
@@ -673,9 +671,9 @@ void System::SaveTrajectoryEuRoC(const string& filename) {
     }
   }
 
-  if(pBiggerMap == nullptr){
-      cerr << "SaveTrajectoryEuRoC has no map to save a trajectory for!";
-      return;
+  if (pBiggerMap == nullptr) {
+    cerr << "SaveTrajectoryEuRoC has no map to save a trajectory for!";
+    return;
   }
 
   vector<KeyFrame*> vpKFs = pBiggerMap->GetAllKeyFrames();
@@ -1517,7 +1515,6 @@ bool System::LoadAtlas(int type) {
     // Check if the vocabulary is the same
     string strInputVocabularyChecksum =
         CalculateCheckSum(mStrVocabularyFilePath, TEXT_FILE);
-
     if (strInputVocabularyChecksum.compare(strVocChecksum) != 0) {
       cout << "The vocabulary load isn't the same which the load session was "
               "created "
@@ -1529,7 +1526,6 @@ bool System::LoadAtlas(int type) {
     mpAtlas.SetKeyFrameDababase(mpKeyFrameDatabase);
     mpAtlas.SetORBVocabulary(mpVocabulary);
     mpAtlas.PostLoad();
-
     return true;
   }
   return false;
