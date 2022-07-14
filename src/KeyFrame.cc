@@ -160,7 +160,7 @@ KeyFrame::KeyFrame(Frame &F, Map *pMap, KeyFrameDatabase *pKFDB)
       mbNotErase(false),
       mbToBeErased(false),
       mbBad(false),
-      mHalfBaseline(F.mb/2),
+      mHalfBaseline(F.mb / 2),
       mpMap(pMap),
       mK_(F.mK_),
       mpCamera(F.mpCamera),
@@ -959,8 +959,7 @@ void KeyFrame::PostLoad(map<long unsigned int, KeyFrame *> &mpKFid,
        it != end; ++it) {
     KeyFrame *pKFi = mpKFid[it->first];
     if (pKFi == nullptr) {
-      std::cout << "KeyFrame doesn't exist smh" << std::endl;
-      continue;
+      continue;  // pKFi is not set, therefore discard this point.
     }
     mConnectedKeyFrameWeights[pKFi] = it->second;
   }
