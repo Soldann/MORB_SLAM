@@ -10,7 +10,11 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-set(CMAKE_CXX_STANDARD 11)
+# set(CMAKE_CXX_STANDARD 11)
+
+# Set compiler standard to C++17
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 # Set compiler specific settings (FixMe: Should not cmake do this for us automatically?)
 IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")

@@ -4,6 +4,10 @@ list(APPEND SEARCH_HEADERS ${EIGEN3_INCLUDE_DIR})
 # git clone https://ceres-solver.googlesource.com/ceres-solver
 find_package( Ceres 1.6.0 QUIET )
 
+# Set compiler standard to C++17
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
 if( Ceres_FOUND )
   MESSAGE(STATUS "CERES found")
 
