@@ -15,6 +15,11 @@ endif()
 # Set compiler standard to C++17
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7) # required for eigen
+    message(FATAL_ERROR "Insufficient gcc version must be at least 7")
+  endif()
+endif()
 
 # Set compiler specific settings (FixMe: Should not cmake do this for us automatically?)
 IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
