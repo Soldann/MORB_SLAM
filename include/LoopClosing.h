@@ -210,8 +210,6 @@ protected:
     g2o::Sim3 mSold_new;
     //-------
 
-    long unsigned int mLastLoopKFid;
-
     // Variables related to Global Bundle Adjustment
     bool mbRunningGBA;
     bool mbFinishedGBA;
