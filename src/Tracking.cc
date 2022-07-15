@@ -1724,7 +1724,10 @@ void Tracking::Track() {
 
   Map* pCurrentMap = mpAtlas->GetCurrentMap(mpSystem);
   if (!pCurrentMap) {
-    cout << "ERROR: There is not an active map in the atlas" << endl;
+    if (!mpSystem->isShutDown()){
+      cout << "ERROR: There is not an active map in the atlas" << endl;
+    }
+    return;
   }
 
   if (mState != NO_IMAGES_YET) {
