@@ -23,6 +23,7 @@
 
 #include <pangolin/pangolin.h>
 
+#include <stdexcept>
 #include <mutex>
 
 #include "KeyFrame.h"
@@ -30,33 +31,25 @@
 
 namespace ORB_SLAM3 {
 
-MapDrawer::MapDrawer(Atlas *pAtlas, const string &strSettingPath,
-                     Settings *settings)
-    : mpAtlas(pAtlas) {
-  if (settings) {
-    newParameterLoader(settings);
-  } else {
+MapDrawer::MapDrawer(const Atlas_ptr &pAtlas, const std::string &strSettingPath): mpAtlas(pAtlas){
     cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
-    bool is_correct = ParseViewerParamFile(fSettings);
-
-    if (!is_correct) {
+    if (!ParseViewerParamFile(fSettings)) {
       std::cerr << "**ERROR in the config file, the format is not correct**"
                 << std::endl;
-      try {
-        throw -1;
-      } catch (exception &e) {
-      }
+      throw std::runtime_error("**ERROR in the config file, the format is not correct**");
     }
-  }
+}
+MapDrawer::MapDrawer(const Atlas_ptr &pAtlas, const Settings& settings): mpAtlas(pAtlas){
+  newParameterLoader(settings);
 }
 
-void MapDrawer::newParameterLoader(Settings *settings) {
-  mKeyFrameSize = settings->keyFrameSize();
-  mKeyFrameLineWidth = settings->keyFrameLineWidth();
-  mGraphLineWidth = settings->graphLineWidth();
-  mPointSize = settings->pointSize();
-  mCameraSize = settings->cameraSize();
-  mCameraLineWidth = settings->cameraLineWidth();
+void MapDrawer::newParameterLoader(const Settings &settings) {
+  mKeyFrameSize = settings.keyFrameSize();
+  mKeyFrameLineWidth = settings.keyFrameLineWidth();
+  mGraphLineWidth = settings.graphLineWidth();
+  mPointSize = settings.pointSize();
+  mCameraSize = settings.cameraSize();
+  mCameraLineWidth = settings.cameraLineWidth();
 }
 
 bool MapDrawer::ParseViewerParamFile(cv::FileStorage &fSettings) {

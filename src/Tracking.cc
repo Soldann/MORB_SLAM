@@ -54,9 +54,6 @@ Tracking::Tracking(System* pSys, ORBVocabulary* pVoc, FrameDrawer* pFrameDrawer,
       mpKeyFrameDB(pKFDB),
       mbReadyToInitializate(false),
       mpSystem(pSys),
-      mpViewer(NULL),
-      mpFrameDrawer(pFrameDrawer),
-      mpMapDrawer(pMapDrawer),
       bStepByStep(false),
       mpAtlas(pAtlas),
       mpLastKeyFrame(static_cast<KeyFrame*>(NULL)),
@@ -1368,8 +1365,6 @@ void Tracking::SetLocalMapper(LocalMapping* pLocalMapper) {
 void Tracking::SetLoopClosing(LoopClosing* pLoopClosing) {
   mpLoopClosing = pLoopClosing;
 }
-
-void Tracking::SetViewer(Viewer* pViewer) { mpViewer = pViewer; }
 
 void Tracking::SetStepByStep(bool bSet) { bStepByStep = bSet; }
 
@@ -3558,10 +3553,10 @@ bool Tracking::Relocalization() {
 void Tracking::Reset(bool bLocMap) {
   Verbose::PrintMess("System Reseting", Verbose::VERBOSITY_NORMAL);
 
-  if (mpViewer) {
-    mpViewer->RequestStop();
-    while (!mpViewer->isStopped()) usleep(3000);
-  }
+  // if (mpViewer) {
+  //   mpViewer->RequestStop();
+  //   while (!mpViewer->isStopped()) usleep(3000);
+  // }
 
   // Reset Local Mapping
   if (!bLocMap) {
@@ -3606,7 +3601,7 @@ void Tracking::Reset(bool bLocMap) {
   mpLastKeyFrame = static_cast<KeyFrame*>(NULL);
   mvIniMatches.clear();
 
-  if (mpViewer) mpViewer->Release();
+  // if (mpViewer) mpViewer->Release();
 
   Verbose::PrintMess("   End reseting! ", Verbose::VERBOSITY_NORMAL);
 }

@@ -19,11 +19,12 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef VIEWER_H
-#define VIEWER_H
+#pragma once
 
 #include <mutex>
+#include <memory>
 
+#include "ImprovedTypes.hpp"
 #include "FrameDrawer.h"
 #include "MapDrawer.h"
 #include "Settings.h"
@@ -39,17 +40,20 @@ class System;
 class Settings;
 
 class Viewer {
- public:
-  
-  Viewer(System* pSystem, FrameDrawer* pFrameDrawer, MapDrawer* pMapDrawer,
-         Tracking* pTracking, const string& strSettingPath, Settings* settings);
-
-  void newParameterLoader(Settings* settings);
-
+  void newParameterLoader(const Settings& settings);
   // Main thread function. Draw points, keyframes, the current camera pose and
   // the last processed frame. Drawing is refreshed according to the camera fps.
   // We use Pangolin.
   void Run();
+ public:
+
+  Viewer(const System_ptr &pSystem, const std::string &strSettingPath);
+  Viewer(const System_ptr &pSystem, const Settings &settings);
+
+  virtual ~Viewer();
+
+  void update();
+
 
   void RequestFinish();
 
@@ -72,10 +76,11 @@ class Viewer {
 
   bool Stop();
 
-  System* mpSystem;
-  FrameDrawer* mpFrameDrawer;
-  MapDrawer* mpMapDrawer;
-  Tracking* mpTracker;
+  System_ptr mpSystem;
+  FrameDrawer mpFrameDrawer;
+  MapDrawer mpMapDrawer;
+  Tracking_ptr mpTracker;
+  std::thread mptViewer;
 
   // 1/fps in ms
   double mT;
@@ -98,5 +103,3 @@ class Viewer {
 };
 
 }  // namespace ORB_SLAM3
-
-#endif  // VIEWER_H

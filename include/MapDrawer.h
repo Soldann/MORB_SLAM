@@ -17,9 +17,9 @@
 */
 
 
-#ifndef MAPDRAWER_H
-#define MAPDRAWER_H
+#pragma once
 
+#include "ImprovedTypes.hpp"
 #include"Atlas.h"
 #include"MapPoint.h"
 #include"KeyFrame.h"
@@ -35,13 +35,12 @@ class Settings;
 
 class MapDrawer
 {
+    void newParameterLoader(const Settings& settings);
+    Atlas_ptr mpAtlas;
+
 public:
-    
-    MapDrawer(Atlas* pAtlas, const string &strSettingPath, Settings* settings);
-
-    void newParameterLoader(Settings* settings);
-
-    Atlas* mpAtlas;
+    MapDrawer(const Atlas_ptr &pAtlas, const std::string &strSettingPath);
+    MapDrawer(const Atlas_ptr &pAtlas, const Settings& settings);
 
     void DrawMapPoints();
     void DrawKeyFrames(const bool bDrawKF, const bool bDrawGraph, const bool bDrawInertialGraph, const bool bDrawOptLba);
@@ -76,4 +75,3 @@ private:
 
 } //namespace ORB_SLAM
 
-#endif // MAPDRAWER_H

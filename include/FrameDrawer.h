@@ -19,14 +19,14 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FRAMEDRAWER_H
-#define FRAMEDRAWER_H
+#pragma once
 
 #include <mutex>
 #include <opencv2/core/core.hpp>
 #include <opencv2/features2d/features2d.hpp>
 #include <unordered_set>
 
+#include "ImprovedTypes.hpp"
 #include "Atlas.h"
 #include "MapPoint.h"
 #include "Tracking.h"
@@ -34,15 +34,14 @@
 namespace ORB_SLAM3 {
 
 class Tracking;
-class Viewer;
 
 class FrameDrawer {
  public:
   
-  FrameDrawer(Atlas *pAtlas);
+  FrameDrawer(const Atlas_ptr &pAtlas);
 
   // Update info from the last processed frame.
-  void Update(Tracking *pTracker);
+  void Update(const Tracking_ptr &pTracker);
 
   // Draw last processed frame.
   cv::Mat DrawFrame(float imageScale = 1.f);
@@ -66,7 +65,7 @@ class FrameDrawer {
   std::vector<float> mvCurrentDepth;
   float mThDepth;
 
-  Atlas *mpAtlas;
+  Atlas_ptr mpAtlas;
 
   std::mutex mMutex;
   vector<pair<cv::Point2f, cv::Point2f> > mvTracks;
@@ -83,5 +82,3 @@ class FrameDrawer {
 };
 
 }  // namespace ORB_SLAM3
-
-#endif  // FRAMEDRAWER_H

@@ -44,11 +44,10 @@ namespace ORB_SLAM3 {
 Verbose::eLevel Verbose::th = Verbose::VERBOSITY_NORMAL;
 
 System::System(const string& strVocFile, const string& strSettingsFile,
-               const eSensor sensor, const bool bUseViewer,
+               const eSensor sensor,
                const string& strSequence)
     : mSensor(sensor),
       mpAtlas(0),
-      mpViewer(static_cast<Viewer*>(NULL)),
       mbReset(false),
       mbResetActiveMap(false),
       mbActivateLocalizationMode(false),
@@ -192,15 +191,11 @@ System::System(const string& strVocFile, const string& strSettingsFile,
   if (mSensor == IMU_STEREO || mSensor == IMU_MONOCULAR || mSensor == IMU_RGBD)
     mpAtlas.SetInertialSensor();
 
-  // Create Drawers. These are used by the Viewer
-  mpFrameDrawer = new FrameDrawer(&mpAtlas);
-  mpMapDrawer = new MapDrawer(&mpAtlas, strSettingsFile, settings_);
-
   // Initialize the Tracking thread
   //(it will live in the main thread of execution, the one that called this
   // constructor)
   cout << "Seq. Name: " << strSequence << endl;
-  mpTracker = new Tracking(this, mpVocabulary, mpFrameDrawer, mpMapDrawer,
+  mpTracker = new Tracking(this, mpVocabulary,
                            &mpAtlas, mpKeyFrameDatabase, strSettingsFile,
                            mSensor, settings_, strSequence);
 
@@ -241,16 +236,13 @@ System::System(const string& strVocFile, const string& strSettingsFile,
   // usleep(10*1000*1000);
 
   // Initialize the Viewer thread and launch
-  if (bUseViewer)
-  // if(false) // TODO
-  {
-    mpViewer = new Viewer(this, mpFrameDrawer, mpMapDrawer, mpTracker,
-                          strSettingsFile, settings_);
-    mptViewer = new thread(&Viewer::Run, mpViewer);
-    mpTracker->SetViewer(mpViewer);
-    mpLoopCloser->mpViewer = mpViewer;
-    mpViewer->both = mpFrameDrawer->both;
-  }
+  // if (bUseViewer)
+  // // if(false) // TODO
+  // {
+  //   mpTracker->SetViewer(mpViewer);
+  //   mpLoopCloser->mpViewer = mpViewer;
+  //   mpViewer->both = mpFrameDrawer->both;
+  // }
 
   // Fix verbosity
   Verbose::SetTh(Verbose::VERBOSITY_QUIET);
@@ -506,7 +498,7 @@ void System::ResetActiveMap() {
   mbResetActiveMap = true;
 }
 
-void System::Shutdown() {
+System::~System() {
   cout << "Shutdown" << endl;
   unique_lock<mutex> lock(mMutexReset);
 

@@ -29,7 +29,7 @@
 
 namespace ORB_SLAM3 {
 
-FrameDrawer::FrameDrawer(Atlas *pAtlas) : both(false), mpAtlas(pAtlas) {
+FrameDrawer::FrameDrawer(const Atlas_ptr &pAtlas) : both(false), mpAtlas(pAtlas) {
   mState = Tracking::SYSTEM_NOT_READY;
   mIm = cv::Mat(480, 640, CV_8UC3, cv::Scalar(0, 0, 0));
   mImRight = cv::Mat(480, 640, CV_8UC3, cv::Scalar(0, 0, 0));
@@ -322,7 +322,7 @@ void FrameDrawer::DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText) {
               cv::FONT_HERSHEY_PLAIN, 1, cv::Scalar(255, 255, 255), 1, 8);
 }
 
-void FrameDrawer::Update(Tracking *pTracker) {
+void FrameDrawer::Update(const Tracking_ptr &pTracker) {
   unique_lock<mutex> lock(mMutex);
   pTracker->mImGray.copyTo(mIm);
   mvCurrentKeys = pTracker->mCurrentFrame.mvKeys;

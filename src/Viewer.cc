@@ -26,57 +26,70 @@
 #include <chrono>
 #include <ctime>
 #include <mutex>
+#include <stdexcept>
+#include <iostream>
 
 namespace ORB_SLAM3 {
 
-Viewer::Viewer(System *pSystem, FrameDrawer *pFrameDrawer,
-               MapDrawer *pMapDrawer, Tracking *pTracking,
-               const string &strSettingPath, Settings *settings)
+
+Viewer::Viewer(const System_ptr &pSystem, const std::string &strSettingPath)
     : both(false),
       mpSystem(pSystem),
-      mpFrameDrawer(pFrameDrawer),
-      mpMapDrawer(pMapDrawer),
-      mpTracker(pTracking),
+      mpFrameDrawer(pSystem->mpAtlas),
+      mpMapDrawer(pSystem->mpAtlas, strSettingPath),
+      mpTracker(pSystem->mpTracker),
       mbFinishRequested(false),
       mbFinished(true),
       mbStopped(true),
-      mbStopRequested(false) {
-  if (settings) {
-    newParameterLoader(settings);
-  } else {
+      mbStopRequested(false),
+      mbStopTrack(false) {
     cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
-
-    bool is_correct = ParseViewerParamFile(fSettings);
-
-    if (!is_correct) {
+    if (!ParseViewerParamFile(fSettings)) {
       std::cerr << "**ERROR in the config file, the format is not correct**"
                 << std::endl;
-      try {
-        throw -1;
-      } catch (exception &e) {
-      }
+      throw std::runtime_error("**ERROR in the config file, the format is not correct**");
     }
+    mptViewer = std::thread(&Viewer::Run, this);
+    both = mpFrameDrawer.both;
   }
-
-  mbStopTrack = false;
 }
 
-void Viewer::newParameterLoader(Settings *settings) {
+Viewer::Viewer(const System_ptr &pSystem, const Settings &settings)
+    : both(false),
+      mpSystem(pSystem),
+      mpFrameDrawer(pSystem->mpAtlas),
+      mpMapDrawer(pSystem->mpAtlas, settings),
+      mpTracker(pSystem->mpTracker),
+      mbFinishRequested(false),
+      mbFinished(true),
+      mbStopped(true),
+      mbStopRequested(false),
+      mbStopTrack(false) {
+    newParameterLoader(settings);
+    mptViewer = std::thread(&Viewer::Run, this);
+    both = mpFrameDrawer.both;
+}
+
+Viewer::~Viewer(){
+  if(mptViewer.joinable()) mptViewer.join();
+}
+
+void Viewer::newParameterLoader(const Settings &settings) {
   mImageViewerScale = 1.f;
 
-  float fps = settings->fps();
+  float fps = settings.fps();
   if (fps < 1) fps = 30;
   mT = 1e3 / fps;
 
-  cv::Size imSize = settings->newImSize();
+  cv::Size imSize = settings.newImSize();
   mImageHeight = imSize.height;
   mImageWidth = imSize.width;
 
-  mImageViewerScale = settings->imageViewerScale();
-  mViewpointX = settings->viewPointX();
-  mViewpointY = settings->viewPointY();
-  mViewpointZ = settings->viewPointZ();
-  mViewpointF = settings->viewPointF();
+  mImageViewerScale = settings.imageViewerScale();
+  mViewpointX = settings.viewPointX();
+  mViewpointY = settings.viewPointY();
+  mViewpointZ = settings.viewPointZ();
+  mViewpointF = settings.viewPointF();
 }
 
 bool Viewer::ParseViewerParamFile(cv::FileStorage &fSettings) {
@@ -155,6 +168,13 @@ bool Viewer::ParseViewerParamFile(cv::FileStorage &fSettings) {
   return !b_miss_params;
 }
 
+void Viewer::update(const Sophus::SE3f &pose){
+  if(mpTracker->mState != NOT_INITIALIZED){
+    mpFrameDrawer->Update(mpTracker);
+    mpMapDrawer->SetCurrentCameraPose(pose);
+  }
+}
+
 void Viewer::Run() {
   mbFinished = false;
   mbStopped = false;
@@ -221,7 +241,7 @@ void Viewer::Run() {
   float trackedImageScale = mpTracker->GetImageScale();
 
   cout << "Starting the Viewer" << endl;
-  while (1) {
+  while (true) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     mpMapDrawer->GetCurrentOpenGLCameraMatrix(Twc, Ow);
@@ -345,7 +365,7 @@ void Viewer::Run() {
       if (bLocalizationMode) mpSystem->DeactivateLocalizationMode();
 
       // Stop all threads
-      mpSystem->Shutdown();
+      mpSystem.reset();
 
       // Save camera trajectory
 
