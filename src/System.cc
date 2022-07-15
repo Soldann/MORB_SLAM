@@ -258,6 +258,13 @@ System::System(const string& strVocFile, const string& strSettingsFile,
 }
 
 Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
+                                 const double& timestamp,
+                                 const vector<IMU::Point>& vImuMeas,
+                                 string filename) {
+  return TrackStereo(imLeft, imRight, timestamp, vImuMeas, filename);
+}
+
+Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
                                  const cv::Mat *mask, const double& timestamp,
                                  const vector<IMU::Point>& vImuMeas,
                                  string filename) {
@@ -345,6 +352,13 @@ Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
 }
 
 Sophus::SE3f System::TrackRGBD(const cv::Mat& im, const cv::Mat& depthmap,
+                               const double& timestamp,
+                               const vector<IMU::Point>& vImuMeas,
+                               string filename) {
+  return TrackRGBD(im, depthmap, nullptr, timestamp, vImuMeas, filename);
+}
+
+Sophus::SE3f System::TrackRGBD(const cv::Mat& im, const cv::Mat& depthmap,
                                const cv::Mat *mask, const double& timestamp,
                                const vector<IMU::Point>& vImuMeas,
                                string filename) {
@@ -416,6 +430,12 @@ Sophus::SE3f System::TrackRGBD(const cv::Mat& im, const cv::Mat& depthmap,
   mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
   mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
   return Tcw;
+}
+
+Sophus::SE3f System::TrackMonocular(const cv::Mat& im, const cv::Mat *mask, const double& timestamp,
+                                    const vector<IMU::Point>& vImuMeas,
+                                    string filename) {
+  return TrackMonocular(im, nullptr, timestamp, vImuMeas, filename);
 }
 
 Sophus::SE3f System::TrackMonocular(const cv::Mat& im, const cv::Mat *mask, const double& timestamp,
