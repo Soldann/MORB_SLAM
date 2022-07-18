@@ -147,7 +147,7 @@ Frame::Frame(const Frame &frame)
 #endif
 }
 
-Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
+Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight, const cv::Mat *mask,
              const double &timeStamp, ORBextractor *extractorLeft,
              ORBextractor *extractorRight, ORBVocabulary *voc, cv::Mat &K,
              cv::Mat &distCoef, const float &bf, const float &thDepth,
@@ -191,8 +191,8 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
   std::chrono::steady_clock::time_point time_StartExtORB =
       std::chrono::steady_clock::now();
 #endif
-  thread threadLeft(&Frame::ExtractORB, this, 0, imLeft, 0, 0);
-  thread threadRight(&Frame::ExtractORB, this, 1, imRight, 0, 0);
+  thread threadLeft(&Frame::ExtractORB, this, 0, imLeft, 0, 0, mask);
+  thread threadRight(&Frame::ExtractORB, this, 1, imRight, 0, 0, mask);
   threadLeft.join();
   threadRight.join();
 #ifdef REGISTER_TIMES
@@ -272,7 +272,7 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
   AssignFeaturesToGrid();
 }
 
-Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth,
+Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth, const cv::Mat *mask,
              const double &timeStamp, ORBextractor *extractor,
              ORBVocabulary *voc, cv::Mat &K, cv::Mat &distCoef, const float &bf,
              const float &thDepth, GeometricCamera *pCamera, Frame *pPrevF,
@@ -315,7 +315,7 @@ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth,
   std::chrono::steady_clock::time_point time_StartExtORB =
       std::chrono::steady_clock::now();
 #endif
-  ExtractORB(0, imGray, 0, 0);
+  ExtractORB(0, imGray, 0, 0, mask);
 #ifdef REGISTER_TIMES
   std::chrono::steady_clock::time_point time_EndExtORB =
       std::chrono::steady_clock::now();
@@ -383,7 +383,7 @@ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth,
   AssignFeaturesToGrid();
 }
 
-Frame::Frame(const cv::Mat &imGray, const double &timeStamp,
+Frame::Frame(const cv::Mat &imGray, const cv::Mat *mask, const double &timeStamp,
              ORBextractor *extractor, ORBVocabulary *voc,
              GeometricCamera *pCamera, cv::Mat &distCoef, const float &bf,
              const float &thDepth, Frame *pPrevF, const IMU::Calib &ImuCalib)
@@ -425,7 +425,7 @@ Frame::Frame(const cv::Mat &imGray, const double &timeStamp,
   std::chrono::steady_clock::time_point time_StartExtORB =
       std::chrono::steady_clock::now();
 #endif
-  ExtractORB(0, imGray, 0, 1000);
+  ExtractORB(0, imGray, 0, 1000, mask);
 #ifdef REGISTER_TIMES
   std::chrono::steady_clock::time_point time_EndExtORB =
       std::chrono::steady_clock::now();
@@ -528,13 +528,13 @@ void Frame::AssignFeaturesToGrid() {
 }
 
 void Frame::ExtractORB(int flag, const cv::Mat &im, const int x0,
-                       const int x1) {
+                       const int x1, const cv::Mat *mask) {
   vector<int> vLapping = {x0, x1};
   if (flag == 0)
     monoLeft =
-        (*mpORBextractorLeft)(im, cv::Mat(), mvKeys, mDescriptors, vLapping);
+        (*mpORBextractorLeft)(im, mask, mvKeys, mDescriptors, vLapping);
   else
-    monoRight = (*mpORBextractorRight)(im, cv::Mat(), mvKeysRight,
+    monoRight = (*mpORBextractorRight)(im, mask, mvKeysRight,
                                        mDescriptorsRight, vLapping);
 }
 
@@ -1090,7 +1090,7 @@ void Frame::setIntegrated() {
   mbImuPreintegrated = true;
 }
 
-Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
+Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight, const cv::Mat *mask,
              const double &timeStamp, ORBextractor *extractorLeft,
              ORBextractor *extractorRight, ORBVocabulary *voc, cv::Mat &K,
              cv::Mat &distCoef, const float &bf, const float &thDepth,
@@ -1140,11 +1140,13 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
 #endif
   thread threadLeft(&Frame::ExtractORB, this, 0, imLeft,
                     static_cast<KannalaBrandt8 *>(mpCamera)->mvLappingArea[0],
-                    static_cast<KannalaBrandt8 *>(mpCamera)->mvLappingArea[1]);
+                    static_cast<KannalaBrandt8 *>(mpCamera)->mvLappingArea[1],
+                    mask);
   thread threadRight(
       &Frame::ExtractORB, this, 1, imRight,
       static_cast<KannalaBrandt8 *>(mpCamera2)->mvLappingArea[0],
-      static_cast<KannalaBrandt8 *>(mpCamera2)->mvLappingArea[1]);
+      static_cast<KannalaBrandt8 *>(mpCamera2)->mvLappingArea[1],
+      mask);
   threadLeft.join();
   threadRight.join();
 #ifdef REGISTER_TIMES
