@@ -19,8 +19,7 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TRACKING_H
-#define TRACKING_H
+#pragma once
 
 #include <mutex>
 #include <opencv2/core/core.hpp>
@@ -77,8 +76,6 @@ class Tracking {
 
   void SetLocalMapper(LocalMapping* pLocalMapper);
   void SetLoopClosing(LoopClosing* pLoopClosing);
-  void SetStepByStep(bool bSet);
-  bool GetStepByStep();
 
   // Load new settings
   // The focal lenght should be similar or scale prediction will fail when
@@ -273,7 +270,7 @@ class Tracking {
   // Viewer* mpViewer;
   // FrameDrawer* mpFrameDrawer;
   // MapDrawer* mpMapDrawer;
-  bool bStepByStep;
+  // bool bStepByStep;
 
   // Atlas
   Atlas* mpAtlas;
@@ -366,4 +363,3 @@ class Tracking {
 
 }  // namespace ORB_SLAM3
 
-#endif  // TRACKING_H

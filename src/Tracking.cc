@@ -54,7 +54,6 @@ Tracking::Tracking(System* pSys, ORBVocabulary* pVoc, FrameDrawer* pFrameDrawer,
       mpKeyFrameDB(pKFDB),
       mbReadyToInitializate(false),
       mpSystem(pSys),
-      bStepByStep(false),
       mpAtlas(pAtlas),
       mpLastKeyFrame(static_cast<KeyFrame*>(NULL)),
       mnLastRelocFrameId(0),
@@ -1366,10 +1365,6 @@ void Tracking::SetLoopClosing(LoopClosing* pLoopClosing) {
   mpLoopClosing = pLoopClosing;
 }
 
-void Tracking::SetStepByStep(bool bSet) { bStepByStep = bSet; }
-
-bool Tracking::GetStepByStep() { return bStepByStep; }
-
 Sophus::SE3f Tracking::GrabImageStereo(const cv::Mat& imRectLeft,
                                        const cv::Mat& imRectRight,
                                        const double& timestamp,
@@ -1704,11 +1699,6 @@ void Tracking::ResetFrameIMU() {
 }
 
 void Tracking::Track() {
-  if (bStepByStep) {
-    std::cout << "Tracking: Waiting to the next step" << std::endl;
-    while (!mbStep && bStepByStep) usleep(500);
-    mbStep = false;
-  }
 
   if (mpLocalMapper->mbBadImu) {
     cout << "TRACK: Reset map because local mapper set the bad imu flag "
@@ -3608,10 +3598,10 @@ void Tracking::Reset(bool bLocMap) {
 
 void Tracking::ResetActiveMap(bool bLocMap) {
   Verbose::PrintMess("Active map Reseting", Verbose::VERBOSITY_NORMAL);
-  if (mpViewer) {
-    mpViewer->RequestStop();
-    while (!mpViewer->isStopped()) usleep(3000);
-  }
+  // if (mpViewer) {
+  //   mpViewer->RequestStop();
+  //   while (!mpViewer->isStopped()) usleep(3000);
+  // }
 
   Map* pMap = mpAtlas->GetCurrentMap();
 
@@ -3683,7 +3673,7 @@ void Tracking::ResetActiveMap(bool bLocMap) {
 
   mbVelocity = false;
 
-  if (mpViewer) mpViewer->Release();
+  // if (mpViewer) mpViewer->Release();
 
   Verbose::PrintMess("   End reseting! ", Verbose::VERBOSITY_NORMAL);
 }

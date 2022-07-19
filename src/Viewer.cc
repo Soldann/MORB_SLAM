@@ -38,10 +38,7 @@ Viewer::Viewer(const System_ptr &pSystem, const std::string &strSettingPath)
       mpFrameDrawer(pSystem->mpAtlas),
       mpMapDrawer(pSystem->mpAtlas, strSettingPath),
       mpTracker(pSystem->mpTracker),
-      mbFinishRequested(false),
-      mbFinished(true),
-      mbStopped(true),
-      mbStopRequested(false),
+      mbClosed(false),
       mbStopTrack(false) {
     cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
     if (!ParseViewerParamFile(fSettings)) {
@@ -51,7 +48,6 @@ Viewer::Viewer(const System_ptr &pSystem, const std::string &strSettingPath)
     }
     mptViewer = std::thread(&Viewer::Run, this);
     both = mpFrameDrawer.both;
-  }
 }
 
 Viewer::Viewer(const System_ptr &pSystem, const Settings &settings)
@@ -60,10 +56,7 @@ Viewer::Viewer(const System_ptr &pSystem, const Settings &settings)
       mpFrameDrawer(pSystem->mpAtlas),
       mpMapDrawer(pSystem->mpAtlas, settings),
       mpTracker(pSystem->mpTracker),
-      mbFinishRequested(false),
-      mbFinished(true),
-      mbStopped(true),
-      mbStopRequested(false),
+      mbClosed(true),
       mbStopTrack(false) {
     newParameterLoader(settings);
     mptViewer = std::thread(&Viewer::Run, this);
@@ -176,8 +169,6 @@ void Viewer::update(const Sophus::SE3f &pose){
 }
 
 void Viewer::Run() {
-  mbFinished = false;
-  mbStopped = false;
 
   pangolin::CreateWindowAndBind("ORB-SLAM3: Map Viewer", 1024, 768);
 
@@ -203,9 +194,6 @@ void Viewer::Run() {
                                            true);
   pangolin::Var<bool> menuReset("menu.Reset", false, false);
   pangolin::Var<bool> menuStop("menu.Stop", false, false);
-  pangolin::Var<bool> menuStepByStep("menu.Step By Step", false,
-                                     true);  // false, true
-  pangolin::Var<bool> menuStep("menu.Step", false, false);
 
   pangolin::Var<bool> menuShowOptLba("menu.Show LBA opt", false, true);
   // Define Camera Render Object (for view / scene browsing)
@@ -229,7 +217,6 @@ void Viewer::Run() {
 
   bool bFollow = true;
   bool bLocalizationMode = false;
-  bool bStepByStep = false;
   bool bCameraView = true;
 
   if (mpTracker->mSensor == mpSystem->MONOCULAR ||
@@ -241,15 +228,10 @@ void Viewer::Run() {
   float trackedImageScale = mpTracker->GetImageScale();
 
   cout << "Starting the Viewer" << endl;
-  while (true) {
+  while (isOpen()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     mpMapDrawer->GetCurrentOpenGLCameraMatrix(Twc, Ow);
-
-    if (mbStopTrack) {
-      menuStepByStep = true;
-      mbStopTrack = false;
-    }
 
     if (menuFollowCamera && bFollow) {
       if (bCameraView)
@@ -285,7 +267,7 @@ void Viewer::Run() {
       s_cam.Follow(Twc);
     }
 
-    if (menuTopView && mpMapDrawer->mpAtlas->isImuInitialized()) { // DEPENDS
+    if (menuTopView && mpMapDrawer->mpAtlas->isImuInitialized()) {
       menuTopView = false;
       bCameraView = false;
       s_cam.SetProjectionMatrix(pangolin::ProjectionMatrix(
@@ -296,25 +278,11 @@ void Viewer::Run() {
     }
 
     if (menuLocalizationMode && !bLocalizationMode) {
-      mpSystem->ActivateLocalizationMode(); // DEPENDS
+      mpSystem->ActivateLocalizationMode();
       bLocalizationMode = true;
     } else if (!menuLocalizationMode && bLocalizationMode) {
-      mpSystem->DeactivateLocalizationMode(); // DEPENDS
+      mpSystem->DeactivateLocalizationMode();
       bLocalizationMode = false;
-    }
-
-    if (menuStepByStep && !bStepByStep) {
-      // cout << "Viewer: step by step" << endl;
-      mpTracker->SetStepByStep(true); // DEPENDS
-      bStepByStep = true;
-    } else if (!menuStepByStep && bStepByStep) {
-      mpTracker->SetStepByStep(false); // DEPENDS
-      bStepByStep = false;
-    }
-
-    if (menuStep) {
-      mpTracker->mbStep = true;
-      menuStep = false;
     }
 
     d_cam.Activate(s_cam);
@@ -323,13 +291,13 @@ void Viewer::Run() {
     if (menuShowKeyFrames || menuShowGraph || menuShowInertialGraph ||
         menuShowOptLba)
       mpMapDrawer->DrawKeyFrames(menuShowKeyFrames, menuShowGraph,
-                                 menuShowInertialGraph, menuShowOptLba); // DEPENDS
-    if (menuShowPoints) mpMapDrawer->DrawMapPoints(); // DEPENDS
+                                 menuShowInertialGraph, menuShowOptLba);
+    if (menuShowPoints) mpMapDrawer->DrawMapPoints();
 
     pangolin::FinishFrame();
 
     cv::Mat toShow;
-    cv::Mat im = mpFrameDrawer->DrawFrame(trackedImageScale); // DEPENDS
+    cv::Mat im = mpFrameDrawer->DrawFrame(trackedImageScale);
 
     if (both) {
       cv::Mat imRight = mpFrameDrawer->DrawRightFrame(trackedImageScale);
@@ -361,91 +329,23 @@ void Viewer::Run() {
       menuReset = false;
     }
 
-    if (menuStop) {
-      if (bLocalizationMode) mpSystem->DeactivateLocalizationMode();
-
-      // Stop all threads
-      mpSystem.reset(); // DEPENDS
-
-      // Save camera trajectory
-
-      //   auto time = std::chrono::system_clock::now();
-      //   std::time_t time_time = std::chrono::system_clock::to_time_t(time);
-      //   std::string str_time = std::ctime(&time_time);
-
-      //   mpSystem->SaveTrajectoryEuRoC("CameraTrajectory" + str_time +
-      //   ".txt"); mpSystem->SaveKeyFrameTrajectoryEuRoC("KeyFrameTrajectory" +
-      //   str_time +
-      //        isStopped                                 ".txt");
-      menuStop = false;
+    if (menuStop)
       break;
-    }
-
-    if (Stop()) {
-      while (isStopped()) {
-        usleep(3000);
-      }
-    }
-
-    if (CheckFinish()) break;
   }
 
-  SetFinish();
+  close();
 }
 
-void Viewer::RequestFinish() {
-  unique_lock<mutex> lock(mMutexFinish);
-  mbFinishRequested = true;
+bool Viewer::isClosed() const {
+  return mbClosed;
 }
 
-bool Viewer::CheckFinish() {
-  unique_lock<mutex> lock(mMutexFinish);
-  return mbFinishRequested;
+bool Viewer::isOpen() const {
+  return !mbClosed;
 }
 
-void Viewer::SetFinish() {
-  unique_lock<mutex> lock(mMutexFinish);
-  mbFinished = true;
+void Viewer::close(){
+  mbClosed = true;
 }
-
-bool Viewer::isFinished() {
-  unique_lock<mutex> lock(mMutexFinish);
-  return mbFinished;
-}
-
-void Viewer::RequestStop() {
-  unique_lock<mutex> lock(mMutexStop);
-  if (!mbStopped) mbStopRequested = true;
-}
-
-bool Viewer::isStopped() {
-  unique_lock<mutex> lock(mMutexStop);
-  return mbStopped;
-}
-
-bool Viewer::Stop() {
-  unique_lock<mutex> lock(mMutexStop);
-  unique_lock<mutex> lock2(mMutexFinish);
-
-  if (mbFinishRequested)
-    return false;
-  else if (mbStopRequested) {
-    mbStopped = true;
-    mbStopRequested = false;
-    return true;
-  }
-
-  return false;
-}
-
-void Viewer::Release() {
-  unique_lock<mutex> lock(mMutexStop);
-  mbStopped = false;
-}
-
-/*void Viewer::SetTrackingPause()
-{
-    mbStopTrack = true;
-}*/
 
 }  // namespace ORB_SLAM3

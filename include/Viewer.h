@@ -29,11 +29,9 @@
 #include "MapDrawer.h"
 #include "Settings.h"
 #include "System.h"
-#include "Tracking.h"
 
 namespace ORB_SLAM3 {
 
-class Tracking;
 class FrameDrawer;
 class MapDrawer;
 class System;
@@ -54,20 +52,9 @@ class Viewer {
 
   void update();
 
-
-  void RequestFinish();
-
-  void RequestStop();
-
-  bool isFinished();
-
-  bool isStopped();
-
-  bool isStepByStep();
-
-  void Release();
-
-  // void SetTrackingPause();
+  void close();
+  bool isClosed() const;
+  bool isOpen() const;
 
   bool both;
 
@@ -89,17 +76,7 @@ class Viewer {
 
   float mViewpointX, mViewpointY, mViewpointZ, mViewpointF;
 
-  bool CheckFinish();
-  void SetFinish();
-  bool mbFinishRequested;
-  bool mbFinished;
-  std::mutex mMutexFinish;
-
-  bool mbStopped;
-  bool mbStopRequested;
-  std::mutex mMutexStop;
-
-  bool mbStopTrack;
+  bool mbClosed;
 };
 
 }  // namespace ORB_SLAM3

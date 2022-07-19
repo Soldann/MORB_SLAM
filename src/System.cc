@@ -234,17 +234,6 @@ System::System(const string& strVocFile, const string& strSettingsFile,
   mpLoopCloser->SetTracker(mpTracker);
   mpLoopCloser->SetLocalMapper(mpLocalMapper);
 
-  // usleep(10*1000*1000);
-
-  // Initialize the Viewer thread and launch
-  // if (bUseViewer)
-  // // if(false) // TODO
-  // {
-  //   mpTracker->SetViewer(mpViewer);
-  //   mpLoopCloser->mpViewer = mpViewer;
-  //   mpViewer->both = mpFrameDrawer->both;
-  // }
-
   // Fix verbosity
   Verbose::SetTh(Verbose::VERBOSITY_QUIET);
 }
@@ -532,9 +521,6 @@ System::~System() {
   // if (mptLoopClosing->joinable()) {
   //   mptLoopClosing->join();
   // }
-
-  /*if(mpViewer)
-      pangolin::BindToContext("ORB-SLAM2: Map Viewer");*/
 
 #ifdef REGISTER_TIMES
   mpTracker->PrintTimeStats();
