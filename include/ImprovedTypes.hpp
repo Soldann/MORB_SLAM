@@ -19,4 +19,18 @@ typedef std::weak_ptr<Tracking> Tracking_wptr;
 typedef std::pair<int, int> IntPair;
 template<typename KEY, typename VALUE> using umap = std::unordered_map<KEY,VALUE>;
 
+
+
+  namespace Tracker{
+    // Tracking states
+    enum eTrackingState {
+        SYSTEM_NOT_READY = -1,
+        NO_IMAGES_YET = 0,
+        NOT_INITIALIZED = 1,
+        OK = 2,
+        RECENTLY_LOST = 3,
+        LOST = 4,
+        OK_KLT = 5
+    };
+  }
 }

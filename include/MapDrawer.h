@@ -20,9 +20,6 @@
 #pragma once
 
 #include "ImprovedTypes.hpp"
-#include"Atlas.h"
-#include"MapPoint.h"
-#include"KeyFrame.h"
 #include "Settings.h"
 #include<pangolin/pangolin.h>
 
@@ -32,25 +29,13 @@ namespace ORB_SLAM3
 {
 
 class Settings;
+class KeyFrame;
 
 class MapDrawer
 {
     void newParameterLoader(const Settings& settings);
     Atlas_ptr mpAtlas;
-
-public:
-    MapDrawer(const Atlas_ptr &pAtlas, const std::string &strSettingPath);
-    MapDrawer(const Atlas_ptr &pAtlas, const Settings& settings);
-
-    void DrawMapPoints();
-    void DrawKeyFrames(const bool bDrawKF, const bool bDrawGraph, const bool bDrawInertialGraph, const bool bDrawOptLba);
-    void DrawCurrentCamera(pangolin::OpenGlMatrix &Twc);
-    void SetCurrentCameraPose(const Sophus::SE3f &Tcw);
-    void SetReferenceKeyFrame(KeyFrame *pKF);
-    void GetCurrentOpenGLCameraMatrix(pangolin::OpenGlMatrix &M, pangolin::OpenGlMatrix &MOw);
-
-private:
-
+    
     bool ParseViewerParamFile(cv::FileStorage &fSettings);
 
     float mKeyFrameSize;
@@ -70,6 +55,17 @@ private:
                                 {0.6f, 0.0f, 1.0f},
                                 {1.0f, 1.0f, 0.0f},
                                 {0.0f, 1.0f, 1.0f}};
+
+public:
+    MapDrawer(const Atlas_ptr &pAtlas, const std::string &strSettingPath);
+    MapDrawer(const Atlas_ptr &pAtlas, const Settings& settings);
+
+    void DrawMapPoints();
+    void DrawKeyFrames(const bool bDrawKF, const bool bDrawGraph, const bool bDrawInertialGraph, const bool bDrawOptLba);
+    void DrawCurrentCamera(pangolin::OpenGlMatrix &Twc);
+    void SetCurrentCameraPose(const Sophus::SE3f &Tcw);
+    void SetReferenceKeyFrame(KeyFrame *pKF);
+    void GetCurrentOpenGLCameraMatrix(pangolin::OpenGlMatrix &M, pangolin::OpenGlMatrix &MOw);
 
 };
 

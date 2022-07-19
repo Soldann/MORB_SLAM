@@ -285,7 +285,7 @@ void Viewer::Run() {
       s_cam.Follow(Twc);
     }
 
-    if (menuTopView && mpMapDrawer->mpAtlas->isImuInitialized()) {
+    if (menuTopView && mpMapDrawer->mpAtlas->isImuInitialized()) { // DEPENDS
       menuTopView = false;
       bCameraView = false;
       s_cam.SetProjectionMatrix(pangolin::ProjectionMatrix(
@@ -296,19 +296,19 @@ void Viewer::Run() {
     }
 
     if (menuLocalizationMode && !bLocalizationMode) {
-      mpSystem->ActivateLocalizationMode();
+      mpSystem->ActivateLocalizationMode(); // DEPENDS
       bLocalizationMode = true;
     } else if (!menuLocalizationMode && bLocalizationMode) {
-      mpSystem->DeactivateLocalizationMode();
+      mpSystem->DeactivateLocalizationMode(); // DEPENDS
       bLocalizationMode = false;
     }
 
     if (menuStepByStep && !bStepByStep) {
       // cout << "Viewer: step by step" << endl;
-      mpTracker->SetStepByStep(true);
+      mpTracker->SetStepByStep(true); // DEPENDS
       bStepByStep = true;
     } else if (!menuStepByStep && bStepByStep) {
-      mpTracker->SetStepByStep(false);
+      mpTracker->SetStepByStep(false); // DEPENDS
       bStepByStep = false;
     }
 
@@ -323,13 +323,13 @@ void Viewer::Run() {
     if (menuShowKeyFrames || menuShowGraph || menuShowInertialGraph ||
         menuShowOptLba)
       mpMapDrawer->DrawKeyFrames(menuShowKeyFrames, menuShowGraph,
-                                 menuShowInertialGraph, menuShowOptLba);
-    if (menuShowPoints) mpMapDrawer->DrawMapPoints();
+                                 menuShowInertialGraph, menuShowOptLba); // DEPENDS
+    if (menuShowPoints) mpMapDrawer->DrawMapPoints(); // DEPENDS
 
     pangolin::FinishFrame();
 
     cv::Mat toShow;
-    cv::Mat im = mpFrameDrawer->DrawFrame(trackedImageScale);
+    cv::Mat im = mpFrameDrawer->DrawFrame(trackedImageScale); // DEPENDS
 
     if (both) {
       cv::Mat imRight = mpFrameDrawer->DrawRightFrame(trackedImageScale);
@@ -365,7 +365,7 @@ void Viewer::Run() {
       if (bLocalizationMode) mpSystem->DeactivateLocalizationMode();
 
       // Stop all threads
-      mpSystem.reset();
+      mpSystem.reset(); // DEPENDS
 
       // Save camera trajectory
 

@@ -24,6 +24,7 @@
 #include <openssl/md5.h>
 #include <pangolin/pangolin.h>
 
+#include "ImprovedTypes.hpp"
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
@@ -1365,7 +1366,7 @@ bool System::isLost() {
     return false;
   else {
     if ((mpTracker->mState ==
-         Tracking::LOST))  //||(mpTracker->mState==Tracking::RECENTLY_LOST))
+         Tracker::LOST))  //||(mpTracker->mState==Tracker::RECENTLY_LOST))
       return true;
     else
       return false;

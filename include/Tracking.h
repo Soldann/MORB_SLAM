@@ -38,6 +38,7 @@
 #include "ORBextractor.h"
 #include "Settings.h"
 #include "System.h"
+#include "ImprovedTypes.hpp"
 
 namespace ORB_SLAM3 {
 
@@ -116,16 +117,6 @@ class Tracking {
 #endif
 
  public:
-  // Tracking states
-  enum eTrackingState {
-    SYSTEM_NOT_READY = -1,
-    NO_IMAGES_YET = 0,
-    NOT_INITIALIZED = 1,
-    OK = 2,
-    RECENTLY_LOST = 3,
-    LOST = 4,
-    OK_KLT = 5
-  };
 
   eTrackingState mState;
   eTrackingState mLastProcessedState;

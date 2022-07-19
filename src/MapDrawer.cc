@@ -26,6 +26,7 @@
 #include <stdexcept>
 #include <mutex>
 
+#include "Atlas.h"
 #include "KeyFrame.h"
 #include "MapPoint.h"
 
