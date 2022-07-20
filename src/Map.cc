@@ -49,7 +49,6 @@ Map::Map(int initKFid)
     : mpFirstRegionKF(static_cast<KeyFrame*>(NULL)),
       mbFail(false),
       mbImuInitialized(false),
-      /*mnLastLoopKFid(initKFid),*/
       mnMapChange(0),
       mnMapChangeNotified(0),
       mnInitKFid(initKFid),
