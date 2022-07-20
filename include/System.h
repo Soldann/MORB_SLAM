@@ -17,8 +17,7 @@
 */
 
 
-#ifndef SYSTEM_H
-#define SYSTEM_H
+#pragma once
 
 
 #include <unistd.h>
@@ -226,9 +225,6 @@ private:
     bool mbActivateLocalizationMode;
     bool mbDeactivateLocalizationMode;
 
-    // Shutdown flag
-    bool mbShutDown;
-
     // Tracking state
     int mTrackingState;
     std::vector<MapPoint*> mTrackedMapPoints;
@@ -245,5 +241,3 @@ private:
 };
 
 }// namespace ORB_SLAM
-
-#endif // SYSTEM_H

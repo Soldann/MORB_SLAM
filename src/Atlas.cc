@@ -206,7 +206,7 @@ Map* Atlas::GetCurrentMap(System* sys) {
   unique_lock<mutex> lock(mMutexAtlas);
   if (!mpCurrentMap) CreateNewMap();
   while (mpCurrentMap->IsBad()) {
-    if (sys != nullptr && sys->isShutDown()) return nullptr;
+    if (sys != nullptr) return nullptr;
   }
 
   return mpCurrentMap;

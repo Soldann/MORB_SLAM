@@ -52,8 +52,7 @@ System::System(const string& strVocFile, const string& strSettingsFile,
       mbReset(false),
       mbResetActiveMap(false),
       mbActivateLocalizationMode(false),
-      mbDeactivateLocalizationMode(false),
-      mbShutDown(false) {
+      mbDeactivateLocalizationMode(false) {
   // Output welcome message
   cout << endl
        << "ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, "
@@ -389,10 +388,10 @@ Sophus::SE3f System::TrackRGBD(const cv::Mat& im, const cv::Mat& depthmap,
 Sophus::SE3f System::TrackMonocular(const cv::Mat& im, const double& timestamp,
                                     const vector<IMU::Point>& vImuMeas,
                                     string filename) {
-  {
-    unique_lock<mutex> lock(mMutexReset);
-    if (mbShutDown) return Sophus::SE3f();
-  }
+  // {
+  //   unique_lock<mutex> lock(mMutexReset);
+  //   if (mbShutDown) return Sophus::SE3f();
+  // }
 
   if (mSensor != CameraType::MONOCULAR && mSensor != CameraType::IMU_MONOCULAR) {
     cerr << "ERROR: you called TrackMonocular but input sensor was not set to "
@@ -525,13 +524,6 @@ System::~System() {
 #ifdef REGISTER_TIMES
   mpTracker->PrintTimeStats();
 #endif
-
-  mbShutDown = true;
-}
-
-bool System::isShutDown() {
-  unique_lock<mutex> lock(mMutexReset);
-  return mbShutDown;
 }
 
 void System::SaveTrajectoryTUM(const string& filename) {

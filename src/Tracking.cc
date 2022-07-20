@@ -39,8 +39,7 @@ using namespace std;
 
 namespace ORB_SLAM3 {
 
-Tracking::Tracking(System* pSys, ORBVocabulary* pVoc, FrameDrawer* pFrameDrawer,
-                   MapDrawer* pMapDrawer, Atlas* pAtlas,
+Tracking::Tracking(System* pSys, ORBVocabulary* pVoc, Atlas* pAtlas,
                    KeyFrameDatabase* pKFDB, const string& strSettingPath,
                    const int sensor, Settings* settings, const string& _nameSeq)
     : mState(Tracker::NO_IMAGES_YET),
@@ -1705,9 +1704,9 @@ void Tracking::Track() {
 
   Map* pCurrentMap = mpAtlas->GetCurrentMap(mpSystem);
   if (!pCurrentMap) {
-    if (!mpSystem->isShutDown()){
-      cout << "ERROR: There is not an active map in the atlas" << endl;
-    }
+    // if (!mpSystem->isShutDown()){
+    //   cout << "ERROR: There is not an active map in the atlas" << endl;
+    // }
     return;
   }
 
