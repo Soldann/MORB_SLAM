@@ -33,4 +33,16 @@ template<typename KEY, typename VALUE> using umap = std::unordered_map<KEY,VALUE
         OK_KLT = 5
     };
   }
+
+  namespace CameraType{
+    // Input sensor
+    enum eSensor{
+        MONOCULAR=0,
+        STEREO=1,
+        RGBD=2,
+        IMU_MONOCULAR=3,
+        IMU_STEREO=4,
+        IMU_RGBD=5,
+    };
+  }
 }

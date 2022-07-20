@@ -23,6 +23,7 @@
 
 #include <pangolin/pangolin.h>
 
+#include "ImprovedTypes.hpp"
 #include <chrono>
 #include <ctime>
 #include <mutex>
@@ -51,7 +52,6 @@ Viewer::Viewer(const System_ptr &pSystem, const std::string &strSettingPath)
       throw std::runtime_error("**ERROR in the config file, the format is not correct**");
     }
     mptViewer = std::thread(&Viewer::Run, this);
-    both = mpFrameDrawer.both;
 }
 
 Viewer::Viewer(const System_ptr &pSystem, const Settings &settings)
@@ -88,8 +88,8 @@ void Viewer::newParameterLoader(const Settings &settings) {
   mViewpointZ = settings.viewPointZ();
   mViewpointF = settings.viewPointF();
 
-  if ((mpTracker->mSensor == System::STEREO || mpTracker->mSensor == System::IMU_STEREO ||
-        mpTracker->mSensor == System::IMU_RGBD || mpTracker->mSensor == System::RGBD) &&
+  if ((mpTracker->mSensor == CameraType::STEREO || mpTracker->mSensor == CameraType::IMU_STEREO ||
+        mpTracker->mSensor == CameraType::IMU_RGBD || mpTracker->mSensor == CameraType::RGBD) &&
         settings.cameraType() == Settings::KannalaBrandt)
         setBoth(true);
 }
@@ -169,8 +169,8 @@ bool Viewer::ParseViewerParamFile(cv::FileStorage &fSettings) {
 
   if(!b_miss_params){
     string sCameraName = fSettings["Camera.type"];
-    if ((mpTracker->mSensor == System::STEREO || mpTracker->mSensor == System::IMU_STEREO ||
-          mpTracker->mSensor == System::IMU_RGBD || mpTracker->mSensor == System::RGBD) &&
+    if ((mpTracker->mSensor == CameraType::STEREO || mpTracker->mSensor == CameraType::IMU_STEREO ||
+          mpTracker->mSensor == CameraType::IMU_RGBD || mpTracker->mSensor == CameraType::RGBD) &&
           sCameraName == "KannalaBrandt8")
           setBoth(true);
   }

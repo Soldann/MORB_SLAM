@@ -28,14 +28,8 @@
 #include "FrameDrawer.h"
 #include "MapDrawer.h"
 #include "Settings.h"
-#include "System.h"
 
 namespace ORB_SLAM3 {
-
-class FrameDrawer;
-class MapDrawer;
-class System;
-class Settings;
 
 class Viewer {
   void newParameterLoader(const Settings& settings);

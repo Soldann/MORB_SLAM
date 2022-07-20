@@ -45,7 +45,7 @@ namespace ORB_SLAM3 {
 Verbose::eLevel Verbose::th = Verbose::VERBOSITY_NORMAL;
 
 System::System(const string& strVocFile, const string& strSettingsFile,
-               const eSensor sensor,
+               const CameraType::eSensor sensor,
                const string& strSequence)
     : mSensor(sensor),
       mpAtlas(0),
@@ -71,17 +71,17 @@ System::System(const string& strVocFile, const string& strSettingsFile,
 
   cout << "Input sensor was set to: ";
 
-  if (mSensor == MONOCULAR)
+  if (mSensor == CameraType::MONOCULAR)
     cout << "Monocular" << endl;
-  else if (mSensor == STEREO)
+  else if (mSensor == CameraType::STEREO)
     cout << "Stereo" << endl;
-  else if (mSensor == RGBD)
+  else if (mSensor == CameraType::RGBD)
     cout << "RGB-D" << endl;
-  else if (mSensor == IMU_MONOCULAR)
+  else if (mSensor == CameraType::IMU_MONOCULAR)
     cout << "Monocular-Inertial" << endl;
-  else if (mSensor == IMU_STEREO)
+  else if (mSensor == CameraType::IMU_STEREO)
     cout << "Stereo-Inertial" << endl;
-  else if (mSensor == IMU_RGBD)
+  else if (mSensor == CameraType::IMU_RGBD)
     cout << "RGB-D-Inertial" << endl;
 
   // Check settings file
@@ -189,7 +189,7 @@ System::System(const string& strVocFile, const string& strSettingsFile,
     // usleep(10*1000*1000);
   }
 
-  if (mSensor == IMU_STEREO || mSensor == IMU_MONOCULAR || mSensor == IMU_RGBD)
+  if (mSensor == CameraType::IMU_STEREO || mSensor == CameraType::IMU_MONOCULAR || mSensor == CameraType::IMU_RGBD)
     mpAtlas.SetInertialSensor();
 
   // Initialize the Tracking thread
@@ -202,8 +202,8 @@ System::System(const string& strVocFile, const string& strSettingsFile,
 
   // Initialize the Local Mapping thread and launch
   mpLocalMapper = new LocalMapping(
-      this, &mpAtlas, mSensor == MONOCULAR || mSensor == IMU_MONOCULAR,
-      mSensor == IMU_MONOCULAR || mSensor == IMU_STEREO || mSensor == IMU_RGBD,
+      this, &mpAtlas, mSensor == CameraType::MONOCULAR || mSensor == CameraType::IMU_MONOCULAR,
+      mSensor == CameraType::IMU_MONOCULAR || mSensor == CameraType::IMU_STEREO || mSensor == CameraType::IMU_RGBD,
       strSequence);
   mptLocalMapping = new thread(&ORB_SLAM3::LocalMapping::Run, mpLocalMapper);
   if (settings_)
@@ -221,7 +221,7 @@ System::System(const string& strVocFile, const string& strSettingsFile,
   // mSensor!=MONOCULAR && mSensor!=IMU_MONOCULAR
   mpLoopCloser =
       new LoopClosing(&mpAtlas, mpKeyFrameDatabase, mpVocabulary,
-                      mSensor != MONOCULAR, activeLC);  // mSensor!=MONOCULAR);
+                      mSensor != CameraType::MONOCULAR, activeLC);  // mSensor!=CameraType::MONOCULAR);
   mptLoopClosing = new thread(&ORB_SLAM3::LoopClosing::Run, mpLoopCloser);
 
   // Set pointers between threads
@@ -242,7 +242,7 @@ Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
                                  const double& timestamp,
                                  const vector<IMU::Point>& vImuMeas,
                                  string filename) {
-  if (mSensor != STEREO && mSensor != IMU_STEREO) {
+  if (mSensor != CameraType::STEREO && mSensor != CameraType::IMU_STEREO) {
     cerr << "ERROR: you called TrackStereo but input sensor was not set to "
             "Stereo nor Stereo-Inertial."
          << endl;
@@ -300,7 +300,7 @@ Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
     }
   }
 
-  if (mSensor == System::IMU_STEREO)
+  if (mSensor == CameraType::IMU_STEREO)
     for (size_t i_imu = 0; i_imu < vImuMeas.size(); i_imu++)
       mpTracker->GrabImuData(vImuMeas[i_imu]);
 
@@ -322,7 +322,7 @@ Sophus::SE3f System::TrackRGBD(const cv::Mat& im, const cv::Mat& depthmap,
                                const double& timestamp,
                                const vector<IMU::Point>& vImuMeas,
                                string filename) {
-  if (mSensor != RGBD && mSensor != IMU_RGBD) {
+  if (mSensor != CameraType::RGBD && mSensor != CameraType::IMU_RGBD) {
     cerr << "ERROR: you called TrackRGBD but input sensor was not set to RGBD."
          << endl;
     exit(-1);
@@ -372,7 +372,7 @@ Sophus::SE3f System::TrackRGBD(const cv::Mat& im, const cv::Mat& depthmap,
     }
   }
 
-  if (mSensor == System::IMU_RGBD)
+  if (mSensor == CameraType::IMU_RGBD)
     for (size_t i_imu = 0; i_imu < vImuMeas.size(); i_imu++)
       mpTracker->GrabImuData(vImuMeas[i_imu]);
 
@@ -394,7 +394,7 @@ Sophus::SE3f System::TrackMonocular(const cv::Mat& im, const double& timestamp,
     if (mbShutDown) return Sophus::SE3f();
   }
 
-  if (mSensor != MONOCULAR && mSensor != IMU_MONOCULAR) {
+  if (mSensor != CameraType::MONOCULAR && mSensor != CameraType::IMU_MONOCULAR) {
     cerr << "ERROR: you called TrackMonocular but input sensor was not set to "
             "Monocular nor Monocular-Inertial."
          << endl;
@@ -443,7 +443,7 @@ Sophus::SE3f System::TrackMonocular(const cv::Mat& im, const double& timestamp,
     }
   }
 
-  if (mSensor == System::IMU_MONOCULAR)
+  if (mSensor == CameraType::IMU_MONOCULAR)
     for (size_t i_imu = 0; i_imu < vImuMeas.size(); i_imu++)
       mpTracker->GrabImuData(vImuMeas[i_imu]);
 
@@ -536,7 +536,7 @@ bool System::isShutDown() {
 
 void System::SaveTrajectoryTUM(const string& filename) {
   cout << endl << "Saving camera trajectory to " << filename << " ..." << endl;
-  if (mSensor == MONOCULAR) {
+  if (mSensor == CameraType::MONOCULAR) {
     cerr << "ERROR: SaveTrajectoryTUM cannot be used for monocular." << endl;
     return;
   }
@@ -628,7 +628,7 @@ void System::SaveKeyFrameTrajectoryTUM(const string& filename) {
 
 void System::SaveTrajectoryEuRoC(const string& filename) {
   cout << endl << "Saving trajectory to " << filename << " ..." << endl;
-  /*if(mSensor==MONOCULAR)
+  /*if(mSensor==CameraType::MONOCULAR)
   {
       cerr << "ERROR: SaveTrajectoryEuRoC cannot be used for monocular." <<
   endl; return;
@@ -661,7 +661,7 @@ void System::SaveTrajectoryEuRoC(const string& filename) {
   // After a loop closure the first keyframe might not be at the origin.
   Sophus::SE3f
       Twb;  // Can be word to cam0 or world to b depending on IMU or not.
-  if (mSensor == IMU_MONOCULAR || mSensor == IMU_STEREO || mSensor == IMU_RGBD)
+  if (mSensor == CameraType::IMU_MONOCULAR || mSensor == CameraType::IMU_STEREO || mSensor == CameraType::IMU_RGBD)
     Twb = vpKFs[0]->GetImuPose();
   else
     Twb = vpKFs[0]->GetPoseInverse();
@@ -724,8 +724,8 @@ void System::SaveTrajectoryEuRoC(const string& filename) {
 
     // cout << "4" << endl;
 
-    if (mSensor == IMU_MONOCULAR || mSensor == IMU_STEREO ||
-        mSensor == IMU_RGBD) {
+    if (mSensor == CameraType::IMU_MONOCULAR || mSensor == CameraType::IMU_STEREO ||
+        mSensor == CameraType::IMU_RGBD) {
       Sophus::SE3f Twb = (pKF->mImuCalib.mTbc * (*lit) * Trw).inverse();
       Eigen::Quaternionf q = Twb.unit_quaternion();
       Eigen::Vector3f twb = Twb.translation();
@@ -752,7 +752,7 @@ void System::SaveTrajectoryEuRoC(const string& filename, Map* pMap) {
   cout << endl
        << "Saving trajectory of map " << pMap->GetId() << " to " << filename
        << " ..." << endl;
-  /*if(mSensor==MONOCULAR)
+  /*if(mSensor==CameraType::MONOCULAR)
   {
       cerr << "ERROR: SaveTrajectoryEuRoC cannot be used for monocular." <<
   endl; return;
@@ -767,7 +767,7 @@ void System::SaveTrajectoryEuRoC(const string& filename, Map* pMap) {
   // After a loop closure the first keyframe might not be at the origin.
   Sophus::SE3f
       Twb;  // Can be word to cam0 or world to b dependingo on IMU or not.
-  if (mSensor == IMU_MONOCULAR || mSensor == IMU_STEREO || mSensor == IMU_RGBD)
+  if (mSensor == CameraType::IMU_MONOCULAR || mSensor == CameraType::IMU_STEREO || mSensor == CameraType::IMU_RGBD)
     Twb = vpKFs[0]->GetImuPose();
   else
     Twb = vpKFs[0]->GetPoseInverse();
@@ -830,8 +830,8 @@ void System::SaveTrajectoryEuRoC(const string& filename, Map* pMap) {
 
     // cout << "4" << endl;
 
-    if (mSensor == IMU_MONOCULAR || mSensor == IMU_STEREO ||
-        mSensor == IMU_RGBD) {
+    if (mSensor == CameraType::IMU_MONOCULAR || mSensor == CameraType::IMU_STEREO ||
+        mSensor == CameraType::IMU_RGBD) {
       Sophus::SE3f Twb = (pKF->mImuCalib.mTbc * (*lit) * Trw).inverse();
       Eigen::Quaternionf q = Twb.unit_quaternion();
       Eigen::Vector3f twb = Twb.translation();
@@ -858,7 +858,7 @@ void System::SaveTrajectoryEuRoC(const string& filename, Map* pMap) {
 {
 
     cout << endl << "Saving trajectory to " << filename << " ..." << endl;
-    if(mSensor==MONOCULAR)
+    if(mSensor==CameraType::MONOCULAR)
     {
         cerr << "ERROR: SaveTrajectoryEuRoC cannot be used for monocular." <<
 endl; return;
@@ -882,7 +882,7 @@ endl; return;
     // Transform all keyframes so that the first keyframe is at the origin.
     // After a loop closure the first keyframe might not be at the origin.
     Sophus::SE3f Twb; // Can be word to cam0 or world to b dependingo on IMU or
-not. if (mSensor==IMU_MONOCULAR || mSensor==IMU_STEREO || mSensor==IMU_RGBD) Twb
+not. if (mSensor==CameraType::IMU_MONOCULAR || mSensor==CameraType::IMU_STEREO || mSensor==CameraType::IMU_RGBD) Twb
 = vpKFs[0]->GetImuPose_(); else Twb = vpKFs[0]->GetPoseInverse_();
 
     ofstream f;
@@ -954,8 +954,8 @@ world reference
         // cout << "4" << endl;
 
 
-        if (mSensor == IMU_MONOCULAR || mSensor == IMU_STEREO ||
-mSensor==IMU_RGBD)
+        if (mSensor == CameraType::IMU_MONOCULAR || mSensor == CameraType::IMU_STEREO ||
+mSensor==CameraType::IMU_RGBD)
         {
             Sophus::SE3f Tbw = pKF->mImuCalib.Tbc_ * (*lit) * Trw;
             Sophus::SE3f Twb = Tbw.inverse();
@@ -1020,8 +1020,8 @@ endl;
 
         if(pKF->isBad())
             continue;
-        if (mSensor == IMU_MONOCULAR || mSensor == IMU_STEREO ||
-mSensor==IMU_RGBD)
+        if (mSensor == CameraType::IMU_MONOCULAR || mSensor == CameraType::IMU_STEREO ||
+mSensor==CameraType::IMU_RGBD)
         {
             cv::Mat R = pKF->GetImuRotation().t();
             vector<float> q = Converter::toQuaternion(R);
@@ -1081,8 +1081,8 @@ void System::SaveKeyFrameTrajectoryEuRoC(const string& filename) {
     // pKF->SetPose(pKF->GetPose()*Two);
 
     if (!pKF || pKF->isBad()) continue;
-    if (mSensor == IMU_MONOCULAR || mSensor == IMU_STEREO ||
-        mSensor == IMU_RGBD) {
+    if (mSensor == CameraType::IMU_MONOCULAR || mSensor == CameraType::IMU_STEREO ||
+        mSensor == CameraType::IMU_RGBD) {
       Sophus::SE3f Twb = pKF->GetImuPose();
       Eigen::Quaternionf q = Twb.unit_quaternion();
       Eigen::Vector3f twb = Twb.translation();
@@ -1120,8 +1120,8 @@ void System::SaveKeyFrameTrajectoryEuRoC(const string& filename, Map* pMap) {
     KeyFrame* pKF = vpKFs[i];
 
     if (!pKF || pKF->isBad()) continue;
-    if (mSensor == IMU_MONOCULAR || mSensor == IMU_STEREO ||
-        mSensor == IMU_RGBD) {
+    if (mSensor == CameraType::IMU_MONOCULAR || mSensor == CameraType::IMU_STEREO ||
+        mSensor == CameraType::IMU_RGBD) {
       Sophus::SE3f Twb = pKF->GetImuPose();
       Eigen::Quaternionf q = Twb.unit_quaternion();
       Eigen::Vector3f twb = Twb.translation();
@@ -1144,7 +1144,7 @@ void System::SaveKeyFrameTrajectoryEuRoC(const string& filename, Map* pMap) {
 /*void System::SaveTrajectoryKITTI(const string &filename)
 {
     cout << endl << "Saving camera trajectory to " << filename << " ..." <<
-endl; if(mSensor==MONOCULAR)
+endl; if(mSensor==CameraType::MONOCULAR)
     {
         cerr << "ERROR: SaveTrajectoryKITTI cannot be used for monocular." <<
 endl; return;
@@ -1204,7 +1204,7 @@ twc.at<float>(2) << endl;
 
 void System::SaveTrajectoryKITTI(const string& filename) {
   cout << endl << "Saving camera trajectory to " << filename << " ..." << endl;
-  if (mSensor == MONOCULAR) {
+  if (mSensor == CameraType::MONOCULAR) {
     cerr << "ERROR: SaveTrajectoryKITTI cannot be used for monocular." << endl;
     return;
   }

@@ -22,15 +22,14 @@
 
 
 #include <unistd.h>
-#include<stdio.h>
-#include<stdlib.h>
-#include<string>
-#include<thread>
-#include<opencv2/core/core.hpp>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <thread>
+#include <opencv2/core/core.hpp>
 
+#include "ImprovedTypes.hpp"
 #include "Tracking.h"
-#include "FrameDrawer.h"
-#include "MapDrawer.h"
 #include "Atlas.h"
 #include "LocalMapping.h"
 #include "LoopClosing.h"
@@ -71,8 +70,6 @@ public:
 };
 
 class Viewer;
-class FrameDrawer;
-class MapDrawer;
 class Atlas;
 class Tracking;
 class LocalMapping;
@@ -82,15 +79,6 @@ class Settings;
 class System
 {
 public:
-    // Input sensor
-    enum eSensor{
-        MONOCULAR=0,
-        STEREO=1,
-        RGBD=2,
-        IMU_MONOCULAR=3,
-        IMU_STEREO=4,
-        IMU_RGBD=5,
-    };
 
     // File type
     enum FileType{
@@ -199,7 +187,7 @@ private:
     string CalculateCheckSum(string filename, int type);
 
     // Input sensor
-    eSensor mSensor;
+    CameraType::eSensor mSensor;
 
     // ORB vocabulary used for place recognition and feature matching.
     ORBVocabulary* mpVocabulary;
