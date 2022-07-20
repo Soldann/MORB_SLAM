@@ -181,7 +181,6 @@ protected:
 
     long unsigned int mnInitKFid;
     long unsigned int mnMaxKFid;
-    //long unsigned int mnLastLoopKFid;
 
     // Index related to a big change in the map (loop closure, global BA)
     int mnBigChangeIdx;
