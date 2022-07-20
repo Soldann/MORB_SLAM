@@ -29,6 +29,10 @@
 #include <mutex>
 #include <stdexcept>
 #include <iostream>
+#include <string>
+#include "System.h"
+#include "Atlas.h"
+#include "Tracking.h"
 
 namespace ORB_SLAM3 {
 
@@ -38,13 +42,12 @@ void Viewer::setBoth(const bool b){
 }
 
 Viewer::Viewer(const System_ptr &pSystem, const std::string &strSettingPath)
-    : both(false),
-      mpSystem(pSystem),
+    : mpSystem(pSystem),
       mpFrameDrawer(pSystem->mpAtlas),
       mpMapDrawer(pSystem->mpAtlas, strSettingPath),
       mpTracker(pSystem->mpTracker),
-      mbClosed(false),
-      mbStopTrack(false) {
+      both(false),
+      mbClosed(false){
     cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
     if (!ParseViewerParamFile(fSettings)) {
       std::cerr << "**ERROR in the config file, the format is not correct**"
@@ -55,13 +58,12 @@ Viewer::Viewer(const System_ptr &pSystem, const std::string &strSettingPath)
 }
 
 Viewer::Viewer(const System_ptr &pSystem, const Settings &settings)
-    : both(false),
-      mpSystem(pSystem),
+    : mpSystem(pSystem),
       mpFrameDrawer(pSystem->mpAtlas),
       mpMapDrawer(pSystem->mpAtlas, settings),
       mpTracker(pSystem->mpTracker),
-      mbClosed(true),
-      mbStopTrack(false) {
+      both(false),
+      mbClosed(true){
     newParameterLoader(settings);
     mptViewer = std::thread(&Viewer::Run, this);
 }
@@ -168,7 +170,7 @@ bool Viewer::ParseViewerParamFile(cv::FileStorage &fSettings) {
   }
 
   if(!b_miss_params){
-    string sCameraName = fSettings["Camera.type"];
+    std::string sCameraName = fSettings["Camera.type"];
     if ((mpTracker->mSensor == CameraType::STEREO || mpTracker->mSensor == CameraType::IMU_STEREO ||
           mpTracker->mSensor == CameraType::IMU_RGBD || mpTracker->mSensor == CameraType::RGBD) &&
           sCameraName == "KannalaBrandt8")
@@ -179,9 +181,9 @@ bool Viewer::ParseViewerParamFile(cv::FileStorage &fSettings) {
 }
 
 void Viewer::update(const Sophus::SE3f &pose){
-  if(mpTracker->mState != NOT_INITIALIZED){
-    mpFrameDrawer->Update(mpTracker);
-    mpMapDrawer->SetCurrentCameraPose(pose);
+  if(mpTracker->mState != Tracker::NOT_INITIALIZED){
+    mpFrameDrawer.Update(mpTracker);
+    mpMapDrawer.SetCurrentCameraPose(pose);
   }
 }
 
@@ -236,19 +238,19 @@ void Viewer::Run() {
   bool bLocalizationMode = false;
   bool bCameraView = true;
 
-  if (mpTracker->mSensor == mpSystem->MONOCULAR ||
-      mpTracker->mSensor == mpSystem->STEREO ||
-      mpTracker->mSensor == mpSystem->RGBD) {
+  if (mpTracker->mSensor == CameraType::MONOCULAR ||
+      mpTracker->mSensor == CameraType::STEREO ||
+      mpTracker->mSensor == CameraType::RGBD) {
     menuShowGraph = true;
   }
 
   float trackedImageScale = mpTracker->GetImageScale();
 
-  cout << "Starting the Viewer" << endl;
+  std::cout << "Starting the Viewer" << std::endl;
   while (isOpen()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    mpMapDrawer->GetCurrentOpenGLCameraMatrix(Twc, Ow);
+    mpMapDrawer.GetCurrentOpenGLCameraMatrix(Twc, Ow);
 
     if (menuFollowCamera && bFollow) {
       if (bCameraView)
@@ -284,7 +286,7 @@ void Viewer::Run() {
       s_cam.Follow(Twc);
     }
 
-    if (menuTopView && mpMapDrawer->mpAtlas->isImuInitialized()) {
+    if (menuTopView && mpSystem->mpAtlas->isImuInitialized()) {
       menuTopView = false;
       bCameraView = false;
       s_cam.SetProjectionMatrix(pangolin::ProjectionMatrix(
@@ -304,20 +306,20 @@ void Viewer::Run() {
 
     d_cam.Activate(s_cam);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    mpMapDrawer->DrawCurrentCamera(Twc);
+    mpMapDrawer.DrawCurrentCamera(Twc);
     if (menuShowKeyFrames || menuShowGraph || menuShowInertialGraph ||
         menuShowOptLba)
-      mpMapDrawer->DrawKeyFrames(menuShowKeyFrames, menuShowGraph,
+      mpMapDrawer.DrawKeyFrames(menuShowKeyFrames, menuShowGraph,
                                  menuShowInertialGraph, menuShowOptLba);
-    if (menuShowPoints) mpMapDrawer->DrawMapPoints();
+    if (menuShowPoints) mpMapDrawer.DrawMapPoints();
 
     pangolin::FinishFrame();
 
     cv::Mat toShow;
-    cv::Mat im = mpFrameDrawer->DrawFrame(trackedImageScale);
+    cv::Mat im = mpFrameDrawer.DrawFrame(trackedImageScale);
 
     if (both) {
-      cv::Mat imRight = mpFrameDrawer->DrawRightFrame(trackedImageScale);
+      cv::Mat imRight = mpFrameDrawer.DrawRightFrame(trackedImageScale);
       cv::hconcat(im, imRight, toShow);
     } else {
       toShow = im;

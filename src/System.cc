@@ -37,6 +37,8 @@
 #include <ctime>
 #include <iomanip>
 #include <thread>
+#include <string>
+#include <iostream>
 
 #include "Converter.h"
 
@@ -44,49 +46,49 @@ namespace ORB_SLAM3 {
 
 Verbose::eLevel Verbose::th = Verbose::VERBOSITY_NORMAL;
 
-System::System(const string& strVocFile, const string& strSettingsFile,
+System::System(const std::string& strVocFile, const std::string& strSettingsFile,
                const CameraType::eSensor sensor,
-               const string& strSequence)
+               const std::string& strSequence)
     : mSensor(sensor),
-      mpAtlas(0),
+      mpAtlas(std::make_shared<Atlas>(0)),
       mbReset(false),
       mbResetActiveMap(false),
       mbActivateLocalizationMode(false),
       mbDeactivateLocalizationMode(false) {
   // Output welcome message
-  cout << endl
+  std::cout << std::endl
        << "ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, "
           "Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of "
           "Zaragoza."
-       << endl
+       << std::endl
        << "ORB-SLAM2 Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel "
           "and Juan D. Tardós, University of Zaragoza."
-       << endl
-       << "This program comes with ABSOLUTELY NO WARRANTY;" << endl
+       << std::endl
+       << "This program comes with ABSOLUTELY NO WARRANTY;" << std::endl
        << "This is free software, and you are welcome to redistribute it"
-       << endl
-       << "under certain conditions. See LICENSE.txt." << endl
-       << endl;
+       << std::endl
+       << "under certain conditions. See LICENSE.txt." << std::endl
+       << std::endl;
 
-  cout << "Input sensor was set to: ";
+  std::cout << "Input sensor was set to: ";
 
   if (mSensor == CameraType::MONOCULAR)
-    cout << "Monocular" << endl;
+    std::cout << "Monocular" << std::endl;
   else if (mSensor == CameraType::STEREO)
-    cout << "Stereo" << endl;
+    std::cout << "Stereo" << std::endl;
   else if (mSensor == CameraType::RGBD)
-    cout << "RGB-D" << endl;
+    std::cout << "RGB-D" << std::endl;
   else if (mSensor == CameraType::IMU_MONOCULAR)
-    cout << "Monocular-Inertial" << endl;
+    std::cout << "Monocular-Inertial" << std::endl;
   else if (mSensor == CameraType::IMU_STEREO)
-    cout << "Stereo-Inertial" << endl;
+    std::cout << "Stereo-Inertial" << std::endl;
   else if (mSensor == CameraType::IMU_RGBD)
-    cout << "RGB-D-Inertial" << endl;
+    std::cout << "RGB-D-Inertial" << std::endl;
 
   // Check settings file
   cv::FileStorage fsSettings(strSettingsFile.c_str(), cv::FileStorage::READ);
   if (!fsSettings.isOpened()) {
-    cerr << "Failed to open settings file at: " << strSettingsFile << endl;
+    std::cerr << "Failed to open settings file at: " << strSettingsFile << std::endl;
     exit(-1);
   }
 
@@ -97,7 +99,7 @@ System::System(const string& strVocFile, const string& strSettingsFile,
     mStrLoadAtlasFromFile = settings_->atlasLoadFile();
     mStrSaveAtlasToFile = settings_->atlasSaveFile();
 
-    // cout << (*settings_) << endl;
+    // std::cout << (*settings_) << std::endl;
   } else {
     settings_ = nullptr;
     cv::FileNode node = fsSettings["System.LoadAtlasFromFile"];
@@ -179,7 +181,7 @@ System::System(const string& strVocFile, const string& strSettingsFile,
 
     // loadedAtlas = true; // UNUSED
 
-    mpAtlas.CreateNewMap();
+    mpAtlas->CreateNewMap();
 
     // clock_t timeElapsed = clock() - start;
     // unsigned msElapsed = timeElapsed / (CLOCKS_PER_SEC / 1000);
@@ -189,19 +191,19 @@ System::System(const string& strVocFile, const string& strSettingsFile,
   }
 
   if (mSensor == CameraType::IMU_STEREO || mSensor == CameraType::IMU_MONOCULAR || mSensor == CameraType::IMU_RGBD)
-    mpAtlas.SetInertialSensor();
+    mpAtlas->SetInertialSensor();
 
   // Initialize the Tracking thread
   //(it will live in the main thread of execution, the one that called this
   // constructor)
   cout << "Seq. Name: " << strSequence << endl;
   mpTracker = new Tracking(this, mpVocabulary,
-                           &mpAtlas, mpKeyFrameDatabase, strSettingsFile,
+                           mpAtlas, mpKeyFrameDatabase, strSettingsFile,
                            mSensor, settings_, strSequence);
 
   // Initialize the Local Mapping thread and launch
   mpLocalMapper = new LocalMapping(
-      this, &mpAtlas, mSensor == CameraType::MONOCULAR || mSensor == CameraType::IMU_MONOCULAR,
+      this, mpAtlas, mSensor == CameraType::MONOCULAR || mSensor == CameraType::IMU_MONOCULAR,
       mSensor == CameraType::IMU_MONOCULAR || mSensor == CameraType::IMU_STEREO || mSensor == CameraType::IMU_RGBD,
       strSequence);
   mptLocalMapping = new thread(&ORB_SLAM3::LocalMapping::Run, mpLocalMapper);
@@ -219,7 +221,7 @@ System::System(const string& strVocFile, const string& strSettingsFile,
   // Initialize the Loop Closing thread and launch
   // mSensor!=MONOCULAR && mSensor!=IMU_MONOCULAR
   mpLoopCloser =
-      new LoopClosing(&mpAtlas, mpKeyFrameDatabase, mpVocabulary,
+      new LoopClosing(mpAtlas, mpKeyFrameDatabase, mpVocabulary,
                       mSensor != CameraType::MONOCULAR, activeLC);  // mSensor!=CameraType::MONOCULAR);
   mptLoopClosing = new thread(&ORB_SLAM3::LoopClosing::Run, mpLoopCloser);
 
@@ -469,7 +471,7 @@ void System::DeactivateLocalizationMode() {
 
 bool System::MapChanged() {
   static int n = 0;
-  int curn = mpAtlas.GetLastBigChangeIdx();
+  int curn = mpAtlas->GetLastBigChangeIdx();
   if (n < curn) {
     n = curn;
     return true;
@@ -533,7 +535,7 @@ void System::SaveTrajectoryTUM(const string& filename) {
     return;
   }
 
-  vector<KeyFrame*> vpKFs = mpAtlas.GetAllKeyFrames();
+  vector<KeyFrame*> vpKFs = mpAtlas->GetAllKeyFrames();
   sort(vpKFs.begin(), vpKFs.end(), KeyFrame::lId);
 
   // Transform all keyframes so that the first keyframe is at the origin.
@@ -591,7 +593,7 @@ void System::SaveKeyFrameTrajectoryTUM(const string& filename) {
   cout << endl
        << "Saving keyframe trajectory to " << filename << " ... TUM" << endl;
 
-  vector<KeyFrame*> vpKFs = mpAtlas.GetAllKeyFrames();
+  vector<KeyFrame*> vpKFs = mpAtlas->GetAllKeyFrames();
   sort(vpKFs.begin(), vpKFs.end(), KeyFrame::lId);
 
   // Transform all keyframes so that the first keyframe is at the origin.
@@ -626,7 +628,7 @@ void System::SaveTrajectoryEuRoC(const string& filename) {
   endl; return;
   }*/
 
-  vector<Map*> vpMaps = mpAtlas.GetAllMaps();
+  vector<Map*> vpMaps = mpAtlas->GetAllMaps();
   size_t numMaxKFs = 0;
   Map* pBiggerMap = nullptr;
   std::cout << "There are " << std::to_string(vpMaps.size())
@@ -856,7 +858,7 @@ void System::SaveTrajectoryEuRoC(const string& filename, Map* pMap) {
 endl; return;
     }
 
-    vector<Map*> vpMaps = mpAtlas.GetAllMaps();
+    vector<Map*> vpMaps = mpAtlas->GetAllMaps();
     Map* pBiggerMap;
     int numMaxKFs = 0;
     for(Map* pMap :vpMaps)
@@ -983,7 +985,7 @@ endl;
     cout << endl << "Saving keyframe trajectory to " << filename << " ..." <<
 endl;
 
-    vector<Map*> vpMaps = mpAtlas.GetAllMaps();
+    vector<Map*> vpMaps = mpAtlas->GetAllMaps();
     Map* pBiggerMap;
     int numMaxKFs = 0;
     for(Map* pMap :vpMaps)
@@ -1042,7 +1044,7 @@ void System::SaveKeyFrameTrajectoryEuRoC(const string& filename) {
   cout << endl
        << "Saving keyframe trajectory to " << filename << " ... Euroc" << endl;
 
-  vector<Map*> vpMaps = mpAtlas.GetAllMaps();
+  vector<Map*> vpMaps = mpAtlas->GetAllMaps();
   Map* pBiggerMap = nullptr;
   size_t numMaxKFs = 0;
   for (Map* pMap : vpMaps) {
@@ -1142,7 +1144,7 @@ endl; if(mSensor==CameraType::MONOCULAR)
 endl; return;
     }
 
-    vector<KeyFrame*> vpKFs = mpAtlas.GetAllKeyFrames();
+    vector<KeyFrame*> vpKFs = mpAtlas->GetAllKeyFrames();
     sort(vpKFs.begin(),vpKFs.end(),KeyFrame::lId);
 
     // Transform all keyframes so that the first keyframe is at the origin.
@@ -1201,7 +1203,7 @@ void System::SaveTrajectoryKITTI(const string& filename) {
     return;
   }
 
-  vector<KeyFrame*> vpKFs = mpAtlas.GetAllKeyFrames();
+  vector<KeyFrame*> vpKFs = mpAtlas->GetAllKeyFrames();
   sort(vpKFs.begin(), vpKFs.end(), KeyFrame::lId);
 
   // Transform all keyframes so that the first keyframe is at the origin.
@@ -1333,14 +1335,14 @@ vector<cv::KeyPoint> System::GetTrackedKeyPointsUn() {
 
 double System::GetTimeFromIMUInit() {
   double aux = mpLocalMapper->GetCurrKFTime() - mpLocalMapper->mFirstTs;
-  if ((aux > 0.) && mpAtlas.isImuInitialized())
+  if ((aux > 0.) && mpAtlas->isImuInitialized())
     return mpLocalMapper->GetCurrKFTime() - mpLocalMapper->mFirstTs;
   else
     return 0.f;
 }
 
 bool System::isLost() {
-  if (!mpAtlas.isImuInitialized())
+  if (!mpAtlas->isImuInitialized())
     return false;
   else {
     if ((mpTracker->mState ==
@@ -1354,7 +1356,7 @@ bool System::isLost() {
 bool System::isFinished() { return (GetTimeFromIMUInit() > 0.1); }
 
 void System::ChangeDataset() {
-  if (mpAtlas.GetCurrentMap()->KeyFramesInMap() < 12) {
+  if (mpAtlas->GetCurrentMap()->KeyFramesInMap() < 12) {
     mpTracker->ResetActiveMap();
   } else {
     mpTracker->CreateMapInAtlas();
@@ -1387,7 +1389,7 @@ void System::SaveAtlas(int type) {
     // clock_t start = clock();
 
     // Save the current session
-    mpAtlas.PreSave();
+    mpAtlas->PreSave();
     std::cout << "presaved\n";
     string pathSaveFileName = "./";
     pathSaveFileName = pathSaveFileName.append(mStrSaveAtlasToFile);
@@ -1419,7 +1421,7 @@ void System::SaveAtlas(int type) {
 
       oa << strVocabularyName;
       oa << strVocabularyChecksum;
-      oa << mpAtlas;
+      oa << *mpAtlas;
       cout << "End to write the save text file" << endl;
     } else if (type == BINARY_FILE)  // File binary
     {
@@ -1435,7 +1437,7 @@ void System::SaveAtlas(int type) {
       std::cout << "streamed name\n";
       oa << strVocabularyChecksum;
       std::cout << "streamed checksum\n";
-      oa << mpAtlas;
+      oa << *mpAtlas;
       cout << "End to write save binary file" << endl;
     } else {
       std::cout << "no file to be saved I guess\n";
@@ -1462,7 +1464,7 @@ bool System::LoadAtlas(int type) {
     boost::archive::text_iarchive ia(ifs);
     ia >> strFileVoc;
     ia >> strVocChecksum;
-    ia >> mpAtlas;
+    ia >> *mpAtlas;
     cout << "End to load the save text file " << endl;
     isRead = true;
   } else if (type == BINARY_FILE)  // File binary
@@ -1476,7 +1478,7 @@ bool System::LoadAtlas(int type) {
     boost::archive::binary_iarchive ia(ifs);
     ia >> strFileVoc;
     ia >> strVocChecksum;
-    ia >> mpAtlas;
+    ia >> *mpAtlas;
     cout << "End to load the save binary file" << endl;
     isRead = true;
   }
@@ -1493,9 +1495,9 @@ bool System::LoadAtlas(int type) {
       return false;  // Both are differents
     }
 
-    mpAtlas.SetKeyFrameDababase(mpKeyFrameDatabase);
-    mpAtlas.SetORBVocabulary(mpVocabulary);
-    mpAtlas.PostLoad();
+    mpAtlas->SetKeyFrameDababase(mpKeyFrameDatabase);
+    mpAtlas->SetORBVocabulary(mpVocabulary);
+    mpAtlas->PostLoad();
     return true;
   }
   return false;

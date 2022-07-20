@@ -39,7 +39,7 @@ using namespace std;
 
 namespace ORB_SLAM3 {
 
-Tracking::Tracking(System* pSys, ORBVocabulary* pVoc, Atlas* pAtlas,
+Tracking::Tracking(System* pSys, ORBVocabulary* pVoc, const Atlas_ptr &pAtlas,
                    KeyFrameDatabase* pKFDB, const string& strSettingPath,
                    const int sensor, Settings* settings, const string& _nameSeq)
     : mState(Tracker::NO_IMAGES_YET),

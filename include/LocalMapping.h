@@ -23,6 +23,7 @@
 
 #include <mutex>
 
+#include "ImprovedTypes.hpp"
 #include "Atlas.h"
 #include "KeyFrame.h"
 #include "KeyFrameDatabase.h"
@@ -40,7 +41,7 @@ class Atlas;
 class LocalMapping {
  public:
   
-  LocalMapping(System* pSys, Atlas* pAtlas, const float bMonocular,
+  LocalMapping(System* pSys, const Atlas_ptr &pAtlas, const float bMonocular,
                bool bInertial, const string& _strSeqName = std::string());
 
   void SetLoopCloser(LoopClosing* pLoopCloser);
@@ -152,7 +153,7 @@ class LocalMapping {
   bool mbFinished;
   std::mutex mMutexFinish;
 
-  Atlas* mpAtlas;
+  Atlas_ptr mpAtlas;
 
   LoopClosing* mpLoopCloser;
   Tracking* mpTracker;

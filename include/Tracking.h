@@ -51,7 +51,7 @@ class Tracking {
  public:
   
   Tracking(System* pSys, ORBVocabulary* pVoc,
-           Atlas* pAtlas, KeyFrameDatabase* pKFDB,
+           const Atlas_ptr &pAtlas, KeyFrameDatabase* pKFDB,
            const string& strSettingPath, const int sensor, Settings* settings,
            const string& _nameSeq = std::string());
 
@@ -267,7 +267,7 @@ class Tracking {
   System* mpSystem;
 
   // Atlas
-  Atlas* mpAtlas;
+  Atlas_ptr mpAtlas;
 
   // Calibration matrix
   cv::Mat mK;

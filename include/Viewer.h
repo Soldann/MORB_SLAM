@@ -44,7 +44,7 @@ class Viewer {
 
   virtual ~Viewer();
 
-  void update();
+  void update(const Sophus::SE3f &pose);
 
   void close();
   bool isClosed() const;

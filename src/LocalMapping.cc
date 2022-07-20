@@ -32,7 +32,7 @@
 
 namespace ORB_SLAM3 {
 
-LocalMapping::LocalMapping(System* pSys, Atlas* pAtlas, const float bMonocular,
+LocalMapping::LocalMapping(System* pSys, const Atlas_ptr &pAtlas, const float bMonocular,
                            bool bInertial, const string& _strSeqName)
     : mScale(1.0),
       mInitSect(0),
