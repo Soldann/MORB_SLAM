@@ -56,9 +56,9 @@ class Viewer {
   bool isClosed() const;
   bool isOpen() const;
 
-  bool both;
 
  private:
+  void setBoth(const bool b);
   bool ParseViewerParamFile(cv::FileStorage& fSettings);
 
   bool Stop();
@@ -68,6 +68,7 @@ class Viewer {
   MapDrawer mpMapDrawer;
   Tracking_ptr mpTracker;
   std::thread mptViewer;
+  bool both;
 
   // 1/fps in ms
   double mT;

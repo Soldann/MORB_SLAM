@@ -24,13 +24,12 @@
 #include "GeometricCamera.h"
 #include "KannalaBrandt8.h"
 #include "Pinhole.h"
-#include "Viewer.h"
 
 namespace ORB_SLAM3 {
 
 Atlas::Atlas() { mpCurrentMap = static_cast<Map*>(NULL); }
 
-Atlas::Atlas(int initKFid) : mnLastInitKFidMap(initKFid), mHasViewer(false) {
+Atlas::Atlas(int initKFid) : mnLastInitKFidMap(initKFid) {
   mpCurrentMap = static_cast<Map*>(NULL);
   CreateNewMap();
 }
@@ -61,9 +60,6 @@ void Atlas::CreateNewMap() {
 
     mpCurrentMap->SetStoredMap();
     cout << "Stored map with ID: " << mpCurrentMap->GetId() << endl;
-
-    // if(mHasViewer)
-    //    mpViewer->AddMapToCreateThumbnail(mpCurrentMap);
   }
   cout << "Creation of new map with last KF id: " << mnLastInitKFidMap << endl;
 
@@ -86,11 +82,6 @@ void Atlas::ChangeMap(Map* pMap) {
 unsigned long int Atlas::GetLastInitKFid() {
   unique_lock<mutex> lock(mMutexAtlas);
   return mnLastInitKFidMap;
-}
-
-void Atlas::SetViewer(Viewer* pViewer) {
-  mpViewer = pViewer;
-  mHasViewer = true;
 }
 
 void Atlas::AddKeyFrame(KeyFrame* pKF) {

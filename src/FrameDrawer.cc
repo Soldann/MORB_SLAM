@@ -30,7 +30,7 @@
 
 namespace ORB_SLAM3 {
 
-FrameDrawer::FrameDrawer(const Atlas_ptr &pAtlas) : both(false), mpAtlas(pAtlas) {
+FrameDrawer::FrameDrawer(const Atlas_ptr &pAtlas) : mpAtlas(pAtlas), both(false) {
   mState = Tracker::SYSTEM_NOT_READY;
   mIm = cv::Mat(480, 640, CV_8UC3, cv::Scalar(0, 0, 0));
   mImRight = cv::Mat(480, 640, CV_8UC3, cv::Scalar(0, 0, 0));

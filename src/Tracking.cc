@@ -586,8 +586,6 @@ void Tracking::newParameterLoader(Settings* settings) {
     mpCamera2 = mpAtlas->AddCamera(mpCamera2);
 
     mTlr = settings->Tlr();
-
-    mpFrameDrawer->both = true;
   }
 
   if (mSensor == System::STEREO || mSensor == System::RGBD ||
@@ -1050,8 +1048,6 @@ bool Tracking::ParseCamParamFile(cv::FileStorage& fSettings) {
             leftLappingBegin;
         static_cast<KannalaBrandt8*>(mpCamera)->mvLappingArea[1] =
             leftLappingEnd;
-
-        mpFrameDrawer->both = true;
 
         vector<float> vCamCalib2{fx, fy, cx, cy, k1, k2, k3, k4};
         mpCamera2 = new KannalaBrandt8(vCamCalib2);
@@ -2063,9 +2059,9 @@ void Tracking::Track() {
 #endif
 
     // Update drawer
-    mpFrameDrawer->Update(this);
-    if (mCurrentFrame.isSet())
-      mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.GetPose());
+    // mpFrameDrawer->Update(this);
+    // if (mCurrentFrame.isSet())
+    //   mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.GetPose());
 
     if (bOK || mState == Tracker::RECENTLY_LOST) {
       // Update motion model
@@ -2077,9 +2073,9 @@ void Tracking::Track() {
         mbVelocity = false;
       }
 
-      if (mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO ||
-          mSensor == System::IMU_RGBD)
-        mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.GetPose());
+      // if (mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO ||
+      //     mSensor == System::IMU_RGBD)
+      //   mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.GetPose());
 
       // Clean VO matches
       for (int i = 0; i < mCurrentFrame.N; i++) {
@@ -2296,7 +2292,7 @@ void Tracking::StereoInitialization() {
 
     mpAtlas->GetCurrentMap()->mvpKeyFrameOrigins.push_back(pKFini);
 
-    mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.GetPose());
+    // mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.GetPose());
 
     mState = Tracker::OK;
   }
@@ -2494,7 +2490,7 @@ void Tracking::CreateInitialMapMonocular() {
 
   mpAtlas->SetReferenceMapPoints(mvpLocalMapPoints);
 
-  mpMapDrawer->SetCurrentCameraPose(pKFcur->GetPose());
+  // mpMapDrawer->SetCurrentCameraPose(pKFcur->GetPose());
 
   mpAtlas->GetCurrentMap()->mvpKeyFrameOrigins.push_back(pKFini);
 
@@ -3543,11 +3539,6 @@ bool Tracking::Relocalization() {
 void Tracking::Reset(bool bLocMap) {
   Verbose::PrintMess("System Reseting", Verbose::VERBOSITY_NORMAL);
 
-  // if (mpViewer) {
-  //   mpViewer->RequestStop();
-  //   while (!mpViewer->isStopped()) usleep(3000);
-  // }
-
   // Reset Local Mapping
   if (!bLocMap) {
     Verbose::PrintMess("Reseting Local Mapper...", Verbose::VERBOSITY_NORMAL);
@@ -3591,17 +3582,11 @@ void Tracking::Reset(bool bLocMap) {
   mpLastKeyFrame = static_cast<KeyFrame*>(NULL);
   mvIniMatches.clear();
 
-  // if (mpViewer) mpViewer->Release();
-
   Verbose::PrintMess("   End reseting! ", Verbose::VERBOSITY_NORMAL);
 }
 
 void Tracking::ResetActiveMap(bool bLocMap) {
   Verbose::PrintMess("Active map Reseting", Verbose::VERBOSITY_NORMAL);
-  // if (mpViewer) {
-  //   mpViewer->RequestStop();
-  //   while (!mpViewer->isStopped()) usleep(3000);
-  // }
 
   Map* pMap = mpAtlas->GetCurrentMap();
 
@@ -3672,8 +3657,6 @@ void Tracking::ResetActiveMap(bool bLocMap) {
   mvIniMatches.clear();
 
   mbVelocity = false;
-
-  // if (mpViewer) mpViewer->Release();
 
   Verbose::PrintMess("   End reseting! ", Verbose::VERBOSITY_NORMAL);
 }

@@ -19,8 +19,7 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LOCALMAPPING_H
-#define LOCALMAPPING_H
+#pragma once
 
 #include <mutex>
 
@@ -196,4 +195,3 @@ class LocalMapping {
 
 }  // namespace ORB_SLAM3
 
-#endif  // LOCALMAPPING_H

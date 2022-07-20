@@ -31,6 +31,10 @@
 
 namespace ORB_SLAM3 {
 
+void Viewer::setBoth(const bool b){
+  both = true;
+  mpFrameDrawer.both = true;
+}
 
 Viewer::Viewer(const System_ptr &pSystem, const std::string &strSettingPath)
     : both(false),
@@ -60,10 +64,10 @@ Viewer::Viewer(const System_ptr &pSystem, const Settings &settings)
       mbStopTrack(false) {
     newParameterLoader(settings);
     mptViewer = std::thread(&Viewer::Run, this);
-    both = mpFrameDrawer.both;
 }
 
 Viewer::~Viewer(){
+  close();
   if(mptViewer.joinable()) mptViewer.join();
 }
 
@@ -83,6 +87,11 @@ void Viewer::newParameterLoader(const Settings &settings) {
   mViewpointY = settings.viewPointY();
   mViewpointZ = settings.viewPointZ();
   mViewpointF = settings.viewPointF();
+
+  if ((mpTracker->mSensor == System::STEREO || mpTracker->mSensor == System::IMU_STEREO ||
+        mpTracker->mSensor == System::IMU_RGBD || mpTracker->mSensor == System::RGBD) &&
+        settings.cameraType() == Settings::KannalaBrandt)
+        setBoth(true);
 }
 
 bool Viewer::ParseViewerParamFile(cv::FileStorage &fSettings) {
@@ -156,6 +165,14 @@ bool Viewer::ParseViewerParamFile(cv::FileStorage &fSettings) {
         << "*Viewer.ViewpointF parameter doesn't exist or is not a real number*"
         << std::endl;
     b_miss_params = true;
+  }
+
+  if(!b_miss_params){
+    string sCameraName = fSettings["Camera.type"];
+    if ((mpTracker->mSensor == System::STEREO || mpTracker->mSensor == System::IMU_STEREO ||
+          mpTracker->mSensor == System::IMU_RGBD || mpTracker->mSensor == System::RGBD) &&
+          sCameraName == "KannalaBrandt8")
+          setBoth(true);
   }
 
   return !b_miss_params;

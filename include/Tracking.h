@@ -266,12 +266,6 @@ class Tracking {
   // System
   System* mpSystem;
 
-  // Drawers
-  // Viewer* mpViewer;
-  // FrameDrawer* mpFrameDrawer;
-  // MapDrawer* mpMapDrawer;
-  // bool bStepByStep;
-
   // Atlas
   Atlas* mpAtlas;
 

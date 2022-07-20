@@ -19,8 +19,7 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATLAS_H
-#define ATLAS_H
+#pragma once
 
 #include <boost/serialization/export.hpp>
 #include <boost/serialization/vector.hpp>
@@ -35,7 +34,6 @@
 #include "Pinhole.h"
 
 namespace ORB_SLAM3 {
-class Viewer;
 class Map;
 class MapPoint;
 class KeyFrame;
@@ -80,8 +78,6 @@ class Atlas {
   void ChangeMap(Map* pMap);
 
   unsigned long int GetLastInitKFid();
-
-  void SetViewer(Viewer* pViewer);
 
   // Method for change components in the current map
   void AddKeyFrame(KeyFrame* pKF);
@@ -152,9 +148,6 @@ class Atlas {
 
   unsigned long int mnLastInitKFidMap;
 
-  Viewer* mpViewer;
-  bool mHasViewer;
-
   // Class references for the map reconstruction from the save file
   KeyFrameDatabase* mpKeyFrameDB;
   ORBVocabulary* mpORBVocabulary;
@@ -165,5 +158,3 @@ class Atlas {
 };  // class Atlas
 
 }  // namespace ORB_SLAM3
-
-#endif  // ATLAS_H

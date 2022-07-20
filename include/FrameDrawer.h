@@ -30,6 +30,7 @@
 namespace ORB_SLAM3 {
 
 class MapPoint;
+class Viewer
 
 class FrameDrawer {
  public:
@@ -43,9 +44,10 @@ class FrameDrawer {
   cv::Mat DrawFrame(float imageScale = 1.f);
   cv::Mat DrawRightFrame(float imageScale = 1.f);
 
-  bool both;
+  friend Viewer;
 
  protected:
+  bool both;
   void DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText);
 
   // Info of the frame to be drawn
