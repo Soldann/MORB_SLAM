@@ -17,9 +17,9 @@
 */
 
 
-#ifndef LOOPCLOSING_H
-#define LOOPCLOSING_H
+#pragma once
 
+#include "ImprovedTypes.hpp"
 #include "KeyFrame.h"
 #include "LocalMapping.h"
 #include "Atlas.h"
@@ -52,7 +52,7 @@ public:
 
 public:
 
-    LoopClosing(Atlas* pAtlas, KeyFrameDatabase* pDB, ORBVocabulary* pVoc,const bool bFixScale, const bool bActiveLC);
+    LoopClosing(const Atlas_ptr &pAtlas, KeyFrameDatabase* pDB, ORBVocabulary* pVoc,const bool bFixScale, const bool bActiveLC);
 
     void SetTracker(Tracking* pTracker);
 
@@ -154,7 +154,7 @@ protected:
     bool mbFinished;
     std::mutex mMutexFinish;
 
-    Atlas* mpAtlas;
+    Atlas_ptr mpAtlas;
     Tracking* mpTracker;
 
     KeyFrameDatabase* mpKeyFrameDB;
@@ -243,4 +243,3 @@ protected:
 
 } //namespace ORB_SLAM
 
-#endif // LOOPCLOSING_H

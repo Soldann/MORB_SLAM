@@ -24,6 +24,7 @@
 #include <mutex>
 #include <thread>
 
+#include "ImprovedTypes.hpp"
 #include "Converter.h"
 #include "G2oTypes.h"
 #include "ORBmatcher.h"
@@ -32,7 +33,7 @@
 
 namespace ORB_SLAM3 {
 
-LoopClosing::LoopClosing(Atlas* pAtlas, KeyFrameDatabase* pDB,
+LoopClosing::LoopClosing(const Atlas_ptr &pAtlas, KeyFrameDatabase* pDB,
                          ORBVocabulary* pVoc, const bool bFixScale,
                          const bool bActiveLC)
     : 
@@ -108,9 +109,9 @@ void LoopClosing::Run() {
 #endif
       if (bFindedRegion) {
         if (mbMergeDetected) {
-          if ((mpTracker->mSensor == System::IMU_MONOCULAR ||
-               mpTracker->mSensor == System::IMU_STEREO ||
-               mpTracker->mSensor == System::IMU_RGBD) &&
+          if ((mpTracker->mSensor == CameraType::IMU_MONOCULAR ||
+               mpTracker->mSensor == CameraType::IMU_STEREO ||
+               mpTracker->mSensor == CameraType::IMU_RGBD) &&
               (!mpCurrentKF->GetMap()->isImuInitialized())) {
             cout << "IMU is not initilized, merge is aborted" << endl;
           } else {
@@ -139,9 +140,9 @@ void LoopClosing::Run() {
                 continue;
               }
               // If inertial, force only yaw
-              if ((mpTracker->mSensor == System::IMU_MONOCULAR ||
-                   mpTracker->mSensor == System::IMU_STEREO ||
-                   mpTracker->mSensor == System::IMU_RGBD) &&
+              if ((mpTracker->mSensor == CameraType::IMU_MONOCULAR ||
+                   mpTracker->mSensor == CameraType::IMU_STEREO ||
+                   mpTracker->mSensor == CameraType::IMU_RGBD) &&
                   mpCurrentKF->GetMap()->GetIniertialBA1()) {
                 Eigen::Vector3d phi =
                     LogSO3(mSold_new.rotation().toRotationMatrix());
@@ -167,9 +168,9 @@ void LoopClosing::Run() {
             nMerges += 1;
 #endif
             // TODO UNCOMMENT
-            if (mpTracker->mSensor == System::IMU_MONOCULAR ||
-                mpTracker->mSensor == System::IMU_STEREO ||
-                mpTracker->mSensor == System::IMU_RGBD)
+            if (mpTracker->mSensor == CameraType::IMU_MONOCULAR ||
+                mpTracker->mSensor == CameraType::IMU_STEREO ||
+                mpTracker->mSensor == CameraType::IMU_RGBD)
               MergeLocal2();
             else
               MergeLocal();
@@ -235,9 +236,9 @@ void LoopClosing::Run() {
                 fabs(phi(2)) < 0.349f) {
               if (mpCurrentKF->GetMap()->IsInertial()) {
                 // If inertial, force only yaw
-                if ((mpTracker->mSensor == System::IMU_MONOCULAR ||
-                     mpTracker->mSensor == System::IMU_STEREO ||
-                     mpTracker->mSensor == System::IMU_RGBD) &&
+                if ((mpTracker->mSensor == CameraType::IMU_MONOCULAR ||
+                     mpTracker->mSensor == CameraType::IMU_STEREO ||
+                     mpTracker->mSensor == CameraType::IMU_RGBD) &&
                     mpCurrentKF->GetMap()->GetIniertialBA2()) {
                   phi(0) = 0;
                   phi(1) = 0;
@@ -337,7 +338,7 @@ bool LoopClosing::NewDetectCommonRegions() {
     return false;
   }
 
-  if (mpTracker->mSensor == System::STEREO &&
+  if (mpTracker->mSensor == CameraType::STEREO &&
       mpLastMap->GetAllKeyFrames().size() < 5)  // 12
   {
     // cout << "LoopClousure: Stereo KF inserted without check: " <<
@@ -558,7 +559,7 @@ bool LoopClosing::DetectAndReffineSim3FromLastKF(
 
     bool bFixedScale =
         mbFixScale;  // TODO CHECK; Solo para el monocular inertial
-    if (mpTracker->mSensor == System::IMU_MONOCULAR &&
+    if (mpTracker->mSensor == CameraType::IMU_MONOCULAR &&
         !pCurrentKF->GetMap()->GetIniertialBA2())
       bFixedScale = false;
     int numOptMatches =
@@ -697,7 +698,7 @@ bool LoopClosing::DetectCommonRegionsFromBoW(
     {
       // Geometric validation
       bool bFixedScale = mbFixScale;
-      if (mpTracker->mSensor == System::IMU_MONOCULAR &&
+      if (mpTracker->mSensor == CameraType::IMU_MONOCULAR &&
           !mpCurrentKF->GetMap()->GetIniertialBA2())
         bFixedScale = false;
 
@@ -781,7 +782,7 @@ bool LoopClosing::DetectCommonRegionsFromBoW(
 
           /* The bool below ('bFixedScale') is UNUSED and since all function calls below do not change state. this is not needed.
           bool bFixedScale = mbFixScale; 
-          if(mpTracker->mSensor==System::IMU_MONOCULAR && !mpCurrentKF->GetMap()->GetIniertialBA2())
+          if(mpTracker->mSensor==CameraType::IMU_MONOCULAR && !mpCurrentKF->GetMap()->GetIniertialBA2())
               bFixedScale=false;
           */
 
@@ -1181,7 +1182,7 @@ void LoopClosing::CorrectLoop() {
   // Optimize graph
   bool bFixedScale = mbFixScale;
   // TODO CHECK; Solo para el monocular inertial
-  if (mpTracker->mSensor == System::IMU_MONOCULAR &&
+  if (mpTracker->mSensor == CameraType::IMU_MONOCULAR &&
       !mpCurrentKF->GetMap()->GetIniertialBA2())
     bFixedScale = false;
 
@@ -1642,9 +1643,9 @@ void LoopClosing::MergeLocal() {
             std::back_inserter(vpLocalCurrentWindowKFs));
   std::copy(spMergeConnectedKFs.begin(), spMergeConnectedKFs.end(),
             std::back_inserter(vpMergeConnectedKFs));
-  if (mpTracker->mSensor == System::IMU_MONOCULAR ||
-      mpTracker->mSensor == System::IMU_STEREO ||
-      mpTracker->mSensor == System::IMU_RGBD) {
+  if (mpTracker->mSensor == CameraType::IMU_MONOCULAR ||
+      mpTracker->mSensor == CameraType::IMU_STEREO ||
+      mpTracker->mSensor == CameraType::IMU_RGBD) {
     Optimizer::MergeInertialBA(mpCurrentKF, mpMergeMatchedKF, &bStop,
                                pCurrentMap, vCorrectedSim3);
   } else {
@@ -1673,7 +1674,7 @@ void LoopClosing::MergeLocal() {
 
   if (vpCurrentMapKFs.size() == 0) {
   } else {
-    if (mpTracker->mSensor == System::MONOCULAR) {
+    if (mpTracker->mSensor == CameraType::MONOCULAR) {
       unique_lock<mutex> currentLock(
           pCurrentMap->mMutexMapUpdate);  // We update the current map with the
                                           // Merge information
@@ -1742,7 +1743,7 @@ void LoopClosing::MergeLocal() {
 
     // Optimize graph (and update the loop position for each element form the
     // begining to the end)
-    if (mpTracker->mSensor != System::MONOCULAR) {
+    if (mpTracker->mSensor != CameraType::MONOCULAR) {
       Optimizer::OptimizeEssentialGraph(mpCurrentKF, vpMergeConnectedKFs,
                                         vpLocalCurrentWindowKFs,
                                         vpCurrentMapKFs, vpCurrentMapMPs);
@@ -1890,9 +1891,9 @@ void LoopClosing::MergeLocal2() {
 
   const int numKFnew = pCurrentMap->KeyFramesInMap();
 
-  if ((mpTracker->mSensor == System::IMU_MONOCULAR ||
-       mpTracker->mSensor == System::IMU_STEREO ||
-       mpTracker->mSensor == System::IMU_RGBD) &&
+  if ((mpTracker->mSensor == CameraType::IMU_MONOCULAR ||
+       mpTracker->mSensor == CameraType::IMU_STEREO ||
+       mpTracker->mSensor == CameraType::IMU_RGBD) &&
       !pCurrentMap->GetIniertialBA2()) {
     // Map is not completly initialized
     Eigen::Vector3d bg, ba;
