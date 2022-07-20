@@ -22,15 +22,14 @@
 #pragma once
 
 #include <mutex>
-#include <opencv2/core/core.hpp>
-#include <opencv2/features2d/features2d.hpp>
+#include <opencv2/opencv.hpp>
 #include <vector>
 #include "ImprovedTypes.hpp"
 
 namespace ORB_SLAM3 {
 
 class MapPoint;
-class Viewer
+class Viewer;
 
 class FrameDrawer {
  public:
@@ -67,16 +66,6 @@ class FrameDrawer {
 
   std::mutex mMutex;
   std::vector<std::pair<cv::Point2f, cv::Point2f>> mvTracks;
-
-  Frame mCurrentFrame;
-  std::vector<MapPoint *> mvpLocalMap;
-  std::vector<cv::KeyPoint> mvMatchedKeys;
-  std::vector<MapPoint *> mvpMatchedMPs;
-  std::vector<cv::KeyPoint> mvOutlierKeys;
-  std::vector<MapPoint *> mvpOutlierMPs;
-
-  umap<long unsigned int, cv::Point2f> mmProjectPoints;
-  umap<long unsigned int, cv::Point2f> mmMatchedInImage;
 };
 
 }  // namespace ORB_SLAM3

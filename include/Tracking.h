@@ -115,8 +115,8 @@ class Tracking {
 
  public:
 
-  eTrackingState mState;
-  eTrackingState mLastProcessedState;
+  Tracker::eTrackingState mState;
+  Tracker::eTrackingState mLastProcessedState;
 
   // Input sensor
   int mSensor;
