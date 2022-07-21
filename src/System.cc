@@ -1413,36 +1413,28 @@ void System::SaveAtlas(int type) {
   std::cout << "Thread ID is: " << std::this_thread::get_id() << std::endl;
   std::cout << "trying to save \n";
   if (!mStrSaveAtlasToFile.empty()) {
-    std::cout << "not empty\n";
     // clock_t start = clock();
 
     // Save the current session
     mpAtlas.PreSave();
-    std::cout << "presaved\n";
     string pathSaveFileName = "./";
     pathSaveFileName = pathSaveFileName.append(mStrSaveAtlasToFile);
-    std::cout << "string append\n";
     auto time = std::chrono::system_clock::now();
     std::time_t time_time = std::chrono::system_clock::to_time_t(time);
     std::string str_time = std::ctime(&time_time);
     pathSaveFileName =
         "stereoFiles" + str_time + ".osa";  // pathSaveFileName.append(".osa");
 
-    std::cout << "About to Calculate \n";
-
     string strVocabularyChecksum =
         CalculateCheckSum(mStrVocabularyFilePath, TEXT_FILE);
 
-    std::cout << "Vocab checksum`" << strVocabularyChecksum << std::endl;
     std::size_t found = mStrVocabularyFilePath.find_last_of("/\\");
     string strVocabularyName = mStrVocabularyFilePath.substr(found + 1);
-    std::cout << "Type is of: " << type << std::endl;
     if (type == TEXT_FILE)  // File text
     {
       cout << "Starting to write the save text file " << endl;
 
       int rval = std::remove(pathSaveFileName.c_str());  // Deletes the file
-      std::cout << "remove's output is: " << rval << std::endl;
 
       std::ofstream ofs(pathSaveFileName, std::ios::binary);
       boost::archive::text_oarchive oa(ofs);
@@ -1456,15 +1448,10 @@ void System::SaveAtlas(int type) {
       cout << "Starting to write the save binary file" << endl;
       int rval = std::remove(pathSaveFileName.c_str());  // Deletes the file
       std::cerr << errno << std::endl;
-      std::cout << "remove's output is: " << rval << std::endl;
       std::ofstream ofs(pathSaveFileName, std::ios::binary);
-      std::cout << "bout to boost\n";
       boost::archive::binary_oarchive oa(ofs);
-      std::cout << "streaming\n";
       oa << strVocabularyName;
-      std::cout << "streamed name\n";
       oa << strVocabularyChecksum;
-      std::cout << "streamed checksum\n";
       oa << mpAtlas;
       cout << "End to write save binary file" << endl;
     } else {

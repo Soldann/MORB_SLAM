@@ -1,5 +1,20 @@
-# ORB-SLAM3
+# MORB-SLAM
 Details of changes between the different versions.
+
+### V1.0.1, 21st July 2022
+
+- Convert compilation into a shared library format so MORBSLAM can be imported into other robotics projects
+- Uodated codebase to C++ 17
+- Fixed the code and removed warnings due to deprecated or unused variables
+- Fixed segmentation faults when saving maps
+- Fixed segmentation faults when loading maps
+- Fixed segmentation faults in the Stereo-Inertial example
+- Fixed segmentation faults when shutting down
+- Fixed segmentation faults in EdgePriorPoseImu
+- Fixed deadlocks when shutting down
+- Fixed deadlocks when resetting the active map
+- Added IR projector to the Stereo-Inertial example
+- Made minor optimizations
 
 ### V1.0, 22th December 2021
 

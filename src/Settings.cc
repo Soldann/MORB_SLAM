@@ -587,7 +587,7 @@ ostream& operator<<(std::ostream& output, const Settings& settings) {
     }
     output << " ]" << endl;
   }
-  std::cout << "bout to start camera 2 stuff\n";
+
   if (settings.sensor_ == System::STEREO ||
       settings.sensor_ == System::IMU_STEREO) {
     output << "\t-Camera 2 parameters (";

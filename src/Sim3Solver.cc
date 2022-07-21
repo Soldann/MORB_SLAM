@@ -44,9 +44,6 @@ Sim3Solver::Sim3Solver(KeyFrame *pKF1, KeyFrame *pKF2,
   if (vpKeyFrameMatchedMP.empty()) {
     bDifferentKFs = true;
     vpKeyFrameMatchedMP = vector<KeyFrame *>(vpMatched12.size(), pKF2);
-    std::cout << "\033[22;34mEmpty Keyframe\n" << std::endl;
-  } else {
-    std::cout << "\033[0:31mNot Empty\n" << std::endl;
   }
 
   mpKF1 = pKF1;

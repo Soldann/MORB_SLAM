@@ -12,6 +12,12 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} MORB_SLAM::MORB_SLAM)
 
 ![MORBSLAM](images/Morbslam.jpg)
 
+### V1.0.1, July 21st, 2022
+
+This release builds MORB_SLAM as a shared library that can be imported for SLAM use in other repos. You can see [MORB_SLAM_EXAMPLES](https://github.com/Soldann/MORB_SLAM_EXAMPLES) as a repo showing how to import and use this library elsewhere.
+
+This release also implements many bug fixes to save/load maps, tracking, and general stability. See the [changelog](Changelog.md) for more details.
+
 ----------------------------------
 
 ### V1.0, December 22th, 2021
