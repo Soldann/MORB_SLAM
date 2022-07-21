@@ -7,10 +7,6 @@
 name: Lint Code Base
 
 on:
-  push:
-    branches: [ "master", "linter-test" ]
-  pull_request:
-    branches: [ "master" ]
   workflow_run:
     workflows: [CMake]
     types: [success]
