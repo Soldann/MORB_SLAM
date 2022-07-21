@@ -4965,6 +4965,10 @@ int Optimizer::PoseInertialOptimizationLastFrame(Frame* pFrame, bool bRecInit) {
   ear->setInformation(InfoA);
   optimizer.addEdge(ear);
 
+  if (pFp->mpcpi == nullptr){
+    std::cout << "NO MPCPI" << std::endl;
+    return 0; // nInitialCorrespondences
+  }
   EdgePriorPoseImu* ep = new EdgePriorPoseImu(pFp->mpcpi);
 
   ep->setVertex(0, VPk);
