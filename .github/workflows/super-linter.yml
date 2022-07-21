@@ -11,6 +11,9 @@ on:
     branches: [ "master", "linter-test" ]
   pull_request:
     branches: [ "master" ]
+  workflow_run:
+    workflows: [CMake]
+    types: [success]
 jobs:
   run-lint:
     runs-on: ubuntu-latest
