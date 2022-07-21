@@ -2,7 +2,7 @@ name: CMake
 
 on:
   push:
-    branches: [ "master", "github-workflow" ]
+    branches: [ "master", "linter-test" ]
   pull_request:
     branches: [ "master" ]
 
