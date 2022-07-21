@@ -27,12 +27,13 @@
 
 #include <condition_variable>
 
-#include <opencv2/core/core.hpp>
+#include <opencv2/opencv.hpp>
 
 #include <librealsense2/rs.hpp>
 #include "librealsense2/rsutil.h"
 
 #include <System.h>
+#include <Viewer.h>
 
 using namespace std;
 
@@ -287,8 +288,9 @@ int main(int argc, char **argv) {
 
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
-    ORB_SLAM3::System SLAM(argv[1],argv[2],ORB_SLAM3::CameraType::IMU_MONOCULAR, true, 0, file_name);
-    float imageScale = SLAM.GetImageScale();
+    ORB_SLAM3::System_ptr SLAM = std::make_shared<ORB_SLAM3::System>(argv[1],argv[2],ORB_SLAM3::CameraType::IMU_MONOCULAR, file_name);
+    ORB_SLAM3::Viewer viewer(SLAM, argv[2]);
+    float imageScale = SLAM->GetImageScale();
 
     double timestamp;
     cv::Mat im;
@@ -299,10 +301,11 @@ int main(int argc, char **argv) {
     v_accel_data_sync.clear();
     v_accel_timestamp_sync.clear();
 
+#ifdef REGISTER_TIMES
     double t_resize = 0.f;
     double t_track = 0.f;
-
-    while (!SLAM.isShutDown())
+#endif
+    while (viewer.isOpen())
     {
         std::vector<rs2_vector> vGyro;
         std::vector<double> vGyro_times;
@@ -314,7 +317,7 @@ int main(int argc, char **argv) {
             if(!image_ready)
                 cond_image_rec.wait(lk);
 
-            std::chrono::steady_clock::time_point time_Start_Process = std::chrono::steady_clock::now();
+            // std::chrono::steady_clock::time_point time_Start_Process = std::chrono::steady_clock::now(); // UNUSED
 
 
             if(count_im_buffer>1)
@@ -351,7 +354,7 @@ int main(int argc, char **argv) {
         }
 
 
-        for(int i=0; i<vGyro.size(); ++i)
+        for(size_t i=0; i<vGyro.size(); ++i)
         {
             ORB_SLAM3::IMU::Point lastPoint(vAccel[i].x, vAccel[i].y, vAccel[i].z,
                                   vGyro[i].x, vGyro[i].y, vGyro[i].z,
@@ -370,7 +373,7 @@ int main(int argc, char **argv) {
 #ifdef REGISTER_TIMES
             std::chrono::steady_clock::time_point t_End_Resize = std::chrono::steady_clock::now();
             t_resize = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t_End_Resize - t_Start_Resize).count();
-            SLAM.InsertResizeTime(t_resize);
+            SLAM->InsertResizeTime(t_resize);
 #endif
         }
 
@@ -378,13 +381,13 @@ int main(int argc, char **argv) {
         std::chrono::steady_clock::time_point t_Start_Track = std::chrono::steady_clock::now();
 #endif
         // Pass the image to the SLAM system
-        SLAM.TrackMonocular(im, timestamp, vImuMeas);
+        auto pos = SLAM->TrackMonocular(im, timestamp, vImuMeas);
 #ifdef REGISTER_TIMES
         std::chrono::steady_clock::time_point t_End_Track = std::chrono::steady_clock::now();
         t_track = t_resize + std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t_End_Track - t_Start_Track).count();
-        SLAM.InsertTrackTime(t_track);
+        SLAM->InsertTrackTime(t_track);
 #endif
-
+        viewer.update(pos);
 
 
         // Clear the previous IMU measurements to load the new ones

@@ -23,9 +23,10 @@
 #include<chrono>
 #include <unistd.h>
 
-#include<opencv2/core/core.hpp>
+#include<opencv2/opencv.hpp>
 
 #include<System.h>
+#include<Viewer.h>
 
 using namespace std;
 
@@ -90,8 +91,9 @@ int main(int argc, char **argv)
     cout.precision(17);
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
-    ORB_SLAM3::System SLAM(argv[1],argv[2],ORB_SLAM3::CameraType::STEREO,true);
-    float imageScale = SLAM.GetImageScale();
+    ORB_SLAM3::System_ptr SLAM = std::make_shared<ORB_SLAM3::System>(argv[1],argv[2],ORB_SLAM3::CameraType::STEREO);
+    ORB_SLAM3::Viewer viewer(SLAM, argv[2]);
+    float imageScale = SLAM->GetImageScale();
 
     cout << endl << "-------" << endl;
     cout.precision(17);
@@ -99,8 +101,10 @@ int main(int argc, char **argv)
     cv::Mat imLeft, imRight;
     cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE(3.0, cv::Size(8, 8));
 
+#ifdef REGISTER_TIMES
     double t_resize = 0.f;
     double t_track = 0.f;
+#endif
 
     int proccIm = 0;
     for (seq = 0; seq<num_seq; seq++)
@@ -126,7 +130,7 @@ int main(int argc, char **argv)
 #ifdef REGISTER_TIMES
                 std::chrono::steady_clock::time_point t_End_Resize = std::chrono::steady_clock::now();
                 t_resize = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t_End_Resize - t_Start_Resize).count();
-                SLAM.InsertResizeTime(t_resize);
+                SLAM->InsertResizeTime(t_resize);
 #endif
             }
 
@@ -146,13 +150,15 @@ int main(int argc, char **argv)
             std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
 
             // Pass the image to the SLAM system
-            SLAM.TrackStereo(imLeft,imRight,tframe);
+            auto pos = SLAM->TrackStereo(imLeft,imRight,tframe);
 
             std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
 
+            viewer.update(pos);
+
 #ifdef REGISTER_TIMES
             t_track = t_resize + std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t2 - t1).count();
-            SLAM.InsertTrackTime(t_track);
+            SLAM->InsertTrackTime(t_track);
 #endif
 
             double ttrack= std::chrono::duration_cast<std::chrono::duration<double> >(t2 - t1).count();
@@ -175,13 +181,13 @@ int main(int argc, char **argv)
         {
             cout << "Changing the dataset" << endl;
 
-            SLAM.ChangeDataset();
+            SLAM->ChangeDataset();
         }
     }
 
 
     // Stop all threads
-    SLAM.Shutdown();
+    // SLAM.Shutdown();
 
     // Tracking time statistics
 
@@ -195,13 +201,13 @@ int main(int argc, char **argv)
     {
         const string kf_file =  "kf_" + string(argv[argc-1]) + ".txt";
         const string f_file =  "f_" + string(argv[argc-1]) + ".txt";
-        SLAM.SaveTrajectoryEuRoC(f_file);
-        SLAM.SaveKeyFrameTrajectoryEuRoC(kf_file);
+        SLAM->SaveTrajectoryEuRoC(f_file);
+        SLAM->SaveKeyFrameTrajectoryEuRoC(kf_file);
     }
     else
     {
-        SLAM.SaveTrajectoryEuRoC("CameraTrajectory.txt");
-        SLAM.SaveKeyFrameTrajectoryEuRoC("KeyFrameTrajectory.txt");
+        SLAM->SaveTrajectoryEuRoC("CameraTrajectory.txt");
+        SLAM->SaveKeyFrameTrajectoryEuRoC("KeyFrameTrajectory.txt");
     }
 
     sort(vTimesTrack.begin(),vTimesTrack.end());

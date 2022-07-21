@@ -25,11 +25,12 @@
 #include <ctime>
 #include <sstream>
 
-#include <opencv2/core/core.hpp>
+#include <opencv2/opencv.hpp>
 
 #include <librealsense2/rs.hpp>
 
 #include <System.h>
+#include <Viewer.h>
 #include <condition_variable>
 #include "ImuTypes.h"
 
@@ -57,15 +58,16 @@ int main(int argc, char **argv)
     }
 
     string file_name;
-    bool bFileName = false;
+    // bool bFileName = false; // UNUSED
 
     if (argc == 4) {
         file_name = string(argv[argc - 1]);
-        bFileName = true;
+        // bFileName = true; // UNUSED
     }
 
-    ORB_SLAM3::System SLAM(argv[1],argv[2],ORB_SLAM3::CameraType::IMU_MONOCULAR, true, 0, file_name);
-    float imageScale = SLAM.GetImageScale();
+    ORB_SLAM3::System_ptr SLAM = std::make_shared<ORB_SLAM3::System>(argv[1],argv[2],ORB_SLAM3::CameraType::IMU_MONOCULAR, file_name);
+    ORB_SLAM3::Viewer viewer(SLAM, argv[2]);
+    float imageScale = SLAM->GetImageScale();
 
     struct sigaction sigIntHandler;
 
@@ -215,11 +217,12 @@ int main(int argc, char **argv)
     v_accel_data_sync.clear();
     v_accel_timestamp_sync.clear();
 
+#ifdef REGISTER_TIMES
     double t_resize = 0.f;
     double t_track = 0.f;
-
+#endif
     std::chrono::steady_clock::time_point time_Start_Process;
-    while (!SLAM.isShutDown()){
+    while (viewer.isOpen()){
         std::vector<rs2_vector> vGyro;
         std::vector<double> vGyro_times;
         std::vector<rs2_vector> vAccel;
@@ -230,7 +233,7 @@ int main(int argc, char **argv)
             while(!image_ready)
                 cond_image_rec.wait(lk);
 
-        std::chrono::steady_clock::time_point time_Start_Process = std::chrono::steady_clock::now();
+        // std::chrono::steady_clock::time_point time_Start_Process = std::chrono::steady_clock::now(); // UNUSED
 
             if(count_im_buffer>1)
                 cout << count_im_buffer -1 << " dropped frs\n";
@@ -261,7 +264,7 @@ int main(int argc, char **argv)
     #ifdef REGISTER_TIMES
                 std::chrono::steady_clock::time_point t_End_Resize = std::chrono::steady_clock::now();
                 t_resize = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t_End_Resize - t_Start_Resize).count();
-                SLAM.InsertResizeTime(t_resize);
+                SLAM->InsertResizeTime(t_resize);
     #endif
             }
 
@@ -282,7 +285,7 @@ int main(int argc, char **argv)
         }
 
 
-        for(int i=0; i<vGyro.size(); ++i){
+        for(size_t i=0; i<vGyro.size(); ++i){
             ORB_SLAM3::IMU::Point lastPoint(vAccel[i].x, vAccel[i].y, vAccel[i].z,
                                             vGyro[i].x, vGyro[i].y, vGyro[i].z,
                                             vGyro_times[i]);
@@ -296,19 +299,23 @@ int main(int argc, char **argv)
             }
         }
 
+#ifdef REGISTER_TIMES
         std::chrono::steady_clock::time_point t_Start_Track = std::chrono::steady_clock::now();
+#endif
         // Pass the image to the SLAM system
-        SLAM.TrackMonocular(im, timestamp, vImuMeas);
-
-        std::chrono::steady_clock::time_point t_End_Track = std::chrono::steady_clock::now();
+        auto pos = SLAM->TrackMonocular(im, timestamp, vImuMeas);
 
 #ifdef REGISTER_TIMES
+        std::chrono::steady_clock::time_point t_End_Track = std::chrono::steady_clock::now();
+#endif
+        viewer.update(pos);
+#ifdef REGISTER_TIMES
         t_track = t_resize + std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t_End_Track - t_Start_Track).count();
-        SLAM.InsertTrackTime(t_track);
+        SLAM->InsertTrackTime(t_track);
 #endif
 
-        double timeProcess = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t_Start_Track - time_Start_Process).count();
-        double timeSLAM = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t_End_Track - t_Start_Track).count();
+        // double timeProcess = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t_Start_Track - time_Start_Process).count(); // UNUSED
+        // double timeSLAM = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t_End_Track - t_Start_Track).count(); // UNUSED
 
         // cout << "Time process: " << timeProcess << endl;
         // cout << "Time SLAM: " << timeSLAM << endl;
@@ -317,7 +324,7 @@ int main(int argc, char **argv)
         vImuMeas.clear();
     }
 
-    SLAM.Shutdown();
+    // SLAM.Shutdown();
 
     return 0;
 }

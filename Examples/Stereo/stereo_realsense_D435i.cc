@@ -20,6 +20,7 @@
  */
 
 #include <System.h>
+#include <Viewer.h>
 #include <signal.h>
 #include <stdlib.h>
 
@@ -30,7 +31,7 @@
 #include <fstream>
 #include <iostream>
 #include <librealsense2/rs.hpp>
-#include <opencv2/core/core.hpp>
+#include <opencv2/opencv.hpp>
 #include <sstream>
 
 #include "librealsense2/rsutil.h"
@@ -112,7 +113,7 @@ int main(int argc, char** argv) {
   sigaction(SIGINT, &sigIntHandler, NULL);
   b_continue_session = true;
 
-  double offset = 0;  // ms
+  // double offset = 0;  // UNUSED // ms
 
   rs2::context ctx;
   rs2::device_list devices = ctx.query_devices();
@@ -242,17 +243,20 @@ int main(int argc, char** argv) {
 
   // Create SLAM system. It initializes all system threads and gets ready to
   // process frames.
-  ORB_SLAM3::System SLAM(argv[1], argv[2], ORB_SLAM3::CameraType::STEREO, true, 0,
+  ORB_SLAM3::System_ptr SLAM = std::make_shared<ORB_SLAM3::System>(argv[1], argv[2], ORB_SLAM3::CameraType::STEREO, /*0,*/
                          file_name);
-  float imageScale = SLAM.GetImageScale();
+  ORB_SLAM3::Viewer viewer(SLAM, argv[2]);
+  float imageScale = SLAM->GetImageScale();
 
   double timestamp;
   cv::Mat im, imRight;
 
+#ifdef REGISTER_TIMES
   double t_resize = 0.f;
   double t_track = 0.f;
+#endif
 
-  while (!SLAM.isShutDown()) {
+  while (viewer.isOpen()) {
     std::vector<rs2_vector> vGyro;
     std::vector<double> vGyro_times;
     std::vector<rs2_vector> vAccel;
@@ -262,8 +266,8 @@ int main(int argc, char** argv) {
       std::unique_lock<std::mutex> lk(imu_mutex);
       if (!image_ready) cond_image_rec.wait(lk);
 
-      std::chrono::steady_clock::time_point time_Start_Process =
-          std::chrono::steady_clock::now();
+      // std::chrono::steady_clock::time_point time_Start_Process =
+      //     std::chrono::steady_clock::now(); // UNUSED
 
       if (count_im_buffer > 1) cout << count_im_buffer - 1 << " dropped frs\n";
       count_im_buffer = 0;
@@ -292,7 +296,7 @@ int main(int argc, char** argv) {
                      std::chrono::duration<double, std::milli> >(t_End_Resize -
                                                                  t_Start_Resize)
                      .count();
-      SLAM.InsertResizeTime(t_resize);
+      SLAM->InsertResizeTime(t_resize);
 #endif
     }
 
@@ -301,7 +305,7 @@ int main(int argc, char** argv) {
         std::chrono::steady_clock::now();
 #endif
     // Stereo images are already rectified.
-    SLAM.TrackStereo(im, imRight, timestamp);
+    auto pos = SLAM->TrackStereo(im, imRight, timestamp);
 #ifdef REGISTER_TIMES
     std::chrono::steady_clock::time_point t_End_Track =
         std::chrono::steady_clock::now();
@@ -310,8 +314,9 @@ int main(int argc, char** argv) {
         std::chrono::duration_cast<std::chrono::duration<double, std::milli> >(
             t_End_Track - t_Start_Track)
             .count();
-    SLAM.InsertTrackTime(t_track);
+    SLAM->InsertTrackTime(t_track);
 #endif
+    viewer.update(pos);
   }
   cout << "System shutdown!\n";
 }
