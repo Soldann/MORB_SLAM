@@ -74,3 +74,9 @@ jobs:
     - name: Build & Install MORB_SLAM
       run: ./morbslam_installer.sh
       
+    - name: Export Compile Commands
+      uses: actions/upload-artifact@v3
+      with:
+        name: compile_commands
+        path: build/compile_commands.json
+      
