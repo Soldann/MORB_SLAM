@@ -20,12 +20,27 @@ jobs:
         with:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
+          
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
+          # Required, if artifact is from a different repo
+          # Required, if repo is private a Personal Access Token with `repo` scope is needed
+          github_token: ${{secrets.GITHUB_TOKEN}}
+          # Required, workflow file name or ID
+          workflow: cmake.yml
+          # Optional, uploaded artifact name,
+          # will download all artifacts if not specified
+          # and extract them in respective subdirectories
+          # https://github.com/actions/download-artifact#download-all-artifacts
+          name: compile_commands
 
       - name: C/C++ Lint Action
         uses: cpp-linter/cpp-linter-action@v1.4.4
         with:
           lines-changed-only: true
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          database: build/compile_commands.json
 
       - name: Check if Linter failed
         if: steps.linter.outputs.checks-failed > 0
