@@ -25,3 +25,4 @@ jobs:
         uses: cpp-linter/cpp-linter-action@v1.4.4
         with:
           lines-changed-only: true
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
