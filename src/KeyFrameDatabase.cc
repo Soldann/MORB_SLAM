@@ -40,8 +40,8 @@ void KeyFrameDatabase::add(KeyFrame* pKF) {
   for (DBoW2::BowVector::const_iterator vit = pKF->mBowVec.begin(),
                                         vend = pKF->mBowVec.end();
        vit != vend; vit++)
-    mvInvertedFile[vit->first].push_back(pKF);
-}
+mvInvertedFile[vit->first].push_back(pKF);
+}//BADCOMENT
 
 void KeyFrameDatabase::erase(KeyFrame* pKF) {
   unique_lock<mutex> lock(mMutex);
