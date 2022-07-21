@@ -26,3 +26,9 @@ jobs:
         with:
           lines-changed-only: true
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check if Linter failed
+        if: steps.linter.outputs.checks-failed > 0
+        run: |
+          echo "Some files failed the linting checks!"
+          exit 1
