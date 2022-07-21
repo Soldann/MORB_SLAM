@@ -22,9 +22,10 @@
 #include<iomanip>
 #include<chrono>
 
-#include<opencv2/core/core.hpp>
+#include<opencv2/opencv.hpp>
 
 #include<System.h>
+#include<Viewer.h>
 
 using namespace std;
 
@@ -48,8 +49,10 @@ int main(int argc, char **argv)
     const int nImages = vstrImageLeft.size();
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
-    ORB_SLAM3::System SLAM(argv[1],argv[2],ORB_SLAM3::System::STEREO,true);
-    float imageScale = SLAM.GetImageScale();
+    ORB_SLAM3::System_ptr SLAM = std::make_shared<ORB_SLAM3::System>(argv[1],argv[2],ORB_SLAM3::CameraType::STEREO);
+    ORB_SLAM3::Viewer viewer(SLAM, argv[2]);
+
+    float imageScale = SLAM->GetImageScale();
 
     // Vector for tracking time statistics
     vector<float> vTimesTrack;
@@ -59,8 +62,10 @@ int main(int argc, char **argv)
     cout << "Start processing sequence ..." << endl;
     cout << "Images in the sequence: " << nImages << endl << endl;   
 
+#ifdef REGISTER_TIMES
     double t_track = 0.f;
     double t_resize = 0.f;
+#endif
 
     // Main loop
     cv::Mat imLeft, imRight;
@@ -90,20 +95,22 @@ int main(int argc, char **argv)
 #ifdef REGISTER_TIMES
             std::chrono::steady_clock::time_point t_End_Resize = std::chrono::steady_clock::now();
             t_resize = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t_End_Resize - t_Start_Resize).count();
-            SLAM.InsertResizeTime(t_resize);
+            SLAM->InsertResizeTime(t_resize);
 #endif
         }
 
         std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
 
         // Pass the images to the SLAM system
-        SLAM.TrackStereo(imLeft,imRight,tframe);
+        auto pos = SLAM->TrackStereo(imLeft,imRight,tframe);
 
         std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
 
+        viewer.update(pos);
+
 #ifdef REGISTER_TIMES
         t_track = t_resize + std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t2 - t1).count();
-        SLAM.InsertTrackTime(t_track);
+        SLAM->InsertTrackTime(t_track);
 #endif
 
         double ttrack= std::chrono::duration_cast<std::chrono::duration<double> >(t2 - t1).count();
@@ -122,7 +129,7 @@ int main(int argc, char **argv)
     }
 
     // Stop all threads
-    SLAM.Shutdown();
+    // SLAM.Shutdown();
 
     // Tracking time statistics
     sort(vTimesTrack.begin(),vTimesTrack.end());
@@ -136,7 +143,7 @@ int main(int argc, char **argv)
     cout << "mean tracking time: " << totaltime/nImages << endl;
 
     // Save camera trajectory
-    SLAM.SaveTrajectoryKITTI("CameraTrajectory.txt");
+    SLAM->SaveTrajectoryKITTI("CameraTrajectory.txt");
 
     return 0;
 }

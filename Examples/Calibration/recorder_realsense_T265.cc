@@ -28,8 +28,7 @@
 
 #include <condition_variable>
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui.hpp>
+#include <opencv2/opencv.hpp>
 #include "opencv2/imgproc/imgproc.hpp"
 
 #include <librealsense2/rs.hpp>
@@ -49,6 +48,7 @@ void exit_loop_handler(int s){
     b_continue_session = false;
 }
 
+/* // UNUSED
 static rs2_option get_sensor_option(const rs2::sensor& sensor)
 {
     // Sensors usually have several options to control their properties
@@ -90,6 +90,7 @@ static rs2_option get_sensor_option(const rs2::sensor& sensor)
     uint32_t selected_sensor_option = 0;
     return static_cast<rs2_option>(selected_sensor_option);
 }
+*/
 
 int main(int argc, char **argv) {
 
@@ -266,11 +267,11 @@ int main(int argc, char **argv) {
         //assert(vAccel.size() == vAccel_times.size());
         //assert(vGyro.size() == vGyro_times.size());
 
-        for(int i=0; i<vAccel.size(); ++i){
+        for(size_t i=0; i<vAccel.size(); ++i){
             accFile << std::setprecision(15) << vAccel_times[i] << "," << vAccel[i].x << "," << vAccel[i].y << "," << vAccel[i].z << endl;
         }
 
-        for(int i=0; i<vGyro.size(); ++i){
+        for(size_t i=0; i<vGyro.size(); ++i){
             gyroFile << std::setprecision(15) << vGyro_times[i] << "," << vGyro[i].x << "," << vGyro[i].y << "," << vGyro[i].z << endl;
         }
 

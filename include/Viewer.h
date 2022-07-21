@@ -19,63 +19,50 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef VIEWER_H
-#define VIEWER_H
+#pragma once
 
 #include <mutex>
+#include <memory>
 
+#include "ImprovedTypes.hpp"
 #include "FrameDrawer.h"
 #include "MapDrawer.h"
 #include "Settings.h"
-#include "System.h"
-#include "Tracking.h"
 
 namespace ORB_SLAM3 {
 
-class Tracking;
-class FrameDrawer;
-class MapDrawer;
-class System;
-class Settings;
-
 class Viewer {
- public:
-  
-  Viewer(System* pSystem, FrameDrawer* pFrameDrawer, MapDrawer* pMapDrawer,
-         Tracking* pTracking, const string& strSettingPath, Settings* settings);
-
-  void newParameterLoader(Settings* settings);
-
+  void newParameterLoader(const Settings& settings);
   // Main thread function. Draw points, keyframes, the current camera pose and
   // the last processed frame. Drawing is refreshed according to the camera fps.
   // We use Pangolin.
   void Run();
+ public:
 
-  void RequestFinish();
+  Viewer(const System_ptr &pSystem, const std::string &strSettingPath);
+  Viewer(const System_ptr &pSystem, const Settings &settings);
 
-  void RequestStop();
+  virtual ~Viewer();
 
-  bool isFinished();
+  void update(const Sophus::SE3f &pose);
 
-  bool isStopped();
+  void close();
+  bool isClosed() const;
+  bool isOpen() const;
 
-  bool isStepByStep();
-
-  void Release();
-
-  // void SetTrackingPause();
-
-  bool both;
 
  private:
+  void setBoth(const bool b);
   bool ParseViewerParamFile(cv::FileStorage& fSettings);
 
   bool Stop();
 
-  System* mpSystem;
-  FrameDrawer* mpFrameDrawer;
-  MapDrawer* mpMapDrawer;
-  Tracking* mpTracker;
+  System_ptr mpSystem;
+  FrameDrawer mpFrameDrawer;
+  MapDrawer mpMapDrawer;
+  Tracking_ptr mpTracker;
+  std::thread mptViewer;
+  bool both;
 
   // 1/fps in ms
   double mT;
@@ -84,19 +71,7 @@ class Viewer {
 
   float mViewpointX, mViewpointY, mViewpointZ, mViewpointF;
 
-  bool CheckFinish();
-  void SetFinish();
-  bool mbFinishRequested;
-  bool mbFinished;
-  std::mutex mMutexFinish;
-
-  bool mbStopped;
-  bool mbStopRequested;
-  std::mutex mMutexStop;
-
-  bool mbStopTrack;
+  bool mbClosed;
 };
 
 }  // namespace ORB_SLAM3
-
-#endif  // VIEWER_H

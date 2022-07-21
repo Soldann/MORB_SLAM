@@ -25,11 +25,12 @@
 #include <ctime>
 #include <sstream>
 
-#include <opencv2/core/core.hpp>
+#include <opencv2/opencv.hpp>
 
 #include <librealsense2/rs.hpp>
 
 #include <System.h>
+#include <Viewer.h>
 #include <condition_variable>
 #include "ImuTypes.h"
 
@@ -59,15 +60,16 @@ int main(int argc, char **argv)
     }
 
     string file_name;
-    bool bFileName = false;
+    // bool bFileName = false; // UNUSED
 
     if (argc == 5) {
         file_name = string(argv[argc - 1]);
-        bFileName = true;
+        // bFileName = true; // UNUSED
     }
 
-    ORB_SLAM3::System SLAM(argv[1],argv[2],ORB_SLAM3::System::IMU_STEREO, true, 0, file_name);
-    float imageScale = SLAM.GetImageScale();
+    ORB_SLAM3::System_ptr SLAM = std::make_shared<ORB_SLAM3::System>(argv[1],argv[2],ORB_SLAM3::CameraType::IMU_STEREO, file_name);
+    ORB_SLAM3::Viewer viewer(SLAM, argv[2]);
+    float imageScale = SLAM->GetImageScale();
 
     struct sigaction sigIntHandler;
 
@@ -133,7 +135,7 @@ int main(int argc, char **argv)
             imCV_right = cv::Mat(cv::Size(width_img, height_img), CV_8U, (void*)(color_frame_right.get_data()), cv::Mat::AUTO_STEP);
 
             timestamp_image = new_timestamp_image;
-            double test = fs.get_timestamp()*1e-3;
+            // double test = fs.get_timestamp()*1e-3; // UNUSED
 
             image_ready = true;
 
@@ -205,12 +207,14 @@ int main(int argc, char **argv)
     v_accel_data_sync.clear();
     v_accel_timestamp_sync.clear();
 
+#ifdef REGISTER_TIMES
     double t_resize = 0.f;
     double t_track = 0.f;
+#endif
 
     cv::Mat im_left, im_right;
 
-    while (!SLAM.isShutDown()){
+    while (viewer.isOpen()){
         std::vector<rs2_vector> vGyro;
         std::vector<double> vGyro_times;
         std::vector<rs2_vector> vAccel;
@@ -252,7 +256,7 @@ int main(int argc, char **argv)
     #ifdef REGISTER_TIMES
                 std::chrono::steady_clock::time_point t_End_Resize = std::chrono::steady_clock::now();
                 t_resize = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t_End_Resize - t_Start_Resize).count();
-                SLAM.InsertResizeTime(t_resize);
+                SLAM->InsertResizeTime(t_resize);
     #endif
             }
 
@@ -273,7 +277,7 @@ int main(int argc, char **argv)
         }
 
 
-        for(int i=0; i<vGyro.size(); ++i){
+        for(size_t i=0; i<vGyro.size(); ++i){
             ORB_SLAM3::IMU::Point lastPoint(vAccel[i].x, vAccel[i].y, vAccel[i].z,
                                             vGyro[i].x, vGyro[i].y, vGyro[i].z,
                                             vGyro_times[i]);
@@ -289,18 +293,18 @@ int main(int argc, char **argv)
         std::chrono::steady_clock::time_point t_Start_Track = std::chrono::steady_clock::now();
 #endif
         // Pass the image to the SLAM system
-        SLAM.TrackStereo(im_left, im_right, timestamp, vImuMeas);
+        auto pos = SLAM->TrackStereo(im_left, im_right, timestamp, vImuMeas);
 #ifdef REGISTER_TIMES
         std::chrono::steady_clock::time_point t_End_Track = std::chrono::steady_clock::now();
         t_track = t_resize + std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t_End_Track - t_Start_Track).count();
-        SLAM.InsertTrackTime(t_track);
+        SLAM->InsertTrackTime(t_track);
 #endif
-
+        viewer.update(pos);
         // Clear the previous IMU measurements to load the new ones
         vImuMeas.clear();
     }
 
-    SLAM.Shutdown();
+    // SLAM.Shutdown();
 
     return 0;
 }

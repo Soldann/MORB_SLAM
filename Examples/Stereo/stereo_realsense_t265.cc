@@ -25,11 +25,12 @@
 #include <ctime>
 #include <sstream>
 
-#include <opencv2/core/core.hpp>
+#include <opencv2/opencv.hpp>
 
 #include <librealsense2/rs.hpp>
 
 #include <System.h>
+#include <Viewer.h>
 
 using namespace std;
 
@@ -51,12 +52,12 @@ int main(int argc, char **argv)
     }
 
     string file_name;
-    bool bFileName = false;
+    // bool bFileName = false; // UNUSED
 
     if (argc == 4)
     {
         file_name = string(argv[argc-1]);
-        bFileName = true;
+        // bFileName = true; // UNUSED
     }
 
     struct sigaction sigIntHandler;
@@ -89,8 +90,9 @@ int main(int argc, char **argv)
     cout << "IMU data in the sequence: " << nImu << endl << endl;*/
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
-    ORB_SLAM3::System SLAM(argv[1],argv[2],ORB_SLAM3::System::STEREO, true, 0, file_name);
-    float imageScale = SLAM.GetImageScale();
+    ORB_SLAM3::System_ptr SLAM = std::make_shared<ORB_SLAM3::System>(argv[1],argv[2],ORB_SLAM3::CameraType::STEREO, /*0, */file_name);
+    ORB_SLAM3::Viewer viewer(SLAM, argv[2]);
+    float imageScale = SLAM->GetImageScale();
 
     cv::Mat imLeft, imRight;
     vector<ORB_SLAM3::IMU::Point> vImuMeas;
@@ -105,8 +107,10 @@ int main(int argc, char **argv)
     int width_right = intrinsics_right.width;
     int height_right = intrinsics_right.height;
 
+#ifdef REGISTER_TIMES
     double t_resize = 0.f;
     double t_track = 0.f;
+#endif
 
     while (b_continue_session)
     {
@@ -135,7 +139,7 @@ int main(int argc, char **argv)
 #ifdef REGISTER_TIMES
                 std::chrono::steady_clock::time_point t_End_Resize = std::chrono::steady_clock::now();
                 t_resize = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t_End_Resize - t_Start_Resize).count();
-                SLAM.InsertResizeTime(t_resize);
+                SLAM->InsertResizeTime(t_resize);
 #endif
             }
 
@@ -147,15 +151,15 @@ int main(int argc, char **argv)
 #endif
 
             // Pass the image to the SLAM system
-            SLAM.TrackStereo(imLeft, imRight, timestamp);
+            auto pos = SLAM->TrackStereo(imLeft, imRight, timestamp);
 
 #ifdef REGISTER_TIMES
             std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
 #endif
-
+            viewer.update(pos);
 #ifdef REGISTER_TIMES
             t_track = t_resize + std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t2 - t1).count();
-            SLAM.InsertTrackTime(t_track);
+            SLAM->InsertTrackTime(t_track);
 #endif
 
 
@@ -165,7 +169,7 @@ int main(int argc, char **argv)
     pipe.stop();
 
     // Stop all threads
-    SLAM.Shutdown();
+    // SLAM.Shutdown();
 
 
     return 0;

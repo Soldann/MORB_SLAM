@@ -22,75 +22,52 @@
 #include "FrameDrawer.h"
 
 #include <mutex>
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-
+#include <opencv2/opencv.hpp>
+#include "ImprovedTypes.hpp"
+#include "MapPoint.h"
+#include "Atlas.h"
 #include "Tracking.h"
 
 namespace ORB_SLAM3 {
 
-FrameDrawer::FrameDrawer(Atlas *pAtlas) : both(false), mpAtlas(pAtlas) {
-  mState = Tracking::SYSTEM_NOT_READY;
+FrameDrawer::FrameDrawer(const Atlas_ptr &pAtlas) : both(false), mpAtlas(pAtlas) {
+  mState = Tracker::SYSTEM_NOT_READY;
   mIm = cv::Mat(480, 640, CV_8UC3, cv::Scalar(0, 0, 0));
   mImRight = cv::Mat(480, 640, CV_8UC3, cv::Scalar(0, 0, 0));
 }
 
 cv::Mat FrameDrawer::DrawFrame(float imageScale) {
   cv::Mat im;
-  vector<cv::KeyPoint>
-      vIniKeys;  // Initialization: KeyPoints in reference frame
-  vector<int>
-      vMatches;  // Initialization: correspondeces with reference keypoints
-  vector<cv::KeyPoint> vCurrentKeys;  // KeyPoints in current frame
-  vector<bool> vbVO, vbMap;           // Tracked MapPoints in current frame
-  vector<pair<cv::Point2f, cv::Point2f> > vTracks;
+  // Initialization: KeyPoints in reference frame
+  std::vector<cv::KeyPoint> vIniKeys;
+  // Initialization: correspondeces with reference keypoints
+  std::vector<int> vMatches;
+  std::vector<cv::KeyPoint> vCurrentKeys;  // KeyPoints in current frame
+  std::vector<bool> vbVO, vbMap;           // Tracked MapPoints in current frame
+  std::vector<std::pair<cv::Point2f, cv::Point2f>> vTracks;
   int state;  // Tracking state
-  vector<float> vCurrentDepth;
-  // float thDepth; // UNUSED
-
-  Frame currentFrame;
-  vector<MapPoint *> vpLocalMap;
-  vector<cv::KeyPoint> vMatchesKeys;
-  vector<MapPoint *> vpMatchedMPs;
-  vector<cv::KeyPoint> vOutlierKeys;
-  vector<MapPoint *> vpOutlierMPs;
-  map<long unsigned int, cv::Point2f> mProjectPoints;
-  map<long unsigned int, cv::Point2f> mMatchedInImage;
 
   cv::Scalar standardColor(0, 255, 0);
   cv::Scalar odometryColor(255, 0, 0);
 
   // Copy variables within scoped mutex
   {
-    unique_lock<mutex> lock(mMutex);
+    std::unique_lock<std::mutex> lock(mMutex);
     state = mState;
-    if (mState == Tracking::SYSTEM_NOT_READY) mState = Tracking::NO_IMAGES_YET;
+    if (state == Tracker::SYSTEM_NOT_READY) state = Tracker::NO_IMAGES_YET;
 
     mIm.copyTo(im);
 
-    if (mState == Tracking::NOT_INITIALIZED) {
+    if (state == Tracker::NOT_INITIALIZED) {
       vCurrentKeys = mvCurrentKeys;
       vIniKeys = mvIniKeys;
       vMatches = mvIniMatches;
       vTracks = mvTracks;
-    } else if (mState == Tracking::OK) {
+    } else if (state == Tracker::OK) {
       vCurrentKeys = mvCurrentKeys;
       vbVO = mvbVO;
       vbMap = mvbMap;
-
-      currentFrame = mCurrentFrame;
-      vpLocalMap = mvpLocalMap;
-      vMatchesKeys = mvMatchedKeys;
-      vpMatchedMPs = mvpMatchedMPs;
-      vOutlierKeys = mvOutlierKeys;
-      vpOutlierMPs = mvpOutlierMPs;
-      mProjectPoints = mmProjectPoints;
-      mMatchedInImage = mmMatchedInImage;
-
-      vCurrentDepth = mvCurrentDepth;
-      // thDepth = mThDepth; // UNUSED
-
-    } else if (mState == Tracking::LOST) {
+    } else if (state == Tracker::LOST) {
       vCurrentKeys = mvCurrentKeys;
     }
   }
@@ -102,10 +79,10 @@ cv::Mat FrameDrawer::DrawFrame(float imageScale) {
   }
 
   if (im.channels() < 3)  // this should be always true
-    cvtColor(im, im, cv::COLOR_GRAY2BGR);
+    cv::cvtColor(im, im, cv::COLOR_GRAY2BGR);
 
   // Draw
-  if (state == Tracking::NOT_INITIALIZED) {
+  if (state == Tracker::NOT_INITIALIZED) {
     for (unsigned int i = 0; i < vMatches.size(); i++) {
       if (vMatches[i] >= 0) {
         cv::Point2f pt1, pt2;
@@ -119,8 +96,7 @@ cv::Mat FrameDrawer::DrawFrame(float imageScale) {
         cv::line(im, pt1, pt2, standardColor);
       }
     }
-    for (vector<pair<cv::Point2f, cv::Point2f> >::iterator it = vTracks.begin();
-         it != vTracks.end(); it++) {
+    for (auto it = vTracks.begin(); it != vTracks.end(); it++) {
       cv::Point2f pt1, pt2;
       if (imageScale != 1.f) {
         pt1 = (*it).first / imageScale;
@@ -132,7 +108,7 @@ cv::Mat FrameDrawer::DrawFrame(float imageScale) {
       cv::line(im, pt1, pt2, standardColor, 5);
     }
 
-  } else if (state == Tracking::OK)  // TRACKING
+  } else if (state == Tracker::OK)  // TRACKING
   {
     mnTracked = 0;
     mnTrackedVO = 0;
@@ -182,31 +158,31 @@ cv::Mat FrameDrawer::DrawFrame(float imageScale) {
 
 cv::Mat FrameDrawer::DrawRightFrame(float imageScale) {
   cv::Mat im;
-  vector<cv::KeyPoint>
-      vIniKeys;  // Initialization: KeyPoints in reference frame
-  vector<int>
-      vMatches;  // Initialization: correspondeces with reference keypoints
-  vector<cv::KeyPoint> vCurrentKeys;  // KeyPoints in current frame
-  vector<bool> vbVO, vbMap;           // Tracked MapPoints in current frame
+  // Initialization: KeyPoints in reference frame
+  std::vector<cv::KeyPoint> vIniKeys;
+  // Initialization: correspondeces with reference keypoints
+  std::vector<int> vMatches;
+  std::vector<cv::KeyPoint> vCurrentKeys;  // KeyPoints in current frame
+  std::vector<bool> vbVO, vbMap;           // Tracked MapPoints in current frame
   int state;                          // Tracking state
 
   // Copy variables within scoped mutex
   {
-    unique_lock<mutex> lock(mMutex);
+    std::unique_lock<std::mutex> lock(mMutex);
     state = mState;
-    if (mState == Tracking::SYSTEM_NOT_READY) mState = Tracking::NO_IMAGES_YET;
+    if (mState == Tracker::SYSTEM_NOT_READY) mState = Tracker::NO_IMAGES_YET;
 
     mImRight.copyTo(im);
 
-    if (mState == Tracking::NOT_INITIALIZED) {
+    if (mState == Tracker::NOT_INITIALIZED) {
       vCurrentKeys = mvCurrentKeysRight;
       vIniKeys = mvIniKeys;
       vMatches = mvIniMatches;
-    } else if (mState == Tracking::OK) {
+    } else if (mState == Tracker::OK) {
       vCurrentKeys = mvCurrentKeysRight;
       vbVO = mvbVO;
       vbMap = mvbMap;
-    } else if (mState == Tracking::LOST) {
+    } else if (mState == Tracker::LOST) {
       vCurrentKeys = mvCurrentKeysRight;
     }
   }  // destroy scoped mutex -> release mutex
@@ -221,7 +197,7 @@ cv::Mat FrameDrawer::DrawRightFrame(float imageScale) {
     cvtColor(im, im, cv::COLOR_GRAY2BGR);
 
   // Draw
-  if (state == Tracking::NOT_INITIALIZED)  // INITIALIZING
+  if (state == Tracker::NOT_INITIALIZED)  // INITIALIZING
   {
     for (unsigned int i = 0; i < vMatches.size(); i++) {
       if (vMatches[i] >= 0) {
@@ -237,7 +213,7 @@ cv::Mat FrameDrawer::DrawRightFrame(float imageScale) {
         cv::line(im, pt1, pt2, cv::Scalar(0, 255, 0));
       }
     }
-  } else if (state == Tracking::OK)  // TRACKING
+  } else if (state == Tracker::OK)  // TRACKING
   {
     mnTracked = 0;
     mnTrackedVO = 0;
@@ -288,12 +264,12 @@ cv::Mat FrameDrawer::DrawRightFrame(float imageScale) {
 }
 
 void FrameDrawer::DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText) {
-  stringstream s;
-  if (nState == Tracking::NO_IMAGES_YET)
+  std::stringstream s;
+  if (nState == Tracker::NO_IMAGES_YET)
     s << " WAITING FOR IMAGES";
-  else if (nState == Tracking::NOT_INITIALIZED)
+  else if (nState == Tracker::NOT_INITIALIZED)
     s << " TRYING TO INITIALIZE ";
-  else if (nState == Tracking::OK) {
+  else if (nState == Tracker::OK) {
     if (!mbOnlyTracking)
       s << "SLAM MODE |  ";
     else
@@ -304,9 +280,9 @@ void FrameDrawer::DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText) {
     s << "Maps: " << nMaps << ", KFs: " << nKFs << ", MPs: " << nMPs
       << ", Matches: " << mnTracked;
     if (mnTrackedVO > 0) s << ", + VO matches: " << mnTrackedVO;
-  } else if (nState == Tracking::LOST) {
+  } else if (nState == Tracker::LOST) {
     s << " TRACK LOST. TRYING TO RELOCALIZE ";
-  } else if (nState == Tracking::SYSTEM_NOT_READY) {
+  } else if (nState == Tracker::SYSTEM_NOT_READY) {
     s << " LOADING ORB VOCABULARY. PLEASE WAIT...";
   }
 
@@ -322,8 +298,8 @@ void FrameDrawer::DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText) {
               cv::FONT_HERSHEY_PLAIN, 1, cv::Scalar(255, 255, 255), 1, 8);
 }
 
-void FrameDrawer::Update(Tracking *pTracker) {
-  unique_lock<mutex> lock(mMutex);
+void FrameDrawer::Update(const Tracking_ptr &pTracker) {
+  std::unique_lock<std::mutex> lock(mMutex);
   pTracker->mImGray.copyTo(mIm);
   mvCurrentKeys = pTracker->mCurrentFrame.mvKeys;
   mThDepth = pTracker->mCurrentFrame.mThDepth;
@@ -337,29 +313,14 @@ void FrameDrawer::Update(Tracking *pTracker) {
     N = mvCurrentKeys.size();
   }
 
-  mvbVO = vector<bool>(N, false);
-  mvbMap = vector<bool>(N, false);
+  mvbVO = std::vector<bool>(N, false);
+  mvbMap = std::vector<bool>(N, false);
   mbOnlyTracking = pTracker->mbOnlyTracking;
 
-  // Variables for the new visualization
-  mCurrentFrame = pTracker->mCurrentFrame;
-  mmProjectPoints = mCurrentFrame.mmProjectPoints;
-  mmMatchedInImage.clear();
-
-  mvpLocalMap = pTracker->GetLocalMapMPS();
-  mvMatchedKeys.clear();
-  mvMatchedKeys.reserve(N);
-  mvpMatchedMPs.clear();
-  mvpMatchedMPs.reserve(N);
-  mvOutlierKeys.clear();
-  mvOutlierKeys.reserve(N);
-  mvpOutlierMPs.clear();
-  mvpOutlierMPs.reserve(N);
-
-  if (pTracker->mLastProcessedState == Tracking::NOT_INITIALIZED) {
+  if (pTracker->mLastProcessedState == Tracker::NOT_INITIALIZED) {
     mvIniKeys = pTracker->mInitialFrame.mvKeys;
     mvIniMatches = pTracker->mvIniMatches;
-  } else if (pTracker->mLastProcessedState == Tracking::OK) {
+  } else if (pTracker->mLastProcessedState == Tracker::OK) {
     for (int i = 0; i < N; i++) {
       MapPoint *pMP = pTracker->mCurrentFrame.mvpMapPoints[i];
       if (pMP) {
@@ -368,11 +329,6 @@ void FrameDrawer::Update(Tracking *pTracker) {
             mvbMap[i] = true;
           else
             mvbVO[i] = true;
-
-          mmMatchedInImage[pMP->mnId] = mvCurrentKeys[i].pt;
-        } else {
-          mvpOutlierMPs.push_back(pMP);
-          mvOutlierKeys.push_back(mvCurrentKeys[i]);
         }
       }
     }

@@ -19,69 +19,53 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FRAMEDRAWER_H
-#define FRAMEDRAWER_H
+#pragma once
 
 #include <mutex>
-#include <opencv2/core/core.hpp>
-#include <opencv2/features2d/features2d.hpp>
-#include <unordered_set>
-
-#include "Atlas.h"
-#include "MapPoint.h"
-#include "Tracking.h"
+#include <opencv2/opencv.hpp>
+#include <vector>
+#include "ImprovedTypes.hpp"
 
 namespace ORB_SLAM3 {
 
-class Tracking;
+class MapPoint;
 class Viewer;
 
 class FrameDrawer {
  public:
   
-  FrameDrawer(Atlas *pAtlas);
+  FrameDrawer(const Atlas_ptr &pAtlas);
 
   // Update info from the last processed frame.
-  void Update(Tracking *pTracker);
+  void Update(const Tracking_ptr &pTracker);
 
   // Draw last processed frame.
   cv::Mat DrawFrame(float imageScale = 1.f);
   cv::Mat DrawRightFrame(float imageScale = 1.f);
 
-  bool both;
+  friend Viewer;
 
  protected:
+  bool both;
   void DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText);
 
   // Info of the frame to be drawn
   cv::Mat mIm, mImRight;
   int N;
-  vector<cv::KeyPoint> mvCurrentKeys, mvCurrentKeysRight;
-  vector<bool> mvbMap, mvbVO;
+  std::vector<cv::KeyPoint> mvCurrentKeys, mvCurrentKeysRight;
+  std::vector<bool> mvbMap, mvbVO;
   bool mbOnlyTracking;
   int mnTracked, mnTrackedVO;
-  vector<cv::KeyPoint> mvIniKeys;
-  vector<int> mvIniMatches;
+  std::vector<cv::KeyPoint> mvIniKeys;
+  std::vector<int> mvIniMatches;
   int mState;
   std::vector<float> mvCurrentDepth;
   float mThDepth;
 
-  Atlas *mpAtlas;
+  Atlas_ptr mpAtlas;
 
   std::mutex mMutex;
-  vector<pair<cv::Point2f, cv::Point2f> > mvTracks;
-
-  Frame mCurrentFrame;
-  vector<MapPoint *> mvpLocalMap;
-  vector<cv::KeyPoint> mvMatchedKeys;
-  vector<MapPoint *> mvpMatchedMPs;
-  vector<cv::KeyPoint> mvOutlierKeys;
-  vector<MapPoint *> mvpOutlierMPs;
-
-  map<long unsigned int, cv::Point2f> mmProjectPoints;
-  map<long unsigned int, cv::Point2f> mmMatchedInImage;
+  std::vector<std::pair<cv::Point2f, cv::Point2f>> mvTracks;
 };
 
 }  // namespace ORB_SLAM3
-
-#endif  // FRAMEDRAWER_H

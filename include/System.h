@@ -17,26 +17,23 @@
 */
 
 
-#ifndef SYSTEM_H
-#define SYSTEM_H
+#pragma once
 
 
 #include <unistd.h>
-#include<stdio.h>
-#include<stdlib.h>
-#include<string>
-#include<thread>
-#include<opencv2/core/core.hpp>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <thread>
+#include <opencv2/core/core.hpp>
 
+#include "ImprovedTypes.hpp"
 #include "Tracking.h"
-#include "FrameDrawer.h"
-#include "MapDrawer.h"
 #include "Atlas.h"
 #include "LocalMapping.h"
 #include "LoopClosing.h"
 #include "KeyFrameDatabase.h"
 #include "ORBVocabulary.h"
-#include "Viewer.h"
 #include "ImuTypes.h"
 #include "Settings.h"
 
@@ -72,8 +69,6 @@ public:
 };
 
 class Viewer;
-class FrameDrawer;
-class MapDrawer;
 class Atlas;
 class Tracking;
 class LocalMapping;
@@ -83,15 +78,6 @@ class Settings;
 class System
 {
 public:
-    // Input sensor
-    enum eSensor{
-        MONOCULAR=0,
-        STEREO=1,
-        RGBD=2,
-        IMU_MONOCULAR=3,
-        IMU_STEREO=4,
-        IMU_RGBD=5,
-    };
 
     // File type
     enum FileType{
@@ -102,7 +88,7 @@ public:
 public:
     
     // Initialize the SLAM system. It launches the Local Mapping, Loop Closing and Viewer threads.
-    System(const string &strVocFile, const string &strSettingsFile, const eSensor sensor, const bool bUseViewer = true, const int initFr = 0, const string &strSequence = std::string());
+    System(const string &strVocFile, const string &strSettingsFile, const CameraType::eSensor sensor, const string &strSequence = std::string());
 
     // Proccess the given stereo frame. Images must be synchronized and rectified.
     // Input images: RGB (CV_8UC3) or grayscale (CV_8U). RGB is converted to grayscale.
@@ -137,8 +123,7 @@ public:
     // All threads will be requested to finish.
     // It waits until all threads have finished.
     // This function must be called before saving the trajectory.
-    void Shutdown();
-    bool isShutDown();
+    virtual ~System();
 
     // Save camera trajectory in the TUM RGB-D dataset format.
     // Only for stereo and RGB-D. This method does not work for monocular.
@@ -192,6 +177,7 @@ public:
     void InsertTrackTime(double& time);
 #endif
 
+    friend Viewer;
 private:
 
     void SaveAtlas(int type);
@@ -200,7 +186,7 @@ private:
     string CalculateCheckSum(string filename, int type);
 
     // Input sensor
-    eSensor mSensor;
+    CameraType::eSensor mSensor;
 
     // ORB vocabulary used for place recognition and feature matching.
     ORBVocabulary* mpVocabulary;
@@ -210,7 +196,7 @@ private:
 
     // Map structure that stores the pointers to all KeyFrames and MapPoints.
     //Map* mpMap;
-    Atlas mpAtlas;
+    Atlas_ptr mpAtlas;
 
     // Tracker. It receives a frame and computes the associated camera pose.
     // It also decides when to insert a new keyframe, create some new MapPoints and
@@ -224,17 +210,10 @@ private:
     // a pose graph optimization and full bundle adjustment (in a new thread) afterwards.
     LoopClosing* mpLoopCloser;
 
-    // The viewer draws the map and the current camera pose. It uses Pangolin.
-    Viewer* mpViewer;
-
-    FrameDrawer* mpFrameDrawer;
-    MapDrawer* mpMapDrawer;
-
     // System threads: Local Mapping, Loop Closing, Viewer.
     // The Tracking thread "lives" in the main execution thread that creates the System object.
     std::thread* mptLocalMapping;
     std::thread* mptLoopClosing;
-    std::thread* mptViewer;
 
     // Reset flag
     std::mutex mMutexReset;
@@ -245,9 +224,6 @@ private:
     std::mutex mMutexMode;
     bool mbActivateLocalizationMode;
     bool mbDeactivateLocalizationMode;
-
-    // Shutdown flag
-    bool mbShutDown;
 
     // Tracking state
     int mTrackingState;
@@ -265,5 +241,3 @@ private:
 };
 
 }// namespace ORB_SLAM
-
-#endif // SYSTEM_H
