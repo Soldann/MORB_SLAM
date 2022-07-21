@@ -37,6 +37,8 @@ jobs:
 
       - name: C/C++ Lint Action
         uses: cpp-linter/cpp-linter-action@v1.4.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           lines-changed-only: true
           database: build/compile_commands.json
