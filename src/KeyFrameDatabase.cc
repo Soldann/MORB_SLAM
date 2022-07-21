@@ -90,7 +90,9 @@ void KeyFrameDatabase::clearMap(Map* pMap) {
       }
     }
   }
-}
+}//BAD
+int x=1;
+  int y = 2;
 
 vector<KeyFrame*> KeyFrameDatabase::DetectLoopCandidates(KeyFrame* pKF,
                                                          float minScore) {
