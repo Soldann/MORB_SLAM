@@ -2787,6 +2787,7 @@ bool Tracking::TrackLocalMap() {
   else {
     if (mCurrentFrame.mnId <= mnLastRelocFrameId + mnFramesToResetIMU) {
       Verbose::PrintMess("TLM: PoseOptimization ", Verbose::VERBOSITY_DEBUG);
+      std::cout << "Atlas exists" << std::endl;
       Optimizer::PoseOptimization(&mCurrentFrame);
     } else {
       // if(!mbMapUpdated && mState == OK) //  && (mnMatchesInliers>30))
