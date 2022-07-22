@@ -2782,15 +2782,18 @@ bool Tracking::TrackLocalMap() {
     }
 
   // int inliers; // UNUSED
-  if (!mpAtlas->isImuInitialized())
+  if (!mpAtlas->isImuInitialized()){
+    std::cout << "no mpAtlas\n";
     Optimizer::PoseOptimization(&mCurrentFrame);
+  }
   else {
     if (mCurrentFrame.mnId <= mnLastRelocFrameId + mnFramesToResetIMU) {
       Verbose::PrintMess("TLM: PoseOptimization ", Verbose::VERBOSITY_DEBUG);
-      std::cout << "Atlas exists" << std::endl;
+      std::cout << "mpAtlas exists\n";
       Optimizer::PoseOptimization(&mCurrentFrame);
     } else {
       // if(!mbMapUpdated && mState == OK) //  && (mnMatchesInliers>30))
+      std::cout << (mbMapUpdated? "mbMap has been updated": "mbMap hasn't been updated") << std::endl;
       if (!mbMapUpdated)  //  && (mnMatchesInliers>30))
       {
         Verbose::PrintMess("TLM: PoseInertialOptimizationLastFrame ",
