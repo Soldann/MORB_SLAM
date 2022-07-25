@@ -19,8 +19,7 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TRACKING_H
-#define TRACKING_H
+#pragma once
 
 #include <mutex>
 #include <opencv2/core/core.hpp>
@@ -29,23 +28,19 @@
 
 #include "Atlas.h"
 #include "Frame.h"
-#include "FrameDrawer.h"
 #include "GeometricCamera.h"
 #include "ImuTypes.h"
 #include "KeyFrameDatabase.h"
 #include "LocalMapping.h"
 #include "LoopClosing.h"
-#include "MapDrawer.h"
 #include "ORBVocabulary.h"
 #include "ORBextractor.h"
 #include "Settings.h"
 #include "System.h"
-#include "Viewer.h"
+#include "ImprovedTypes.hpp"
 
 namespace ORB_SLAM3 {
 
-class Viewer;
-class FrameDrawer;
 class Atlas;
 class LocalMapping;
 class LoopClosing;
@@ -55,8 +50,8 @@ class Settings;
 class Tracking {
  public:
   
-  Tracking(System* pSys, ORBVocabulary* pVoc, FrameDrawer* pFrameDrawer,
-           MapDrawer* pMapDrawer, Atlas* pAtlas, KeyFrameDatabase* pKFDB,
+  Tracking(System* pSys, ORBVocabulary* pVoc,
+           const Atlas_ptr &pAtlas, KeyFrameDatabase* pKFDB,
            const string& strSettingPath, const int sensor, Settings* settings,
            const string& _nameSeq = std::string());
 
@@ -81,9 +76,6 @@ class Tracking {
 
   void SetLocalMapper(LocalMapping* pLocalMapper);
   void SetLoopClosing(LoopClosing* pLoopClosing);
-  void SetViewer(Viewer* pViewer);
-  void SetStepByStep(bool bSet);
-  bool GetStepByStep();
 
   // Load new settings
   // The focal lenght should be similar or scale prediction will fail when
@@ -122,19 +114,9 @@ class Tracking {
 #endif
 
  public:
-  // Tracking states
-  enum eTrackingState {
-    SYSTEM_NOT_READY = -1,
-    NO_IMAGES_YET = 0,
-    NOT_INITIALIZED = 1,
-    OK = 2,
-    RECENTLY_LOST = 3,
-    LOST = 4,
-    OK_KLT = 5
-  };
 
-  eTrackingState mState;
-  eTrackingState mLastProcessedState;
+  Tracker::eTrackingState mState;
+  Tracker::eTrackingState mLastProcessedState;
 
   // Input sensor
   int mSensor;
@@ -284,14 +266,8 @@ class Tracking {
   // System
   System* mpSystem;
 
-  // Drawers
-  Viewer* mpViewer;
-  FrameDrawer* mpFrameDrawer;
-  MapDrawer* mpMapDrawer;
-  bool bStepByStep;
-
   // Atlas
-  Atlas* mpAtlas;
+  Atlas_ptr mpAtlas;
 
   // Calibration matrix
   cv::Mat mK;
@@ -381,4 +357,3 @@ class Tracking {
 
 }  // namespace ORB_SLAM3
 
-#endif  // TRACKING_H

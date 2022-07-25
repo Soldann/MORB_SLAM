@@ -22,9 +22,10 @@
 #include<iomanip>
 #include<chrono>
 
-#include<opencv2/core/core.hpp>
+#include<opencv2/opencv.hpp>
 
 #include<System.h>
+#include<Viewer.h>
 
 using namespace std;
 
@@ -88,17 +89,20 @@ int main(int argc, char **argv)
     cout.precision(17);
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
-    ORB_SLAM3::System SLAM(argv[1],argv[2],ORB_SLAM3::System::STEREO, true);
+    ORB_SLAM3::System_ptr SLAM = std::make_shared<ORB_SLAM3::System>(argv[1],argv[2],ORB_SLAM3::CameraType::STEREO);
+    ORB_SLAM3::Viewer viewer(SLAM, argv[2]);
 
     cv::Mat imLeft, imRight;
     for (seq = 0; seq<num_seq; seq++)
     {
 
         // Seq loop
+#ifdef REGISTER_TIMES
         double t_resize = 0;
         double t_rect = 0;
         double t_track = 0;
         int num_rect = 0;
+#endif
         int proccIm = 0;
         for(int ni=0; ni<nImages[seq]; ni++, proccIm++)
         {
@@ -125,9 +129,11 @@ int main(int argc, char **argv)
             std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
 
             // Pass the images to the SLAM system
-            SLAM.TrackStereo(imLeft,imRight,tframe, vector<ORB_SLAM3::IMU::Point>(), vstrImageLeft[seq][ni]);
+            auto pos = SLAM->TrackStereo(imLeft,imRight,tframe, vector<ORB_SLAM3::IMU::Point>(), vstrImageLeft[seq][ni]);
 
             std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
+
+            viewer.update(pos);
 
 #ifdef REGISTER_TIMES
             t_track = t_resize + t_rect + std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t2 - t1).count();
@@ -153,25 +159,25 @@ int main(int argc, char **argv)
         {
             cout << "Changing the dataset" << endl;
 
-            SLAM.ChangeDataset();
+            SLAM->ChangeDataset();
         }
 
     }
     // Stop all threads
-    SLAM.Shutdown();
+    // SLAM.Shutdown();
 
     // Save camera trajectory
     if (bFileName)
     {
         const string kf_file =  "kf_" + string(argv[argc-1]) + ".txt";
         const string f_file =  "f_" + string(argv[argc-1]) + ".txt";
-        SLAM.SaveTrajectoryEuRoC(f_file);
-        SLAM.SaveKeyFrameTrajectoryEuRoC(kf_file);
+        SLAM->SaveTrajectoryEuRoC(f_file);
+        SLAM->SaveKeyFrameTrajectoryEuRoC(kf_file);
     }
     else
     {
-        SLAM.SaveTrajectoryEuRoC("CameraTrajectory.txt");
-        SLAM.SaveKeyFrameTrajectoryEuRoC("KeyFrameTrajectory.txt");
+        SLAM->SaveTrajectoryEuRoC("CameraTrajectory.txt");
+        SLAM->SaveKeyFrameTrajectoryEuRoC("KeyFrameTrajectory.txt");
     }
 
     return 0;

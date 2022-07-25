@@ -26,10 +26,12 @@ make -j$(nproc)
 
 cd ../../../
 
-echo "Uncompress vocabulary ..."
 
 cd Vocabulary
-tar -xf ORBvoc.txt.tar.gz
+if [ ! -f "ORBvoc.txt" ]; then
+    echo "Uncompress vocabulary ..."
+    tar -xf ORBvoc.txt.tar.gz
+fi
 cd ..
 
 echo "Configuring and building ORB_SLAM3 ..."

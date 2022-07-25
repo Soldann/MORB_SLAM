@@ -65,7 +65,7 @@ class Settings {
   /*
    * Getter methods
    */
-  CameraType cameraType() { return cameraType_; }
+  CameraType cameraType() const { return cameraType_; }
   GeometricCamera* camera1() { return calibration1_; }
   GeometricCamera* camera2() { return calibration2_; }
   cv::Mat camera1DistortionCoef() {
@@ -74,59 +74,59 @@ class Settings {
   }
   cv::Mat camera2DistortionCoef() {
     return cv::Mat(vPinHoleDistorsion2_.size(), 1, CV_32F,
-                   vPinHoleDistorsion1_.data());
+                   vPinHoleDistorsion2_.data());
   }
 
-  Sophus::SE3f Tlr() { return Tlr_; }
-  float bf() { return bf_; }
-  float b() { return b_; }
-  float thDepth() { return thDepth_; }
+  const Sophus::SE3f &Tlr() const { return Tlr_; }
+  float bf() const { return bf_; }
+  float b() const { return b_; }
+  float thDepth() const { return thDepth_; }
 
-  bool needToUndistort() { return bNeedToUndistort_; }
+  bool needToUndistort() const { return bNeedToUndistort_; }
 
-  cv::Size newImSize() { return newImSize_; }
-  float fps() { return fps_; }
-  bool rgb() { return bRGB_; }
-  bool needToResize() { return bNeedToResize1_; }
-  bool needToRectify() { return bNeedToRectify_; }
+  const cv::Size &newImSize() const { return newImSize_; }
+  float fps() const { return fps_; }
+  bool rgb() const { return bRGB_; }
+  bool needToResize() const { return bNeedToResize1_; }
+  bool needToRectify() const { return bNeedToRectify_; }
 
-  float noiseGyro() { return noiseGyro_; }
-  float noiseAcc() { return noiseAcc_; }
-  float gyroWalk() { return gyroWalk_; }
-  float accWalk() { return accWalk_; }
-  float imuFrequency() { return imuFrequency_; }
-  Sophus::SE3f Tbc() { return Tbc_; }
-  bool insertKFsWhenLost() { return insertKFsWhenLost_; }
+  float noiseGyro() const { return noiseGyro_; }
+  float noiseAcc() const { return noiseAcc_; }
+  float gyroWalk() const { return gyroWalk_; }
+  float accWalk() const { return accWalk_; }
+  float imuFrequency() const { return imuFrequency_; }
+  const Sophus::SE3f &Tbc() const { return Tbc_; }
+  bool insertKFsWhenLost() const { return insertKFsWhenLost_; }
 
-  float depthMapFactor() { return depthMapFactor_; }
+  float depthMapFactor() const { return depthMapFactor_; }
 
-  int nFeatures() { return nFeatures_; }
-  int nLevels() { return nLevels_; }
-  float initThFAST() { return initThFAST_; }
-  float minThFAST() { return minThFAST_; }
-  float scaleFactor() { return scaleFactor_; }
+  int nFeatures() const { return nFeatures_; }
+  int nLevels() const { return nLevels_; }
+  float initThFAST() const { return initThFAST_; }
+  float minThFAST() const { return minThFAST_; }
+  float scaleFactor() const { return scaleFactor_; }
 
-  float keyFrameSize() { return keyFrameSize_; }
-  float keyFrameLineWidth() { return keyFrameLineWidth_; }
-  float graphLineWidth() { return graphLineWidth_; }
-  float pointSize() { return pointSize_; }
-  float cameraSize() { return cameraSize_; }
-  float cameraLineWidth() { return cameraLineWidth_; }
-  float viewPointX() { return viewPointX_; }
-  float viewPointY() { return viewPointY_; }
-  float viewPointZ() { return viewPointZ_; }
-  float viewPointF() { return viewPointF_; }
-  float imageViewerScale() { return imageViewerScale_; }
+  float keyFrameSize() const { return keyFrameSize_; }
+  float keyFrameLineWidth() const { return keyFrameLineWidth_; }
+  float graphLineWidth() const { return graphLineWidth_; }
+  float pointSize() const { return pointSize_; }
+  float cameraSize() const { return cameraSize_; }
+  float cameraLineWidth() const { return cameraLineWidth_; }
+  float viewPointX() const { return viewPointX_; }
+  float viewPointY() const { return viewPointY_; }
+  float viewPointZ() const { return viewPointZ_; }
+  float viewPointF() const { return viewPointF_; }
+  float imageViewerScale() const { return imageViewerScale_; }
 
-  std::string atlasLoadFile() { return sLoadFrom_; }
-  std::string atlasSaveFile() { return sSaveto_; }
+  const std::string &atlasLoadFile() const { return sLoadFrom_; }
+  const std::string &atlasSaveFile() const { return sSaveto_; }
 
-  float thFarPoints() { return thFarPoints_; }
+  float thFarPoints() const { return thFarPoints_; }
 
-  cv::Mat M1l() { return M1l_; }
-  cv::Mat M2l() { return M2l_; }
-  cv::Mat M1r() { return M1r_; }
-  cv::Mat M2r() { return M2r_; }
+  const cv::Mat &M1l() const { return M1l_; }
+  const cv::Mat &M2l() const { return M2l_; }
+  const cv::Mat &M1r() const { return M1r_; }
+  const cv::Mat &M2r() const { return M2r_; }
 
  private:
   template <typename T>

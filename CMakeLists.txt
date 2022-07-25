@@ -6,7 +6,7 @@ project(MORB_SLAM VERSION 1.0 LANGUAGES CXX)
 #   SET(CMAKE_BUILD_TYPE Release)
 # ENDIF()
 
-MESSAGE("Build type: " ${CMAKE_BUILD_TYPE})
+MESSAGE(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall   -O3")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall   -O3")
@@ -29,8 +29,8 @@ find_package(OpenCV 4.4)
       message(FATAL_ERROR "OpenCV > 4.4 not found.")
    endif()
 
-MESSAGE("OPENCV VERSION:")
-MESSAGE(${OpenCV_VERSION})
+MESSAGE(STATUS "OPENCV VERSION:")
+MESSAGE(STATUS ${OpenCV_VERSION})
 
 find_package(Eigen3 3.1.0 REQUIRED)
 find_package(Pangolin REQUIRED)
@@ -219,7 +219,7 @@ if (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
         target_link_libraries(rgbd_inertial_realsense_D435i ${PROJECT_NAME})
         endif()
 
-        #Stereo examples
+        # #Stereo examples
         set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples/Stereo)
 
         add_executable(stereo_kitti
@@ -315,6 +315,7 @@ if (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
         target_link_libraries(stereo_inertial_realsense_D435i ${PROJECT_NAME})
         endif()
 
+        # Calibration examples
         set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples/Calibration)
         if(realsense2_FOUND)
         add_executable(recorder_realsense_D435i

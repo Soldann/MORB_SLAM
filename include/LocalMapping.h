@@ -19,11 +19,11 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LOCALMAPPING_H
-#define LOCALMAPPING_H
+#pragma once
 
 #include <mutex>
 
+#include "ImprovedTypes.hpp"
 #include "Atlas.h"
 #include "KeyFrame.h"
 #include "KeyFrameDatabase.h"
@@ -41,7 +41,7 @@ class Atlas;
 class LocalMapping {
  public:
   
-  LocalMapping(System* pSys, Atlas* pAtlas, const float bMonocular,
+  LocalMapping(System* pSys, const Atlas_ptr &pAtlas, const float bMonocular,
                bool bInertial, const string& _strSeqName = std::string());
 
   void SetLoopCloser(LoopClosing* pLoopCloser);
@@ -97,7 +97,6 @@ class LocalMapping {
   int mnMatchesInliers;
 
   // For debugging (erase in normal mode)
-  int mInitFr;
   int mIdxIteration;
   string strSequence;
 
@@ -154,7 +153,7 @@ class LocalMapping {
   bool mbFinished;
   std::mutex mMutexFinish;
 
-  Atlas* mpAtlas;
+  Atlas_ptr mpAtlas;
 
   LoopClosing* mpLoopCloser;
   Tracking* mpTracker;
@@ -197,4 +196,3 @@ class LocalMapping {
 
 }  // namespace ORB_SLAM3
 
-#endif  // LOCALMAPPING_H
