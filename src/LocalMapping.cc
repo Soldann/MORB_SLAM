@@ -54,6 +54,7 @@ LocalMapping::LocalMapping(System* pSys, const Atlas_ptr &pAtlas, const float bM
       mbFinishRequested(false),
       mbFinished(true),
       mpAtlas(pAtlas),
+      mpCurrentKeyFrame(nullptr),
       mbAbortBA(false),
       mbStopped(false),
       mbStopRequested(false),

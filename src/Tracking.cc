@@ -1719,29 +1719,7 @@ void Tracking::Track() {
       mlQueueImuData.clear();
       CreateMapInAtlas();
       return;
-    } else if (mCurrentFrame.mTimeStamp > mLastFrame.mTimeStamp + 1.0) {
-      // cout << mCurrentFrame.mTimeStamp << ", " << mLastFrame.mTimeStamp <<
-      // endl; cout << "id last: " << mLastFrame.mnId << "    id curr: " <<
-      // mCurrentFrame.mnId << endl;
-      if (mpAtlas->isInertial()) {
-        if (mpAtlas->isImuInitialized()) {
-          cout << "Timestamp jump detected. State set to LOST. Reseting IMU "
-                  "integration..."
-               << endl;
-          if (!pCurrentMap->GetIniertialBA2()) {
-            mpSystem->ResetActiveMap();
-          } else {
-            CreateMapInAtlas();
-          }
-        } else {
-          cout << "Timestamp jump detected, before IMU initialization. "
-                  "Reseting..."
-               << endl;
-          mpSystem->ResetActiveMap();
-        }
-        return;
-      }
-    }
+    } 
   }
 
   if ((mSensor == CameraType::IMU_MONOCULAR || mSensor == CameraType::IMU_STEREO ||
