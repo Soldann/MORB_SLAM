@@ -200,13 +200,13 @@ void Viewer::Run() {
 
   pangolin::CreatePanel("menu").SetBounds(0.0, 1.0, 0.0,
                                           pangolin::Attach::Pix(175));
-  pangolin::Var<bool> menuFollowCamera("menu.Follow Camera", false, true);
-  pangolin::Var<bool> menuCamView("menu.Camera View", false, false);
+  pangolin::Var<bool> menuFollowCamera("menu.Follow Camera", true, true);
+  pangolin::Var<bool> menuCamView("menu.Camera View", true, true);
   pangolin::Var<bool> menuTopView("menu.Top View", false, false);
   // pangolin::Var<bool> menuSideView("menu.Side View",false,false);
   pangolin::Var<bool> menuShowPoints("menu.Show Points", true, true);
   pangolin::Var<bool> menuShowKeyFrames("menu.Show KeyFrames", true, true);
-  pangolin::Var<bool> menuShowGraph("menu.Show Graph", false, true);
+  pangolin::Var<bool> menuShowGraph("menu.Show Graph", true, true);
   pangolin::Var<bool> menuShowInertialGraph("menu.Show Inertial Graph", true,
                                             true);
   pangolin::Var<bool> menuLocalizationMode("menu.Localization Mode", false,
