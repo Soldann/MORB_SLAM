@@ -19,8 +19,7 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ORBEXTRACTOR_H
-#define ORBEXTRACTOR_H
+#pragma once
 
 #include <list>
 #include <opencv2/opencv.hpp>
@@ -31,6 +30,8 @@ namespace ORB_SLAM3 {
 class ExtractorNode {
  public:
   ExtractorNode() : bNoMore(false) {}
+  ExtractorNode(const cv::Point2i &UL, const cv::Point2i &UR, const cv::Point2i &BL, const cv::Point2i &BR, int keySize) :
+    UL{UL}, UR{UR}, BL{BL}, BR{BR}, bNoMore(false) { vKeys.reserve(keySize); }
 
   void DivideNode(ExtractorNode &n1, ExtractorNode &n2, ExtractorNode &n3,
                   ExtractorNode &n4);
@@ -43,12 +44,8 @@ class ExtractorNode {
 
 class ORBextractor {
  public:
-  enum { HARRIS_SCORE = 0, FAST_SCORE = 1 };
-
   ORBextractor(int nfeatures, float scaleFactor, int nlevels, int iniThFAST,
                int minThFAST);
-
-  ~ORBextractor() {}
 
   // Compute the ORB features and descriptors on an image.
   // ORB are dispersed on the image using an octree.
@@ -84,8 +81,6 @@ class ORBextractor {
       const int &maxX, const int &minY, const int &maxY, const int &nFeatures,
       const int &level);
 
-  void ComputeKeyPointsOld(
-      std::vector<std::vector<cv::KeyPoint> > &allKeypoints);
   std::vector<cv::Point> pattern;
 
   int nfeatures;
@@ -105,5 +100,3 @@ class ORBextractor {
 };
 
 }  // namespace ORB_SLAM3
-
-#endif

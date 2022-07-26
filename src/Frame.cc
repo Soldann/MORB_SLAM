@@ -191,8 +191,8 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
   std::chrono::steady_clock::time_point time_StartExtORB =
       std::chrono::steady_clock::now();
 #endif
-  thread threadLeft(&Frame::ExtractORB, this, 0, imLeft, 0, 0);
-  thread threadRight(&Frame::ExtractORB, this, 1, imRight, 0, 0);
+  thread threadLeft(&Frame::ExtractORB, this, true, imLeft, 0, 0);
+  thread threadRight(&Frame::ExtractORB, this, false, imRight, 0, 0);
   threadLeft.join();
   threadRight.join();
 #ifdef REGISTER_TIMES
@@ -315,7 +315,7 @@ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth,
   std::chrono::steady_clock::time_point time_StartExtORB =
       std::chrono::steady_clock::now();
 #endif
-  ExtractORB(0, imGray, 0, 0);
+  ExtractORB(true, imGray, 0, 0);
 #ifdef REGISTER_TIMES
   std::chrono::steady_clock::time_point time_EndExtORB =
       std::chrono::steady_clock::now();
@@ -425,7 +425,7 @@ Frame::Frame(const cv::Mat &imGray, const double &timeStamp,
   std::chrono::steady_clock::time_point time_StartExtORB =
       std::chrono::steady_clock::now();
 #endif
-  ExtractORB(0, imGray, 0, 1000);
+  ExtractORB(true, imGray, 0, 1000);
 #ifdef REGISTER_TIMES
   std::chrono::steady_clock::time_point time_EndExtORB =
       std::chrono::steady_clock::now();
@@ -527,10 +527,10 @@ void Frame::AssignFeaturesToGrid() {
   }
 }
 
-void Frame::ExtractORB(int flag, const cv::Mat &im, const int x0,
+void Frame::ExtractORB(bool isLeft, const cv::Mat &im, const int x0,
                        const int x1) {
   vector<int> vLapping = {x0, x1};
-  if (flag == 0)
+  if (isLeft)
     monoLeft =
         (*mpORBextractorLeft)(im, cv::Mat(), mvKeys, mDescriptors, vLapping);
   else
@@ -1138,11 +1138,11 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
   std::chrono::steady_clock::time_point time_StartExtORB =
       std::chrono::steady_clock::now();
 #endif
-  thread threadLeft(&Frame::ExtractORB, this, 0, imLeft,
+  thread threadLeft(&Frame::ExtractORB, this, true, imLeft,
                     static_cast<KannalaBrandt8 *>(mpCamera)->mvLappingArea[0],
                     static_cast<KannalaBrandt8 *>(mpCamera)->mvLappingArea[1]);
   thread threadRight(
-      &Frame::ExtractORB, this, 1, imRight,
+      &Frame::ExtractORB, this, false, imRight,
       static_cast<KannalaBrandt8 *>(mpCamera2)->mvLappingArea[0],
       static_cast<KannalaBrandt8 *>(mpCamera2)->mvLappingArea[1]);
   threadLeft.join();
