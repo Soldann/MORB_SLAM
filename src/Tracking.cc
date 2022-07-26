@@ -1387,25 +1387,22 @@ Sophus::SE3f Tracking::GrabImageStereo(const cv::Mat& imRectLeft,
   if (mSensor == CameraType::STEREO && !mpCamera2)
     mCurrentFrame = Frame(mImGray, imGrayRight, timestamp, mpORBextractorLeft,
                           mpORBextractorRight, mpORBVocabulary, mK, mDistCoef,
-                          mbf, mThDepth, mpCamera);
+                          mbf, mThDepth, mpCamera, filename, mnNumDataset);
   else if (mSensor == CameraType::STEREO && mpCamera2)
     mCurrentFrame = Frame(mImGray, imGrayRight, timestamp, mpORBextractorLeft,
                           mpORBextractorRight, mpORBVocabulary, mK, mDistCoef,
-                          mbf, mThDepth, mpCamera, mpCamera2, mTlr);
+                          mbf, mThDepth, mpCamera, mpCamera2, filename, mnNumDataset, mTlr);
   else if (mSensor == CameraType::IMU_STEREO && !mpCamera2)
     mCurrentFrame = Frame(mImGray, imGrayRight, timestamp, mpORBextractorLeft,
                           mpORBextractorRight, mpORBVocabulary, mK, mDistCoef,
-                          mbf, mThDepth, mpCamera, &mLastFrame, *mpImuCalib);
+                          mbf, mThDepth, mpCamera, filename, mnNumDataset, &mLastFrame, *mpImuCalib);
   else if (mSensor == CameraType::IMU_STEREO && mpCamera2)
     mCurrentFrame =
         Frame(mImGray, imGrayRight, timestamp, mpORBextractorLeft,
               mpORBextractorRight, mpORBVocabulary, mK, mDistCoef, mbf,
-              mThDepth, mpCamera, mpCamera2, mTlr, &mLastFrame, *mpImuCalib);
+              mThDepth, mpCamera, mpCamera2, filename, mnNumDataset, mTlr, &mLastFrame, *mpImuCalib);
 
   // cout << "Incoming frame ended" << endl;
-
-  mCurrentFrame.mNameFile = filename;
-  mCurrentFrame.mnDataset = mnNumDataset;
 
 #ifdef REGISTER_TIMES
   vdORBExtract_ms.push_back(mCurrentFrame.mTimeORB_Ext);
@@ -1442,14 +1439,11 @@ Sophus::SE3f Tracking::GrabImageRGBD(const cv::Mat& imRGB, const cv::Mat& imD,
   if (mSensor == CameraType::RGBD)
     mCurrentFrame =
         Frame(mImGray, imDepth, timestamp, mpORBextractorLeft, mpORBVocabulary,
-              mK, mDistCoef, mbf, mThDepth, mpCamera);
+              mK, mDistCoef, mbf, mThDepth, mpCamera, filename, mnNumDataset);
   else if (mSensor == CameraType::IMU_RGBD)
     mCurrentFrame =
         Frame(mImGray, imDepth, timestamp, mpORBextractorLeft, mpORBVocabulary,
-              mK, mDistCoef, mbf, mThDepth, mpCamera, &mLastFrame, *mpImuCalib);
-
-  mCurrentFrame.mNameFile = filename;
-  mCurrentFrame.mnDataset = mnNumDataset;
+              mK, mDistCoef, mbf, mThDepth, mpCamera, filename, mnNumDataset, &mLastFrame, *mpImuCalib);
 
 #ifdef REGISTER_TIMES
   vdORBExtract_ms.push_back(mCurrentFrame.mTimeORB_Ext);
@@ -1481,26 +1475,23 @@ Sophus::SE3f Tracking::GrabImageMonocular(const cv::Mat& im,
         (lastID - initID) < mMaxFrames)
       mCurrentFrame =
           Frame(mImGray, timestamp, mpIniORBextractor, mpORBVocabulary,
-                mpCamera, mDistCoef, mbf, mThDepth);
+                mpCamera, mDistCoef, mbf, mThDepth, filename, mnNumDataset);
     else
       mCurrentFrame =
           Frame(mImGray, timestamp, mpORBextractorLeft, mpORBVocabulary,
-                mpCamera, mDistCoef, mbf, mThDepth);
+                mpCamera, mDistCoef, mbf, mThDepth, filename, mnNumDataset);
   } else if (mSensor == CameraType::IMU_MONOCULAR) {
     if (mState == Tracker::NOT_INITIALIZED || mState == Tracker::NO_IMAGES_YET) {
       mCurrentFrame =
           Frame(mImGray, timestamp, mpIniORBextractor, mpORBVocabulary,
-                mpCamera, mDistCoef, mbf, mThDepth, &mLastFrame, *mpImuCalib);
+                mpCamera, mDistCoef, mbf, mThDepth, filename, mnNumDataset, &mLastFrame, *mpImuCalib);
     } else
       mCurrentFrame =
           Frame(mImGray, timestamp, mpORBextractorLeft, mpORBVocabulary,
-                mpCamera, mDistCoef, mbf, mThDepth, &mLastFrame, *mpImuCalib);
+                mpCamera, mDistCoef, mbf, mThDepth, filename, mnNumDataset, &mLastFrame, *mpImuCalib);
   }
 
   if (mState == Tracker::NO_IMAGES_YET) t0 = timestamp;
-
-  mCurrentFrame.mNameFile = filename;
-  mCurrentFrame.mnDataset = mnNumDataset;
 
 #ifdef REGISTER_TIMES
   vdORBExtract_ms.push_back(mCurrentFrame.mTimeORB_Ext);
