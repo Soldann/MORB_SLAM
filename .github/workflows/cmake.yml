@@ -2,7 +2,7 @@ name: CMake
 
 on:
   push:
-    branches: [ "master", "github-workflow" ]
+    branches: [ "master", "workflow-fix" ]
   pull_request:
     branches: [ "master" ]
 
@@ -72,5 +72,5 @@ jobs:
         # GENERATE_PKGCONFIG: # optional
     
     - name: Build & Install MORB_SLAM
-      run: ./morbslam_installer.sh
+      run: ./.github/morbslam_installer.sh
       
