@@ -56,6 +56,7 @@ System::System(const std::string& strVocFile, const std::string& strSettingsFile
       mbResetActiveMap(false),
       mbActivateLocalizationMode(false),
       mbDeactivateLocalizationMode(false) {
+  cameras.push_back(make_shared<Camera>(mSensor)); // for now just hard code the sensor we are using, TODO make multicam
   // Output welcome message
   std::cout << std::endl
        << "ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, "
@@ -308,7 +309,7 @@ Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
 
   // std::cout << "start GrabImageStereo" << std::endl;
   Sophus::SE3f Tcw = mpTracker->GrabImageStereo(imLeftToFeed, imRightToFeed,
-                                                timestamp, filename);
+                                                timestamp, filename, cameras[0]); // for now we know cameras[0] is providing the image
 
   // std::cout << "out grabber" << std::endl;
 
@@ -379,7 +380,7 @@ Sophus::SE3f System::TrackRGBD(const cv::Mat& im, const cv::Mat& depthmap,
       mpTracker->GrabImuData(vImuMeas[i_imu]);
 
   Sophus::SE3f Tcw =
-      mpTracker->GrabImageRGBD(imToFeed, imDepthToFeed, timestamp, filename);
+      mpTracker->GrabImageRGBD(imToFeed, imDepthToFeed, timestamp, filename, cameras[0]); // for now we know cameras[0] is providing the image
 
   unique_lock<mutex> lock2(mMutexState);
   mTrackingState = mpTracker->mState;
@@ -450,7 +451,7 @@ Sophus::SE3f System::TrackMonocular(const cv::Mat& im, const double& timestamp,
       mpTracker->GrabImuData(vImuMeas[i_imu]);
 
   Sophus::SE3f Tcw =
-      mpTracker->GrabImageMonocular(imToFeed, timestamp, filename);
+      mpTracker->GrabImageMonocular(imToFeed, timestamp, filename, cameras[0]); // for now we know cameras[0] is providing the image
 
   unique_lock<mutex> lock2(mMutexState);
   mTrackingState = mpTracker->mState;

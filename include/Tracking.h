@@ -38,6 +38,7 @@
 #include "Settings.h"
 #include "System.h"
 #include "ImprovedTypes.hpp"
+#include "Camera.hpp"
 
 namespace ORB_SLAM3 {
 
@@ -66,11 +67,13 @@ class Tracking {
   // matching.
   Sophus::SE3f GrabImageStereo(const cv::Mat& imRectLeft,
                                const cv::Mat& imRectRight,
-                               const double& timestamp, const string &filename);
+                               const double& timestamp, const string &filename,
+                               const Camera_ptr &cam);
   Sophus::SE3f GrabImageRGBD(const cv::Mat& imRGB, const cv::Mat& imD,
-                             const double& timestamp, const string &filename);
+                             const double& timestamp, const string &filename,
+                             const Camera_ptr &cam);
   Sophus::SE3f GrabImageMonocular(const cv::Mat& im, const double& timestamp,
-                                  const string &filename);
+                                  const string &filename, const Camera_ptr &cam);
 
   void GrabImuData(const IMU::Point& imuMeasurement);
 

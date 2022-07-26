@@ -115,6 +115,7 @@ Frame::Frame(const Frame &frame)
       mbIsSet(frame.mbIsSet),
       mbImuPreintegrated(frame.mbImuPreintegrated),
       mpMutexImu(frame.mpMutexImu),
+      camera{frame.camera},
       mpCamera(frame.mpCamera),
       mpCamera2(frame.mpCamera2),
       Nleft(frame.Nleft),
@@ -147,7 +148,7 @@ Frame::Frame(const Frame &frame)
 #endif
 }
 
-Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
+Frame::Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRight,
              const double &timeStamp, ORBextractor *extractorLeft,
              ORBextractor *extractorRight, ORBVocabulary *voc, cv::Mat &K,
              cv::Mat &distCoef, const float &bf, const float &thDepth,
@@ -174,6 +175,7 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
       mnDataset{pnNumDataset},
       mbIsSet(false),
       mbImuPreintegrated(false),
+      camera(cam),
       mpCamera(pCamera),
       mpCamera2(nullptr) {
   // Frame ID
@@ -193,10 +195,9 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
   std::chrono::steady_clock::time_point time_StartExtORB =
       std::chrono::steady_clock::now();
 #endif
-  thread threadLeft(&Frame::ExtractORB, this, true, imLeft, 0, 0);
-  thread threadRight(&Frame::ExtractORB, this, false, imRight, 0, 0);
-  threadLeft.join();
-  threadRight.join();
+  auto leftFut = camera->queueLeft(std::bind(&Frame::ExtractORB, this, true, imLeft, 0, 0));
+  auto rightFut = camera->queueRight(std::bind(&Frame::ExtractORB, this, false, imRight, 0, 0));
+  if(!leftFut.get() || !rightFut.get()) return;
 #ifdef REGISTER_TIMES
   std::chrono::steady_clock::time_point time_EndExtORB =
       std::chrono::steady_clock::now();
@@ -278,7 +279,7 @@ Frame::~Frame(){
   delete mpMutexImu;
 }
 
-Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth,
+Frame::Frame(const Camera_ptr &cam, const cv::Mat &imGray, const cv::Mat &imDepth,
              const double &timeStamp, ORBextractor *extractor,
              ORBVocabulary *voc, cv::Mat &K, cv::Mat &distCoef, const float &bf,
              const float &thDepth, GeometricCamera *pCamera,
@@ -305,6 +306,7 @@ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth,
       mnDataset{pnNumDataset},
       mbIsSet(false),
       mbImuPreintegrated(false),
+      camera{cam}, 
       mpCamera(pCamera),
       mpCamera2(nullptr) {
   // Frame ID
@@ -391,7 +393,7 @@ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth,
   AssignFeaturesToGrid();
 }
 
-Frame::Frame(const cv::Mat &imGray, const double &timeStamp,
+Frame::Frame(const Camera_ptr &cam, const cv::Mat &imGray, const double &timeStamp,
              ORBextractor *extractor, ORBVocabulary *voc,
              GeometricCamera *pCamera, cv::Mat &distCoef, const float &bf,
              const float &thDepth, const std::string &pNameFile, int pnNumDataset,
@@ -417,6 +419,7 @@ Frame::Frame(const cv::Mat &imGray, const double &timeStamp,
       mnDataset{pnNumDataset},
       mbIsSet(false),
       mbImuPreintegrated(false),
+      camera{cam},
       mpCamera(pCamera),
       mpCamera2(nullptr) {
   // Frame ID
@@ -1101,7 +1104,7 @@ void Frame::setIntegrated() {
   mbImuPreintegrated = true;
 }
 
-Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
+Frame::Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRight,
              const double &timeStamp, ORBextractor *extractorLeft,
              ORBextractor *extractorRight, ORBVocabulary *voc, cv::Mat &K,
              cv::Mat &distCoef, const float &bf, const float &thDepth,
@@ -1128,6 +1131,7 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
       mNameFile{pNameFile},
       mnDataset{pnNumDataset},
       mbImuPreintegrated(false),
+      camera{cam},
       mpCamera(pCamera),
       mpCamera2(pCamera2)
 
@@ -1152,15 +1156,14 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
   std::chrono::steady_clock::time_point time_StartExtORB =
       std::chrono::steady_clock::now();
 #endif
-  thread threadLeft(&Frame::ExtractORB, this, true, imLeft,
+  auto leftFut = camera->queueLeft(std::bind(&Frame::ExtractORB, this, true, imLeft,
                     static_cast<KannalaBrandt8 *>(mpCamera)->mvLappingArea[0],
-                    static_cast<KannalaBrandt8 *>(mpCamera)->mvLappingArea[1]);
-  thread threadRight(
+                    static_cast<KannalaBrandt8 *>(mpCamera)->mvLappingArea[1]));
+  auto rightFut = camera->queueRight(std::bind(
       &Frame::ExtractORB, this, false, imRight,
       static_cast<KannalaBrandt8 *>(mpCamera2)->mvLappingArea[0],
-      static_cast<KannalaBrandt8 *>(mpCamera2)->mvLappingArea[1]);
-  threadLeft.join();
-  threadRight.join();
+      static_cast<KannalaBrandt8 *>(mpCamera2)->mvLappingArea[1]));
+  if(!leftFut.get() || !rightFut.get()) return;
 #ifdef REGISTER_TIMES
   std::chrono::steady_clock::time_point time_EndExtORB =
       std::chrono::steady_clock::now();

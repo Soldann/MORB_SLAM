@@ -38,6 +38,8 @@
 #include "Eigen/Core"
 #include "sophus/se3.hpp"
 
+#include "Camera.hpp"
+
 namespace ORB_SLAM3
 {
 #define FRAME_GRID_ROWS 48
@@ -58,13 +60,13 @@ public:
     Frame(const Frame &frame);
 
     // Constructor for stereo cameras.
-    Frame(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeStamp, ORBextractor* extractorLeft, ORBextractor* extractorRight, ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth, GeometricCamera* pCamera, const std::string &pNameFile, int pnNumDataset, Frame* pPrevF = nullptr, const IMU::Calib &ImuCalib = IMU::Calib());
+    Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeStamp, ORBextractor* extractorLeft, ORBextractor* extractorRight, ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth, GeometricCamera* pCamera, const std::string &pNameFile, int pnNumDataset, Frame* pPrevF = nullptr, const IMU::Calib &ImuCalib = IMU::Calib());
 
     // Constructor for RGB-D cameras.
-    Frame(const cv::Mat &imGray, const cv::Mat &imDepth, const double &timeStamp, ORBextractor* extractor,ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth, GeometricCamera* pCamera, const std::string &pNameFile, int pnNumDataset, Frame* pPrevF = nullptr, const IMU::Calib &ImuCalib = IMU::Calib());
+    Frame(const Camera_ptr &cam, const cv::Mat &imGray, const cv::Mat &imDepth, const double &timeStamp, ORBextractor* extractor,ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth, GeometricCamera* pCamera, const std::string &pNameFile, int pnNumDataset, Frame* pPrevF = nullptr, const IMU::Calib &ImuCalib = IMU::Calib());
 
     // Constructor for Monocular cameras.
-    Frame(const cv::Mat &imGray, const double &timeStamp, ORBextractor* extractor,ORBVocabulary* voc, GeometricCamera* pCamera, cv::Mat &distCoef, const float &bf, const float &thDepth, const std::string &pNameFile, int pnNumDataset,  Frame* pPrevF = nullptr, const IMU::Calib &ImuCalib = IMU::Calib());
+    Frame(const Camera_ptr &cam, const cv::Mat &imGray, const double &timeStamp, ORBextractor* extractor,ORBVocabulary* voc, GeometricCamera* pCamera, cv::Mat &distCoef, const float &bf, const float &thDepth, const std::string &pNameFile, int pnNumDataset,  Frame* pPrevF = nullptr, const IMU::Calib &ImuCalib = IMU::Calib());
 
     // Destructor
     virtual ~Frame();
@@ -322,6 +324,7 @@ private:
     std::mutex *mpMutexImu;
 
 public:
+    Camera_ptr camera; 
     GeometricCamera* mpCamera, *mpCamera2;
 
     //Number of KeyPoints extracted in the left and right images
@@ -342,7 +345,7 @@ public:
     //Grid for the right image
     std::vector<std::size_t> mGridRight[FRAME_GRID_COLS][FRAME_GRID_ROWS];
 
-    Frame(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeStamp, ORBextractor* extractorLeft, ORBextractor* extractorRight, ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth, GeometricCamera* pCamera, GeometricCamera* pCamera2, const std::string &pNameFile, int pnNumDataset, Sophus::SE3f& Tlr,Frame* pPrevF = nullptr, const IMU::Calib &ImuCalib = IMU::Calib());
+    Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeStamp, ORBextractor* extractorLeft, ORBextractor* extractorRight, ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth, GeometricCamera* pCamera, GeometricCamera* pCamera2, const std::string &pNameFile, int pnNumDataset, Sophus::SE3f& Tlr,Frame* pPrevF = nullptr, const IMU::Calib &ImuCalib = IMU::Calib());
 
     //Stereo fisheye
     void ComputeStereoFishEyeMatches();
