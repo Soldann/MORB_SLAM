@@ -65,10 +65,10 @@ KeyFrame::KeyFrame()
       mb(0),
       mThDepth(0),
       N(0),
-      /*mvKeys(static_cast<vector<cv::KeyPoint>>(NULL)),
-      mvKeysUn(static_cast<vector<cv::KeyPoint>>(NULL)),
-      mvuRight(static_cast<vector<float>>(NULL)),
-      mvDepth(static_cast<vector<float>>(NULL)),*/
+      /*mvKeys(static_cast<vector<cv::KeyPoint>>(nullptr)),
+      mvKeysUn(static_cast<vector<cv::KeyPoint>>(nullptr)),
+      mvuRight(static_cast<vector<float>>(nullptr)),
+      mvDepth(static_cast<vector<float>>(nullptr)),*/
       mnScaleLevels(0),
       mfScaleFactor(0),
       mfLogScaleFactor(0),
@@ -83,7 +83,7 @@ KeyFrame::KeyFrame()
       mNextKF(nullptr),
       mbHasVelocity(false),
       mbFirstConnection(true),
-      mpParent(NULL),
+      mpParent(nullptr),
       mbNotErase(false),
       mbToBeErased(false),
       mbBad(false),
@@ -143,8 +143,8 @@ KeyFrame::KeyFrame(Frame &F, Map *pMap, KeyFrameDatabase *pKFDB)
       mnMinY(F.mnMinY),
       mnMaxX(F.mnMaxX),
       mnMaxY(F.mnMaxY),
-      mPrevKF(NULL),
-      mNextKF(NULL),
+      mPrevKF(nullptr),
+      mNextKF(nullptr),
       mpImuPreintegrated(F.mpImuPreintegrated),
       mImuCalib(F.mImuCalib),
       mNameFile(F.mNameFile),
@@ -156,7 +156,7 @@ KeyFrame::KeyFrame(Frame &F, Map *pMap, KeyFrameDatabase *pKFDB)
       mpKeyFrameDB(pKFDB),
       mpORBvocabulary(F.mpORBvocabulary),
       mbFirstConnection(true),
-      mpParent(NULL),
+      mpParent(nullptr),
       mbNotErase(false),
       mbToBeErased(false),
       mbBad(false),
@@ -479,7 +479,7 @@ void KeyFrame::UpdateConnections(bool upParent) {
   // In case no keyframe counter is over threshold add the one with maximum
   // counter
   int nmax = 0;
-  KeyFrame *pKFmax = NULL;
+  KeyFrame *pKFmax = nullptr;
   int th = 15;
 
   vector<pair<int, KeyFrame *>> vPairs;

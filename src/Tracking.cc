@@ -2319,7 +2319,7 @@ void Tracking::CreateInitialMapMonocular() {
       new KeyFrame(mCurrentFrame, mpAtlas->GetCurrentMap(), mpKeyFrameDB);
 
   if (mSensor == CameraType::IMU_MONOCULAR)
-    pKFini->mpImuPreintegrated = (IMU::Preintegrated*)(NULL);
+    pKFini->mpImuPreintegrated = (IMU::Preintegrated*)(nullptr);
 
   pKFini->ComputeBoW();
   pKFcur->ComputeBoW();
@@ -3194,7 +3194,7 @@ void Tracking::UpdateLocalKeyFrames() {
                it != itend; it++)
             keyframeCounter[it->first]++;
         } else {
-          mCurrentFrame.mvpMapPoints[i] = NULL;
+          mCurrentFrame.mvpMapPoints[i] = nullptr;
         }
       }
     }
@@ -3214,7 +3214,7 @@ void Tracking::UpdateLocalKeyFrames() {
             keyframeCounter[it->first]++;
         } else {
           // MODIFICATION
-          mLastFrame.mvpMapPoints[i] = NULL;
+          mLastFrame.mvpMapPoints[i] = nullptr;
         }
       }
     }
@@ -3411,7 +3411,7 @@ bool Tracking::Relocalization() {
             mCurrentFrame.mvpMapPoints[j] = vvpMapPointMatches[i][j];
             sFound.insert(vvpMapPointMatches[i][j]);
           } else
-            mCurrentFrame.mvpMapPoints[j] = NULL;
+            mCurrentFrame.mvpMapPoints[j] = nullptr;
         }
 
         int nGood = Optimizer::PoseOptimization(&mCurrentFrame);
@@ -3448,7 +3448,7 @@ bool Tracking::Relocalization() {
 
                 for (int io = 0; io < mCurrentFrame.N; io++)
                   if (mCurrentFrame.mvbOutlier[io])
-                    mCurrentFrame.mvpMapPoints[io] = NULL;
+                    mCurrentFrame.mvpMapPoints[io] = nullptr;
               }
             }
           }

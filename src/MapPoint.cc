@@ -137,7 +137,7 @@ MapPoint::MapPoint(const Eigen::Vector3f& Pos, Map* pMap, Frame* pFrame,
       mnVisible(1),
       mnFound(1),
       mbBad(false),
-      mpReplaced(NULL),
+      mpReplaced(nullptr),
       mpMap(pMap) {
   SetWorldPos(Pos);
 

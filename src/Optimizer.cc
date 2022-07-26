@@ -146,7 +146,7 @@ void Optimizer::BundleAdjustment(const vector<KeyFrame*>& vpKFs,
          mit != observations.end(); mit++) {
       KeyFrame* pKF = mit->first;
       if (pKF->isBad() || pKF->mnId > maxKFid) continue;
-      if (optimizer.vertex(id) == NULL || optimizer.vertex(pKF->mnId) == NULL)
+      if (optimizer.vertex(id) == nullptr || optimizer.vertex(pKF->mnId) == nullptr)
         continue;
       nEdges++;
 
@@ -2268,8 +2268,8 @@ int Optimizer::OptimizeSim3(KeyFrame* pKF1, KeyFrame* pKF2,
       vpMatches1[idx] = nullptr;
       optimizer.removeEdge(e12);
       optimizer.removeEdge(e21);
-      vpEdges12[i] = static_cast<ORB_SLAM3::EdgeSim3ProjectXYZ*>(NULL);
-      vpEdges21[i] = static_cast<ORB_SLAM3::EdgeInverseSim3ProjectXYZ*>(NULL);
+      vpEdges12[i] = static_cast<ORB_SLAM3::EdgeSim3ProjectXYZ*>(nullptr);
+      vpEdges21[i] = static_cast<ORB_SLAM3::EdgeInverseSim3ProjectXYZ*>(nullptr);
       nBad++;
 
       if (!vbIsInKF2[i]) {
@@ -2519,9 +2519,9 @@ void Optimizer::LocalInertialBA(KeyFrame* pKF, bool* pbStopFlag, Map* pMap,
   }
 
   // Create intertial constraints
-  vector<EdgeInertial*> vei(N, (EdgeInertial*)NULL);
-  vector<EdgeGyroRW*> vegr(N, (EdgeGyroRW*)NULL);
-  vector<EdgeAccRW*> vear(N, (EdgeAccRW*)NULL);
+  vector<EdgeInertial*> vei(N, (EdgeInertial*)nullptr);
+  vector<EdgeGyroRW*> vegr(N, (EdgeGyroRW*)nullptr);
+  vector<EdgeAccRW*> vear(N, (EdgeAccRW*)nullptr);
 
   for (int i = 0; i < N; i++) {
     KeyFrame* pKFi = vpOptimizableKFs[i];
@@ -4076,9 +4076,9 @@ void Optimizer::MergeInertialBA(KeyFrame* pCurrKF, KeyFrame* pMergeKF,
   }
 
   // Create intertial constraints
-  vector<EdgeInertial*> vei(N, (EdgeInertial*)NULL);
-  vector<EdgeGyroRW*> vegr(N, (EdgeGyroRW*)NULL);
-  vector<EdgeAccRW*> vear(N, (EdgeAccRW*)NULL);
+  vector<EdgeInertial*> vei(N, (EdgeInertial*)nullptr);
+  vector<EdgeGyroRW*> vegr(N, (EdgeGyroRW*)nullptr);
+  vector<EdgeAccRW*> vear(N, (EdgeAccRW*)nullptr);
   for (int i = 0; i < N; i++) {
     // cout << "inserting inertial edge " << i << endl;
     KeyFrame* pKFi = vpOptimizableKFs[i];
@@ -4215,7 +4215,7 @@ void Optimizer::MergeInertialBA(KeyFrame* pCurrKF, KeyFrame* pMergeKF,
         continue;
       }
 
-      if (optimizer.vertex(id) == NULL || optimizer.vertex(pKFi->mnId) == NULL)
+      if (optimizer.vertex(id) == nullptr || optimizer.vertex(pKFi->mnId) == nullptr)
         continue;
 
       if (!pKFi->isBad()) {
@@ -5155,7 +5155,7 @@ int Optimizer::PoseInertialOptimizationLastFrame(Frame* pFrame, bool bRecInit) {
   } else {
     oldMpcpi = pFp->mpcpi;
     delete pFp->mpcpi;
-    pFp->mpcpi = NULL;
+    pFp->mpcpi = nullptr;
   }
   return nInitialCorrespondences - nBad;
 }
