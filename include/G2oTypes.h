@@ -16,8 +16,7 @@
 * If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef G2OTYPES_H
-#define G2OTYPES_H
+#pragma once
 
 #include "g2o/core/base_vertex.h"
 #include "g2o/core/base_binary_edge.h"
@@ -843,4 +842,3 @@ public:
 
 } //namespace ORB_SLAM2
 
-#endif // G2OTYPES_H

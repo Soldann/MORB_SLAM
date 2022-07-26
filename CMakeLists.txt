@@ -75,7 +75,6 @@ src/OptimizableTypes.cpp
 src/MLPnPsolver.cpp
 src/GeometricTools.cc
 src/TwoViewReconstruction.cc
-src/Config.cc
 src/Settings.cc
 include/System.h
 include/Tracking.h
@@ -105,7 +104,6 @@ include/MLPnPsolver.h
 include/GeometricTools.h
 include/TwoViewReconstruction.h
 include/SerializationUtils.h
-include/Config.h
 include/Settings.h)
 
 

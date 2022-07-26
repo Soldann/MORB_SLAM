@@ -19,8 +19,7 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ORB_SLAM3_OPTIMIZABLETYPES_H
-#define ORB_SLAM3_OPTIMIZABLETYPES_H
+#pragma once
 
 #include <GeometricCamera.h>
 #include <g2o/types/sim3.h>
@@ -232,5 +231,3 @@ class EdgeInverseSim3ProjectXYZ
 };
 
 }  // namespace ORB_SLAM3
-
-#endif  // ORB_SLAM3_OPTIMIZABLETYPES_H

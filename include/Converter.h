@@ -19,8 +19,7 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CONVERTER_H
-#define CONVERTER_H
+#pragma once
 
 #include <Eigen/Dense>
 #include <opencv2/core/core.hpp>
@@ -77,5 +76,3 @@ class Converter {
 };
 
 }  // namespace ORB_SLAM3
-
-#endif  // CONVERTER_H

@@ -19,8 +19,7 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEYFRAMEDATABASE_H
-#define KEYFRAMEDATABASE_H
+#pragma once
 
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/list.hpp>
@@ -98,4 +97,3 @@ class KeyFrameDatabase {
 
 }  // namespace ORB_SLAM3
 
-#endif

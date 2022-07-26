@@ -19,8 +19,7 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CAMERAMODELS_KANNALABRANDT8_H
-#define CAMERAMODELS_KANNALABRANDT8_H
+#pragma once
 
 #include <assert.h>
 
@@ -133,4 +132,3 @@ class KannalaBrandt8 : public GeometricCamera {
 };
 }  // namespace ORB_SLAM3
 
-#endif  // CAMERAMODELS_KANNALABRANDT8_H

@@ -16,8 +16,7 @@
 * If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TwoViewReconstruction_H
-#define TwoViewReconstruction_H
+#pragma once
 
 #include <opencv2/opencv.hpp>
 #include <Eigen/Core>
@@ -95,5 +94,3 @@ namespace ORB_SLAM3
     };
 
 } //namespace ORB_SLAM
-
-#endif // TwoViewReconstruction_H
