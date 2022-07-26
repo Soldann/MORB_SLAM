@@ -866,23 +866,24 @@ int ORBextractor::operator()(InputArray _image, InputArray _mask,
   vector<vector<KeyPoint> > allKeypoints;
   ComputeKeyPointsOctTree(allKeypoints);
 
-  Mat descriptors;
 
   int nkeypoints = 0;
   for (int level = 0; level < nlevels; ++level)
     nkeypoints += (int)allKeypoints[level].size();
-  if (nkeypoints == 0)
+  // _keypoints = vector<cv::KeyPoint>(nkeypoints);
+  if (nkeypoints == 0){
     _descriptors.release();
-  else {
-    _descriptors.create(nkeypoints, 32, CV_8U);
-    descriptors = _descriptors.getMat();
+    _keypoints.clear();
+    return 0;
   }
+  
+  _descriptors.create(nkeypoints, 32, CV_8U);
+  Mat descriptors = _descriptors.getMat();
+  
+  _keypoints.clear();
+  _keypoints.reserve(nkeypoints);
 
-  //_keypoints.clear();
-  //_keypoints.reserve(nkeypoints);
-  _keypoints = vector<cv::KeyPoint>(nkeypoints);
-
-  int offset = 0;
+  // int offset = 0;
   // Modified for speeding up stereo fisheye matching
   int monoIndex = 0, stereoIndex = nkeypoints - 1;
   for (int level = 0; level < nlevels; ++level) {
@@ -892,15 +893,15 @@ int ORBextractor::operator()(InputArray _image, InputArray _mask,
     if (nkeypointsLevel == 0) continue;
 
     // preprocess the resized image
-    Mat workingMat = mvImagePyramid[level].clone();
-    GaussianBlur(workingMat, workingMat, Size(7, 7), 2, 2, BORDER_REFLECT_101);
+    Mat workingMat;// = mvImagePyramid[level].clone();
+    GaussianBlur(mvImagePyramid[level], workingMat, Size(7, 7), 2, 2, BORDER_REFLECT_101);
 
     // Compute the descriptors
     // Mat desc = descriptors.rowRange(offset, offset + nkeypointsLevel);
     Mat desc = cv::Mat(nkeypointsLevel, 32, CV_8U);
     computeDescriptors(workingMat, keypoints, desc, pattern);
 
-    offset += nkeypointsLevel;
+    // offset += nkeypointsLevel;
 
     float scale =
         mvScaleFactor[level];  // getScale(level, firstLevel, scaleFactor);
@@ -939,7 +940,6 @@ void ORBextractor::ComputePyramid(cv::Mat image) {
     Size wholeSize(sz.width + EDGE_THRESHOLD * 2,
                    sz.height + EDGE_THRESHOLD * 2);
     Mat temp(wholeSize, image.type());
-    Mat masktemp;
     mvImagePyramid[level] =
         temp(Rect(EDGE_THRESHOLD, EDGE_THRESHOLD, sz.width, sz.height));
 

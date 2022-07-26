@@ -25,6 +25,7 @@
 #include <chrono>
 #include <iostream>
 #include <mutex>
+#include <stdexcept>
 
 #include "Converter.h"
 #include "G2oTypes.h"
@@ -94,10 +95,7 @@ Tracking::Tracking(System* pSys, ORBVocabulary* pVoc, const Atlas_ptr &pAtlas,
     if (!b_parse_cam || !b_parse_orb || !b_parse_imu) {
       std::cerr << "**ERROR in the config file, the format is not correct**"
                 << std::endl;
-      try {
-        throw -1;
-      } catch (exception& e) {
-      }
+      throw std::runtime_error("**ERROR in the config file, the format is not correct**");
     }
   }
 
@@ -1716,8 +1714,7 @@ void Tracking::Track() {
     } 
   }
 
-  if (CameraType::isInertial(mSensor) &&
-      mpLastKeyFrame)
+  if (CameraType::isInertial(mSensor) && mpLastKeyFrame)
     mCurrentFrame.SetNewBias(mpLastKeyFrame->GetImuBias());
 
   if (mState == Tracker::NO_IMAGES_YET) {
@@ -1726,8 +1723,7 @@ void Tracking::Track() {
 
   mLastProcessedState = mState;
 
-  if (CameraType::isInertial(mSensor) &&
-      !mbCreatedMap) {
+  if (CameraType::isInertial(mSensor) && !mbCreatedMap) {
 #ifdef REGISTER_TIMES
     std::chrono::steady_clock::time_point time_StartPreIMU =
         std::chrono::steady_clock::now();

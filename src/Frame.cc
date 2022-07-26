@@ -205,6 +205,26 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
           .count();
 #endif
 
+  // This is done only for the first Frame (or after a change in the
+  // calibration)
+  if (mbInitialComputations) {
+    ComputeImageBounds(imLeft);
+
+    mfGridElementWidthInv =
+        static_cast<float>(FRAME_GRID_COLS) / (mnMaxX - mnMinX);
+    mfGridElementHeightInv =
+        static_cast<float>(FRAME_GRID_ROWS) / (mnMaxY - mnMinY);
+
+    fx = K.at<float>(0, 0);
+    fy = K.at<float>(1, 1);
+    cx = K.at<float>(0, 2);
+    cy = K.at<float>(1, 2);
+    invfx = 1.0f / fx;
+    invfy = 1.0f / fy;
+
+    mbInitialComputations = false;
+  }
+
   N = mvKeys.size();
   if (mvKeys.empty()) return;
 
@@ -225,30 +245,10 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
           .count();
 #endif
 
-  mvpMapPoints = vector<MapPoint *>(N, static_cast<MapPoint *>(NULL));
+  mvpMapPoints = vector<MapPoint *>(N, nullptr);
   mvbOutlier = vector<bool>(N, false);
   mmProjectPoints.clear();
   mmMatchedInImage.clear();
-
-  // This is done only for the first Frame (or after a change in the
-  // calibration)
-  if (mbInitialComputations) {
-    ComputeImageBounds(imLeft);
-
-    mfGridElementWidthInv =
-        static_cast<float>(FRAME_GRID_COLS) / (mnMaxX - mnMinX);
-    mfGridElementHeightInv =
-        static_cast<float>(FRAME_GRID_ROWS) / (mnMaxY - mnMinY);
-
-    fx = K.at<float>(0, 0);
-    fy = K.at<float>(1, 1);
-    cx = K.at<float>(0, 2);
-    cy = K.at<float>(1, 2);
-    invfx = 1.0f / fx;
-    invfy = 1.0f / fy;
-
-    mbInitialComputations = false;
-  }
 
   mb = mbf / fx;
 
@@ -895,7 +895,7 @@ void Frame::ComputeStereoMatches() {
   const int nRows = mpORBextractorLeft->mvImagePyramid[0].rows;
 
   // Assign keypoints to row table
-  vector<vector<size_t>> vRowIndices(nRows, vector<size_t>());
+  vector<vector<size_t>> vRowIndices(nRows);
 
   for (int i = 0; i < nRows; i++) vRowIndices[i].reserve(200);
 
@@ -1157,12 +1157,6 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
           .count();
 #endif
 
-  Nleft = mvKeys.size();
-  Nright = mvKeysRight.size();
-  N = Nleft + Nright;
-
-  if (N == 0) return;
-
   // This is done only for the first Frame (or after a change in the
   // calibration)
   if (mbInitialComputations) {
@@ -1182,6 +1176,12 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
 
     mbInitialComputations = false;
   }
+
+  Nleft = mvKeys.size();
+  Nright = mvKeysRight.size();
+  N = Nleft + Nright;
+
+  if (N == 0) return;
 
   mb = mbf / fx;
 
