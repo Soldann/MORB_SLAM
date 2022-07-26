@@ -326,21 +326,6 @@ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth,
           .count();
 #endif
 
-  N = mvKeys.size();
-
-  if (mvKeys.empty()) return;
-
-  UndistortKeyPoints();
-
-  ComputeStereoFromRGBD(imDepth);
-
-  mvpMapPoints = vector<MapPoint *>(N, static_cast<MapPoint *>(NULL));
-
-  mmProjectPoints.clear();
-  mmMatchedInImage.clear();
-
-  mvbOutlier = vector<bool>(N, false);
-
   // This is done only for the first Frame (or after a change in the
   // calibration)
   if (mbInitialComputations) {
@@ -360,6 +345,20 @@ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth,
 
     mbInitialComputations = false;
   }
+
+  N = mvKeys.size();
+  if (mvKeys.empty()) return;
+
+  UndistortKeyPoints();
+
+  ComputeStereoFromRGBD(imDepth);
+
+  mvpMapPoints = vector<MapPoint *>(N, static_cast<MapPoint *>(NULL));
+
+  mmProjectPoints.clear();
+  mmMatchedInImage.clear();
+
+  mvbOutlier = vector<bool>(N, false);
 
   mb = mbf / fx;
 
@@ -436,24 +435,6 @@ Frame::Frame(const cv::Mat &imGray, const double &timeStamp,
           .count();
 #endif
 
-  N = mvKeys.size();
-  if (mvKeys.empty()) return;
-
-  UndistortKeyPoints();
-
-  // Set no stereo information
-  mvuRight = vector<float>(N, -1);
-  mvDepth = vector<float>(N, -1);
-  mnCloseMPs = 0;
-
-  mvpMapPoints = vector<MapPoint *>(N, static_cast<MapPoint *>(NULL));
-
-  mmProjectPoints.clear();  // = map<long unsigned int, cv::Point2f>(N,
-                            // static_cast<cv::Point2f>(NULL));
-  mmMatchedInImage.clear();
-
-  mvbOutlier = vector<bool>(N, false);
-
   // This is done only for the first Frame (or after a change in the
   // calibration)
   if (mbInitialComputations) {
@@ -473,6 +454,24 @@ Frame::Frame(const cv::Mat &imGray, const double &timeStamp,
 
     mbInitialComputations = false;
   }
+
+  N = mvKeys.size();
+  if (mvKeys.empty()) return;
+
+  UndistortKeyPoints();
+
+  // Set no stereo information
+  mvuRight = vector<float>(N, -1);
+  mvDepth = vector<float>(N, -1);
+  mnCloseMPs = 0;
+
+  mvpMapPoints = vector<MapPoint *>(N, static_cast<MapPoint *>(NULL));
+
+  mmProjectPoints.clear();  // = map<long unsigned int, cv::Point2f>(N,
+                            // static_cast<cv::Point2f>(NULL));
+  mmMatchedInImage.clear();
+
+  mvbOutlier = vector<bool>(N, false);
 
   mb = mbf / fx;
 
