@@ -52,7 +52,7 @@ class Tracking {
   
   Tracking(System* pSys, ORBVocabulary* pVoc,
            const Atlas_ptr &pAtlas, KeyFrameDatabase* pKFDB,
-           const string& strSettingPath, const int sensor, Settings* settings,
+           const string& strSettingPath, const CameraType::eSensor sensor, Settings* settings,
            const string& _nameSeq = std::string());
 
   ~Tracking();
@@ -119,7 +119,7 @@ class Tracking {
   Tracker::eTrackingState mLastProcessedState;
 
   // Input sensor
-  int mSensor;
+  CameraType::eSensor mSensor;
 
   // Current Frame
   Frame mCurrentFrame;

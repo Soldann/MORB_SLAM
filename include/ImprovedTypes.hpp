@@ -44,5 +44,8 @@ template<typename KEY, typename VALUE> using umap = std::unordered_map<KEY,VALUE
         IMU_STEREO=4,
         IMU_RGBD=5,
     };
+
+    inline bool isInertial(eSensor sensor) { return sensor == IMU_MONOCULAR || sensor == IMU_STEREO || sensor == IMU_RGBD; }
+    inline bool hasMulticam(eSensor sensor) { return sensor == STEREO || sensor == RGBD || sensor == IMU_STEREO || sensor == IMU_RGBD; }
   }
 }
