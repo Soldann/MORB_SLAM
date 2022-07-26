@@ -52,7 +52,7 @@ Frame::Frame()
       mpImuPreintegrated(NULL),
       mpPrevFrame(NULL),
       mpImuPreintegratedFrame(NULL),
-      mpReferenceKF(static_cast<KeyFrame *>(NULL)),
+      mpReferenceKF(nullptr),
       mbIsSet(false),
       mbImuPreintegrated(false) {
 #ifdef REGISTER_TIMES
@@ -151,8 +151,8 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
              const double &timeStamp, ORBextractor *extractorLeft,
              ORBextractor *extractorRight, ORBVocabulary *voc, cv::Mat &K,
              cv::Mat &distCoef, const float &bf, const float &thDepth,
-             GeometricCamera *pCamera, Frame *pPrevF,
-             const IMU::Calib &ImuCalib)
+             GeometricCamera *pCamera, const std::string &pNameFile, int pnNumDataset,
+             Frame *pPrevF, const IMU::Calib &ImuCalib)
     : mpcpi(NULL),
       mbHasPose(false),
       mbHasVelocity(false),
@@ -169,7 +169,9 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
       mpImuPreintegrated(NULL),
       mpPrevFrame(pPrevF),
       mpImuPreintegratedFrame(NULL),
-      mpReferenceKF(static_cast<KeyFrame *>(NULL)),
+      mpReferenceKF(nullptr),
+      mNameFile{pNameFile},
+      mnDataset{pnNumDataset},
       mbIsSet(false),
       mbImuPreintegrated(false),
       mpCamera(pCamera),
@@ -263,26 +265,31 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
   // Set no stereo fisheye information
   Nleft = -1;
   Nright = -1;
-  mvLeftToRightMatch = vector<int>(0);
-  mvRightToLeftMatch = vector<int>(0);
-  mvStereo3Dpoints = vector<Eigen::Vector3f>(0);
+  // mvLeftToRightMatch = vector<int>(0);
+  // mvRightToLeftMatch = vector<int>(0);
+  // mvStereo3Dpoints = vector<Eigen::Vector3f>(0);
   monoLeft = -1;
   monoRight = -1;
 
   AssignFeaturesToGrid();
 }
 
+Frame::~Frame(){
+  delete mpMutexImu;
+}
+
 Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth,
              const double &timeStamp, ORBextractor *extractor,
              ORBVocabulary *voc, cv::Mat &K, cv::Mat &distCoef, const float &bf,
-             const float &thDepth, GeometricCamera *pCamera, Frame *pPrevF,
+             const float &thDepth, GeometricCamera *pCamera,
+             const std::string &pNameFile, int pnNumDataset, Frame *pPrevF,
              const IMU::Calib &ImuCalib)
     : mpcpi(NULL),
       mbHasPose(false),
       mbHasVelocity(false),
       mpORBvocabulary(voc),
       mpORBextractorLeft(extractor),
-      mpORBextractorRight(static_cast<ORBextractor *>(NULL)),
+      mpORBextractorRight(nullptr),
       mTimeStamp(timeStamp),
       mK(K.clone()),
       mK_(Converter::toMatrix3f(K)),
@@ -293,7 +300,9 @@ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth,
       mpImuPreintegrated(NULL),
       mpPrevFrame(pPrevF),
       mpImuPreintegratedFrame(NULL),
-      mpReferenceKF(static_cast<KeyFrame *>(NULL)),
+      mpReferenceKF(nullptr),
+      mNameFile{pNameFile},
+      mnDataset{pnNumDataset},
       mbIsSet(false),
       mbImuPreintegrated(false),
       mpCamera(pCamera),
@@ -326,21 +335,6 @@ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth,
           .count();
 #endif
 
-  N = mvKeys.size();
-
-  if (mvKeys.empty()) return;
-
-  UndistortKeyPoints();
-
-  ComputeStereoFromRGBD(imDepth);
-
-  mvpMapPoints = vector<MapPoint *>(N, static_cast<MapPoint *>(NULL));
-
-  mmProjectPoints.clear();
-  mmMatchedInImage.clear();
-
-  mvbOutlier = vector<bool>(N, false);
-
   // This is done only for the first Frame (or after a change in the
   // calibration)
   if (mbInitialComputations) {
@@ -360,6 +354,20 @@ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth,
 
     mbInitialComputations = false;
   }
+
+  N = mvKeys.size();
+  if (mvKeys.empty()) return;
+
+  UndistortKeyPoints();
+
+  ComputeStereoFromRGBD(imDepth);
+
+  mvpMapPoints = vector<MapPoint *>(N, nullptr);
+
+  mmProjectPoints.clear();
+  mmMatchedInImage.clear();
+
+  mvbOutlier = vector<bool>(N, false);
 
   mb = mbf / fx;
 
@@ -386,13 +394,14 @@ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth,
 Frame::Frame(const cv::Mat &imGray, const double &timeStamp,
              ORBextractor *extractor, ORBVocabulary *voc,
              GeometricCamera *pCamera, cv::Mat &distCoef, const float &bf,
-             const float &thDepth, Frame *pPrevF, const IMU::Calib &ImuCalib)
+             const float &thDepth, const std::string &pNameFile, int pnNumDataset,
+             Frame *pPrevF, const IMU::Calib &ImuCalib)
     : mpcpi(NULL),
       mbHasPose(false),
       mbHasVelocity(false),
       mpORBvocabulary(voc),
       mpORBextractorLeft(extractor),
-      mpORBextractorRight(static_cast<ORBextractor *>(NULL)),
+      mpORBextractorRight(nullptr),
       mTimeStamp(timeStamp),
       mK(static_cast<Pinhole *>(pCamera)->toK()),
       mK_(static_cast<Pinhole *>(pCamera)->toK_()),
@@ -403,7 +412,9 @@ Frame::Frame(const cv::Mat &imGray, const double &timeStamp,
       mpImuPreintegrated(NULL),
       mpPrevFrame(pPrevF),
       mpImuPreintegratedFrame(NULL),
-      mpReferenceKF(static_cast<KeyFrame *>(NULL)),
+      mpReferenceKF(nullptr),
+      mNameFile{pNameFile},
+      mnDataset{pnNumDataset},
       mbIsSet(false),
       mbImuPreintegrated(false),
       mpCamera(pCamera),
@@ -436,24 +447,6 @@ Frame::Frame(const cv::Mat &imGray, const double &timeStamp,
           .count();
 #endif
 
-  N = mvKeys.size();
-  if (mvKeys.empty()) return;
-
-  UndistortKeyPoints();
-
-  // Set no stereo information
-  mvuRight = vector<float>(N, -1);
-  mvDepth = vector<float>(N, -1);
-  mnCloseMPs = 0;
-
-  mvpMapPoints = vector<MapPoint *>(N, static_cast<MapPoint *>(NULL));
-
-  mmProjectPoints.clear();  // = map<long unsigned int, cv::Point2f>(N,
-                            // static_cast<cv::Point2f>(NULL));
-  mmMatchedInImage.clear();
-
-  mvbOutlier = vector<bool>(N, false);
-
   // This is done only for the first Frame (or after a change in the
   // calibration)
   if (mbInitialComputations) {
@@ -473,6 +466,24 @@ Frame::Frame(const cv::Mat &imGray, const double &timeStamp,
 
     mbInitialComputations = false;
   }
+
+  N = mvKeys.size();
+  if (mvKeys.empty()) return;
+
+  UndistortKeyPoints();
+
+  // Set no stereo information
+  mvuRight = vector<float>(N, -1);
+  mvDepth = vector<float>(N, -1);
+  mnCloseMPs = 0;
+
+  mvpMapPoints = vector<MapPoint *>(N, nullptr);
+
+  mmProjectPoints.clear();  // = map<long unsigned int, cv::Point2f>(N,
+                            // static_cast<cv::Point2f>(NULL));
+  mmMatchedInImage.clear();
+
+  mvbOutlier = vector<bool>(N, false);
 
   mb = mbf / fx;
 
@@ -1027,7 +1038,7 @@ void Frame::ComputeStereoMatches() {
         }
         mvDepth[iL] = mbf / disparity;
         mvuRight[iL] = bestuR;
-        vDistIdx.push_back(pair<int, int>(bestDist, iL));
+        vDistIdx.emplace_back(bestDist, iL);
       }
     }
   }
@@ -1095,6 +1106,7 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
              ORBextractor *extractorRight, ORBVocabulary *voc, cv::Mat &K,
              cv::Mat &distCoef, const float &bf, const float &thDepth,
              GeometricCamera *pCamera, GeometricCamera *pCamera2,
+             const std::string &pNameFile, int pnNumDataset,
              Sophus::SE3f &Tlr, Frame *pPrevF, const IMU::Calib &ImuCalib)
     : mpcpi(NULL),
       mbHasPose(false),
@@ -1112,7 +1124,9 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
       mpImuPreintegrated(NULL),
       mpPrevFrame(pPrevF),
       mpImuPreintegratedFrame(NULL),
-      mpReferenceKF(static_cast<KeyFrame *>(NULL)),
+      mpReferenceKF(nullptr),
+      mNameFile{pNameFile},
+      mnDataset{pnNumDataset},
       mbImuPreintegrated(false),
       mpCamera(pCamera),
       mpCamera2(pCamera2)

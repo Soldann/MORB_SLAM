@@ -916,11 +916,11 @@ int ORBextractor::operator()(InputArray _image, InputArray _mask,
 
       if (keypoint->pt.x >= vLappingArea[0] &&
           keypoint->pt.x <= vLappingArea[1]) {
-        _keypoints.at(stereoIndex) = (*keypoint);
+        _keypoints.push_back(*keypoint);
         desc.row(i).copyTo(descriptors.row(stereoIndex));
         stereoIndex--;
       } else {
-        _keypoints.at(monoIndex) = (*keypoint);
+        _keypoints.push_back(*keypoint);
         desc.row(i).copyTo(descriptors.row(monoIndex));
         monoIndex++;
       }
