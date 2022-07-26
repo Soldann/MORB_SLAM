@@ -52,7 +52,7 @@ Frame::Frame()
       mpImuPreintegrated(NULL),
       mpPrevFrame(NULL),
       mpImuPreintegratedFrame(NULL),
-      mpReferenceKF(static_cast<KeyFrame *>(NULL)),
+      mpReferenceKF(nullptr),
       mbIsSet(false),
       mbImuPreintegrated(false) {
 #ifdef REGISTER_TIMES
@@ -169,7 +169,7 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
       mpImuPreintegrated(NULL),
       mpPrevFrame(pPrevF),
       mpImuPreintegratedFrame(NULL),
-      mpReferenceKF(static_cast<KeyFrame *>(NULL)),
+      mpReferenceKF(nullptr),
       mNameFile{pNameFile},
       mnDataset{pnNumDataset},
       mbIsSet(false),
@@ -265,9 +265,9 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
   // Set no stereo fisheye information
   Nleft = -1;
   Nright = -1;
-  mvLeftToRightMatch = vector<int>(0);
-  mvRightToLeftMatch = vector<int>(0);
-  mvStereo3Dpoints = vector<Eigen::Vector3f>(0);
+  // mvLeftToRightMatch = vector<int>(0);
+  // mvRightToLeftMatch = vector<int>(0);
+  // mvStereo3Dpoints = vector<Eigen::Vector3f>(0);
   monoLeft = -1;
   monoRight = -1;
 
@@ -289,7 +289,7 @@ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth,
       mbHasVelocity(false),
       mpORBvocabulary(voc),
       mpORBextractorLeft(extractor),
-      mpORBextractorRight(static_cast<ORBextractor *>(NULL)),
+      mpORBextractorRight(nullptr),
       mTimeStamp(timeStamp),
       mK(K.clone()),
       mK_(Converter::toMatrix3f(K)),
@@ -300,7 +300,7 @@ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth,
       mpImuPreintegrated(NULL),
       mpPrevFrame(pPrevF),
       mpImuPreintegratedFrame(NULL),
-      mpReferenceKF(static_cast<KeyFrame *>(NULL)),
+      mpReferenceKF(nullptr),
       mNameFile{pNameFile},
       mnDataset{pnNumDataset},
       mbIsSet(false),
@@ -362,7 +362,7 @@ Frame::Frame(const cv::Mat &imGray, const cv::Mat &imDepth,
 
   ComputeStereoFromRGBD(imDepth);
 
-  mvpMapPoints = vector<MapPoint *>(N, static_cast<MapPoint *>(NULL));
+  mvpMapPoints = vector<MapPoint *>(N, nullptr);
 
   mmProjectPoints.clear();
   mmMatchedInImage.clear();
@@ -401,7 +401,7 @@ Frame::Frame(const cv::Mat &imGray, const double &timeStamp,
       mbHasVelocity(false),
       mpORBvocabulary(voc),
       mpORBextractorLeft(extractor),
-      mpORBextractorRight(static_cast<ORBextractor *>(NULL)),
+      mpORBextractorRight(nullptr),
       mTimeStamp(timeStamp),
       mK(static_cast<Pinhole *>(pCamera)->toK()),
       mK_(static_cast<Pinhole *>(pCamera)->toK_()),
@@ -412,7 +412,7 @@ Frame::Frame(const cv::Mat &imGray, const double &timeStamp,
       mpImuPreintegrated(NULL),
       mpPrevFrame(pPrevF),
       mpImuPreintegratedFrame(NULL),
-      mpReferenceKF(static_cast<KeyFrame *>(NULL)),
+      mpReferenceKF(nullptr),
       mNameFile{pNameFile},
       mnDataset{pnNumDataset},
       mbIsSet(false),
@@ -477,7 +477,7 @@ Frame::Frame(const cv::Mat &imGray, const double &timeStamp,
   mvDepth = vector<float>(N, -1);
   mnCloseMPs = 0;
 
-  mvpMapPoints = vector<MapPoint *>(N, static_cast<MapPoint *>(NULL));
+  mvpMapPoints = vector<MapPoint *>(N, nullptr);
 
   mmProjectPoints.clear();  // = map<long unsigned int, cv::Point2f>(N,
                             // static_cast<cv::Point2f>(NULL));
@@ -1124,7 +1124,7 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight,
       mpImuPreintegrated(NULL),
       mpPrevFrame(pPrevF),
       mpImuPreintegratedFrame(NULL),
-      mpReferenceKF(static_cast<KeyFrame *>(NULL)),
+      mpReferenceKF(nullptr),
       mNameFile{pNameFile},
       mnDataset{pnNumDataset},
       mbImuPreintegrated(false),
