@@ -1355,7 +1355,8 @@ void Tracking::SetLoopClosing(LoopClosing* pLoopClosing) {
 Sophus::SE3f Tracking::GrabImageStereo(const cv::Mat& imRectLeft,
                                        const cv::Mat& imRectRight,
                                        const double& timestamp,
-                                       const string &filename) {
+                                       const string &filename,
+                                       const Camera_ptr &cam) {
   // cout << "GrabImageStereo" << endl;
 
   mImGray = imRectLeft;
@@ -1385,20 +1386,20 @@ Sophus::SE3f Tracking::GrabImageStereo(const cv::Mat& imRectLeft,
   // cout << "Incoming frame creation" << endl;
 
   if (mSensor == CameraType::STEREO && !mpCamera2)
-    mCurrentFrame = Frame(mImGray, imGrayRight, timestamp, mpORBextractorLeft,
+    mCurrentFrame = Frame(cam, mImGray, imGrayRight, timestamp, mpORBextractorLeft,
                           mpORBextractorRight, mpORBVocabulary, mK, mDistCoef,
                           mbf, mThDepth, mpCamera, filename, mnNumDataset);
   else if (mSensor == CameraType::STEREO && mpCamera2)
-    mCurrentFrame = Frame(mImGray, imGrayRight, timestamp, mpORBextractorLeft,
+    mCurrentFrame = Frame(cam, mImGray, imGrayRight, timestamp, mpORBextractorLeft,
                           mpORBextractorRight, mpORBVocabulary, mK, mDistCoef,
                           mbf, mThDepth, mpCamera, mpCamera2, filename, mnNumDataset, mTlr);
   else if (mSensor == CameraType::IMU_STEREO && !mpCamera2)
-    mCurrentFrame = Frame(mImGray, imGrayRight, timestamp, mpORBextractorLeft,
+    mCurrentFrame = Frame(cam, mImGray, imGrayRight, timestamp, mpORBextractorLeft,
                           mpORBextractorRight, mpORBVocabulary, mK, mDistCoef,
                           mbf, mThDepth, mpCamera, filename, mnNumDataset, &mLastFrame, *mpImuCalib);
   else if (mSensor == CameraType::IMU_STEREO && mpCamera2)
     mCurrentFrame =
-        Frame(mImGray, imGrayRight, timestamp, mpORBextractorLeft,
+        Frame(cam, mImGray, imGrayRight, timestamp, mpORBextractorLeft,
               mpORBextractorRight, mpORBVocabulary, mK, mDistCoef, mbf,
               mThDepth, mpCamera, mpCamera2, filename, mnNumDataset, mTlr, &mLastFrame, *mpImuCalib);
 
@@ -1417,7 +1418,8 @@ Sophus::SE3f Tracking::GrabImageStereo(const cv::Mat& imRectLeft,
 }
 
 Sophus::SE3f Tracking::GrabImageRGBD(const cv::Mat& imRGB, const cv::Mat& imD,
-                                     const double& timestamp, const string &filename) {
+                                     const double& timestamp, const string &filename,
+                                     const Camera_ptr &cam) {
   mImGray = imRGB;
   cv::Mat imDepth = imD;
 
@@ -1438,11 +1440,11 @@ Sophus::SE3f Tracking::GrabImageRGBD(const cv::Mat& imRGB, const cv::Mat& imD,
 
   if (mSensor == CameraType::RGBD)
     mCurrentFrame =
-        Frame(mImGray, imDepth, timestamp, mpORBextractorLeft, mpORBVocabulary,
+        Frame(cam, mImGray, imDepth, timestamp, mpORBextractorLeft, mpORBVocabulary,
               mK, mDistCoef, mbf, mThDepth, mpCamera, filename, mnNumDataset);
   else if (mSensor == CameraType::IMU_RGBD)
     mCurrentFrame =
-        Frame(mImGray, imDepth, timestamp, mpORBextractorLeft, mpORBVocabulary,
+        Frame(cam, mImGray, imDepth, timestamp, mpORBextractorLeft, mpORBVocabulary,
               mK, mDistCoef, mbf, mThDepth, mpCamera, filename, mnNumDataset, &mLastFrame, *mpImuCalib);
 
 #ifdef REGISTER_TIMES
@@ -1456,7 +1458,8 @@ Sophus::SE3f Tracking::GrabImageRGBD(const cv::Mat& imRGB, const cv::Mat& imD,
 
 Sophus::SE3f Tracking::GrabImageMonocular(const cv::Mat& im,
                                           const double& timestamp,
-                                          const string &filename) {
+                                          const string &filename,
+                                          const Camera_ptr &cam) {
   mImGray = im;
   if (mImGray.channels() == 3) {
     if (mbRGB)
@@ -1474,20 +1477,20 @@ Sophus::SE3f Tracking::GrabImageMonocular(const cv::Mat& im,
     if (mState == Tracker::NOT_INITIALIZED || mState == Tracker::NO_IMAGES_YET ||
         (lastID - initID) < mMaxFrames)
       mCurrentFrame =
-          Frame(mImGray, timestamp, mpIniORBextractor, mpORBVocabulary,
+          Frame(cam, mImGray, timestamp, mpIniORBextractor, mpORBVocabulary,
                 mpCamera, mDistCoef, mbf, mThDepth, filename, mnNumDataset);
     else
       mCurrentFrame =
-          Frame(mImGray, timestamp, mpORBextractorLeft, mpORBVocabulary,
+          Frame(cam, mImGray, timestamp, mpORBextractorLeft, mpORBVocabulary,
                 mpCamera, mDistCoef, mbf, mThDepth, filename, mnNumDataset);
   } else if (mSensor == CameraType::IMU_MONOCULAR) {
     if (mState == Tracker::NOT_INITIALIZED || mState == Tracker::NO_IMAGES_YET) {
       mCurrentFrame =
-          Frame(mImGray, timestamp, mpIniORBextractor, mpORBVocabulary,
+          Frame(cam, mImGray, timestamp, mpIniORBextractor, mpORBVocabulary,
                 mpCamera, mDistCoef, mbf, mThDepth, filename, mnNumDataset, &mLastFrame, *mpImuCalib);
     } else
       mCurrentFrame =
-          Frame(mImGray, timestamp, mpORBextractorLeft, mpORBVocabulary,
+          Frame(cam, mImGray, timestamp, mpORBextractorLeft, mpORBVocabulary,
                 mpCamera, mDistCoef, mbf, mThDepth, filename, mnNumDataset, &mLastFrame, *mpImuCalib);
   }
 
@@ -2319,7 +2322,7 @@ void Tracking::CreateInitialMapMonocular() {
       new KeyFrame(mCurrentFrame, mpAtlas->GetCurrentMap(), mpKeyFrameDB);
 
   if (mSensor == CameraType::IMU_MONOCULAR)
-    pKFini->mpImuPreintegrated = (IMU::Preintegrated*)(NULL);
+    pKFini->mpImuPreintegrated = (IMU::Preintegrated*)(nullptr);
 
   pKFini->ComputeBoW();
   pKFcur->ComputeBoW();
@@ -3194,7 +3197,7 @@ void Tracking::UpdateLocalKeyFrames() {
                it != itend; it++)
             keyframeCounter[it->first]++;
         } else {
-          mCurrentFrame.mvpMapPoints[i] = NULL;
+          mCurrentFrame.mvpMapPoints[i] = nullptr;
         }
       }
     }
@@ -3214,7 +3217,7 @@ void Tracking::UpdateLocalKeyFrames() {
             keyframeCounter[it->first]++;
         } else {
           // MODIFICATION
-          mLastFrame.mvpMapPoints[i] = NULL;
+          mLastFrame.mvpMapPoints[i] = nullptr;
         }
       }
     }
@@ -3411,7 +3414,7 @@ bool Tracking::Relocalization() {
             mCurrentFrame.mvpMapPoints[j] = vvpMapPointMatches[i][j];
             sFound.insert(vvpMapPointMatches[i][j]);
           } else
-            mCurrentFrame.mvpMapPoints[j] = NULL;
+            mCurrentFrame.mvpMapPoints[j] = nullptr;
         }
 
         int nGood = Optimizer::PoseOptimization(&mCurrentFrame);
@@ -3448,7 +3451,7 @@ bool Tracking::Relocalization() {
 
                 for (int io = 0; io < mCurrentFrame.N; io++)
                   if (mCurrentFrame.mvbOutlier[io])
-                    mCurrentFrame.mvpMapPoints[io] = NULL;
+                    mCurrentFrame.mvpMapPoints[io] = nullptr;
               }
             }
           }

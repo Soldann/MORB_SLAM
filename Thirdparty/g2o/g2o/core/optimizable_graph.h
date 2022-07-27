@@ -411,7 +411,7 @@ namespace g2o {
          */
         virtual bool setMeasurementFromState();
 
-        //! if NOT NULL, error of this edge will be robustifed with the kernel
+        //! if NOT nullptr, error of this edge will be robustifed with the kernel
         RobustKernel* robustKernel() const { return _robustKernel;}
         /**
          * specify the robust kernel to be used in this edge

@@ -36,6 +36,7 @@
 #include "ORBVocabulary.h"
 #include "ImuTypes.h"
 #include "Settings.h"
+#include "Camera.hpp"
 
 
 namespace ORB_SLAM3
@@ -187,6 +188,7 @@ private:
 
     // Input sensor
     CameraType::eSensor mSensor;
+    vector<Camera_ptr> cameras;
 
     // ORB vocabulary used for place recognition and feature matching.
     ORBVocabulary* mpVocabulary;

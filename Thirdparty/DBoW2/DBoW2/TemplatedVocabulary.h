@@ -353,7 +353,7 @@ protected:
    * @param levelsup
    */
   virtual void transform(const TDescriptor &feature, 
-    WordId &id, WordValue &weight, NodeId* nid = NULL, int levelsup = 0) const;
+    WordId &id, WordValue &weight, NodeId* nid = nullptr, int levelsup = 0) const;
 
   /**
    * Returns the word id associated to a feature
@@ -434,7 +434,7 @@ template<class TDescriptor, class F>
 TemplatedVocabulary<TDescriptor,F>::TemplatedVocabulary
   (int k, int L, WeightingType weighting, ScoringType scoring)
   : m_k(k), m_L(L), m_weighting(weighting), m_scoring(scoring),
-  m_scoring_object(NULL)
+  m_scoring_object(nullptr)
 {
   createScoringObject();
 }
@@ -443,7 +443,7 @@ TemplatedVocabulary<TDescriptor,F>::TemplatedVocabulary
 
 template<class TDescriptor, class F>
 TemplatedVocabulary<TDescriptor,F>::TemplatedVocabulary
-  (const std::string &filename): m_scoring_object(NULL)
+  (const std::string &filename): m_scoring_object(nullptr)
 {
   load(filename);
 }
@@ -452,7 +452,7 @@ TemplatedVocabulary<TDescriptor,F>::TemplatedVocabulary
 
 template<class TDescriptor, class F>
 TemplatedVocabulary<TDescriptor,F>::TemplatedVocabulary
-  (const char *filename): m_scoring_object(NULL)
+  (const char *filename): m_scoring_object(nullptr)
 {
   load(filename);
 }
@@ -463,7 +463,7 @@ template<class TDescriptor, class F>
 void TemplatedVocabulary<TDescriptor,F>::createScoringObject()
 {
   delete m_scoring_object;
-  m_scoring_object = NULL;
+  m_scoring_object = nullptr;
   
   switch(m_scoring)
   {
@@ -516,7 +516,7 @@ void TemplatedVocabulary<TDescriptor,F>::setWeightingType(WeightingType type)
 template<class TDescriptor, class F>
 TemplatedVocabulary<TDescriptor,F>::TemplatedVocabulary(
   const TemplatedVocabulary<TDescriptor, F> &voc)
-  : m_scoring_object(NULL)
+  : m_scoring_object(nullptr)
 {
   *this = voc;
 }
@@ -1224,7 +1224,7 @@ void TemplatedVocabulary<TDescriptor,F>::transform(const TDescriptor &feature,
 
   // level at which the node must be stored in nid, if given
   const int nid_level = m_L - levelsup;
-  if(nid_level <= 0 && nid != NULL) *nid = 0; // root
+  if(nid_level <= 0 && nid != nullptr) *nid = 0; // root
 
   NodeId final_id = 0; // root
   int current_level = 0;
@@ -1248,7 +1248,7 @@ void TemplatedVocabulary<TDescriptor,F>::transform(const TDescriptor &feature,
       }
     }
     
-    if(nid != NULL && current_level == nid_level)
+    if(nid != nullptr && current_level == nid_level)
       *nid = final_id;
     
   } while( !m_nodes[final_id].isLeaf() );

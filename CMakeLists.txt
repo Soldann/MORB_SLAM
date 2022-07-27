@@ -50,6 +50,7 @@ find_package(realsense2)
 
 add_library(${PROJECT_NAME} SHARED
 src/System.cc
+src/Camera.cpp
 src/Tracking.cc
 src/LocalMapping.cc
 src/LoopClosing.cc
@@ -77,6 +78,7 @@ src/GeometricTools.cc
 src/TwoViewReconstruction.cc
 src/Settings.cc
 include/System.h
+include/Camera.hpp
 include/Tracking.h
 include/LocalMapping.h
 include/LoopClosing.h

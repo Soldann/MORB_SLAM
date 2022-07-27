@@ -35,7 +35,7 @@ int vasprintf(char** strp, const char* fmt, va_list ap)
   char* p;
   char* np;
 
-  if ((p = (char*)malloc(size * sizeof(char))) == NULL)
+  if ((p = (char*)malloc(size * sizeof(char))) == nullptr)
     return -1;
 
   while (1) {
@@ -52,7 +52,7 @@ int vasprintf(char** strp, const char* fmt, va_list ap)
       size = n+1;
     else
       size *= 2;
-    if ((np = (char*)realloc (p, size * sizeof(char))) == NULL) {
+    if ((np = (char*)realloc (p, size * sizeof(char))) == nullptr) {
       free(p);
       return -1;
     } else

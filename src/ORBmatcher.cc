@@ -1831,7 +1831,7 @@ int ORBmatcher::SearchByProjection(Frame &CurrentFrame, KeyFrame *pKF,
     for (int i = 0; i < HISTO_LENGTH; i++) {
       if (i != ind1 && i != ind2 && i != ind3) {
         for (size_t j = 0, jend = rotHist[i].size(); j < jend; j++) {
-          CurrentFrame.mvpMapPoints[rotHist[i][j]] = NULL;
+          CurrentFrame.mvpMapPoints[rotHist[i][j]] = nullptr;
           nmatches--;
         }
       }
