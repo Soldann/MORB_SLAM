@@ -52,7 +52,7 @@ Tracking::Tracking(System* pSys, ORBVocabulary* pVoc, const Atlas_ptr &pAtlas,
       mbVO(false),
       mpORBVocabulary(pVoc),
       mpKeyFrameDB(pKFDB),
-      mbReadyToInitializate(false),
+      mbReadyToInitialize(false),
       mpSystem(pSys),
       mpAtlas(pAtlas),
       mpLastKeyFrame(nullptr),
@@ -2248,7 +2248,7 @@ void Tracking::StereoInitialization() {
 }
 
 void Tracking::MonocularInitialization() {
-  if (!mbReadyToInitializate) {
+  if (!mbReadyToInitialize) {
     // Set Reference Frame
     if (mCurrentFrame.mvKeys.size() > 100) {
       mInitialFrame = Frame(mCurrentFrame);
@@ -2268,7 +2268,7 @@ void Tracking::MonocularInitialization() {
         mCurrentFrame.mpImuPreintegrated = mpImuPreintegratedFromLastKF;
       }
 
-      mbReadyToInitializate = true;
+      mbReadyToInitialize = true;
 
       return;
     }
@@ -2276,7 +2276,7 @@ void Tracking::MonocularInitialization() {
     if (((int)mCurrentFrame.mvKeys.size() <= 100) ||
         ((mSensor == CameraType::IMU_MONOCULAR) &&
          (mLastFrame.mTimeStamp - mInitialFrame.mTimeStamp > 1.0))) {
-      mbReadyToInitializate = false;
+      mbReadyToInitialize = false;
 
       return;
     }
@@ -2288,7 +2288,7 @@ void Tracking::MonocularInitialization() {
 
     // Check if there are enough correspondences
     if (nmatches < 100) {
-      mbReadyToInitializate = false;
+      mbReadyToInitialize = false;
       return;
     }
 
@@ -2468,14 +2468,12 @@ void Tracking::CreateMapInAtlas() {
   mbVO = false;  // Init value for know if there are enough MapPoints in the
                  // last KF
   if (mSensor == CameraType::MONOCULAR || mSensor == CameraType::IMU_MONOCULAR) {
-    mbReadyToInitializate = false;
+    mbReadyToInitialize = false;
   }
 
-  if (CameraType::isInertial(mSensor) &&
-      mpImuPreintegratedFromLastKF) {
+  if (CameraType::isInertial(mSensor) && mpImuPreintegratedFromLastKF) {
     delete mpImuPreintegratedFromLastKF;
-    mpImuPreintegratedFromLastKF =
-        new IMU::Preintegrated(IMU::Bias(), *mpImuCalib);
+    mpImuPreintegratedFromLastKF = new IMU::Preintegrated(IMU::Bias(), *mpImuCalib);
   }
 
   if (mpLastKeyFrame) mpLastKeyFrame = nullptr;
@@ -2987,8 +2985,7 @@ void Tracking::CreateNewKeyFrame() {
         new IMU::Preintegrated(pKF->GetImuBias(), pKF->mImuCalib);
   }
 
-  if (mSensor != CameraType::MONOCULAR &&
-      mSensor != CameraType::IMU_MONOCULAR)  // TODO check if incluide imu_stereo
+  if (CameraType::hasMulticam(mSensor))  // TODO check if incluide imu_stereo
   {
     mCurrentFrame.UpdatePoseMatrices();
     // cout << "create new MPs" << endl;
@@ -3506,7 +3503,7 @@ void Tracking::Reset(bool bLocMap) {
   Frame::nNextId = 0;
   mState = Tracker::NO_IMAGES_YET;
 
-  mbReadyToInitializate = false;
+  mbReadyToInitialize = false;
   mbSetInit = false;
 
   mlRelativeFramePoses.clear();
@@ -3554,7 +3551,7 @@ void Tracking::ResetActiveMap(bool bLocMap) {
   // mnLastRelocFrameId = mnLastInitFrameId;
   mState = Tracker::NO_IMAGES_YET;  // Tracker::NOT_INITIALIZED;
 
-  mbReadyToInitializate = false;
+  mbReadyToInitialize = false;
 
   list<bool> lbLost;
   // lbLost.reserve(mlbLost.size());

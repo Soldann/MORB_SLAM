@@ -3,7 +3,7 @@
 namespace ORB_SLAM3{
 
 Camera::Camera(CameraType::eSensor type, const std::string &name): ljobs{}, rjobs{}, name{name}, type{type},
-    lthread{&Camera::threadExec, this, &ljobs}, rthread{&Camera::threadExec, this, &rjobs}, shouldStop{false} {
+    shouldStop{false}, lthread{&Camera::threadExec, this, &ljobs}, rthread{&Camera::threadExec, this, &rjobs} {
 
 }
 

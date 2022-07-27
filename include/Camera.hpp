@@ -39,10 +39,10 @@ public:
 
 template<typename T>
 class ManagedPromise: public ManagedFuture<T>{
-    std::mutex *mutex;
+    std::shared_ptr<std::mutex> mutex;
 public:
-    ManagedPromise(): mutex{new std::mutex{}} {}
-    virtual ~ManagedPromise(){ delete mutex; }
+    ManagedPromise(): mutex{std::make_shared<std::mutex>()} {}
+    virtual ~ManagedPromise(){}
     
     // functions from std::promise<T>
 
@@ -64,14 +64,15 @@ class Camera{
 
     std::string name;
     CameraType::eSensor type;
-    std::thread lthread;
-    std::thread rthread;
-    
     std::mutex camMutex;
+    
     std::condition_variable camCV;
 
     bool shouldStop;
     
+    std::thread lthread;
+    std::thread rthread;
+
     void threadExec(std::deque<std::pair<ManagedPromise<bool>, std::function<void(void)>>> *jobs);
 public:
     Camera(CameraType::eSensor type, const std::string &name="camera");
