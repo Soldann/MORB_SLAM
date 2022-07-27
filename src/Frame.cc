@@ -261,7 +261,7 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRigh
     mVw.setZero();
   }
 
-  mpMutexImu = new std::mutex();
+  mpMutexImu = std::make_shared<std::mutex>();
 
   // Set no stereo fisheye information
   Nleft = -1;
@@ -275,9 +275,7 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRigh
   AssignFeaturesToGrid();
 }
 
-Frame::~Frame(){
-  delete mpMutexImu;
-}
+Frame::~Frame(){}
 
 Frame::Frame(const Camera_ptr &cam, const cv::Mat &imGray, const cv::Mat &imDepth,
              const double &timeStamp, ORBextractor *extractor,
@@ -379,7 +377,7 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imGray, const cv::Mat &imDept
     mVw.setZero();
   }
 
-  mpMutexImu = new std::mutex();
+  mpMutexImu = std::make_shared<std::mutex>();
 
   // Set no stereo fisheye information
   Nleft = -1;
@@ -509,7 +507,7 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imGray, const double &timeSta
     mVw.setZero();
   }
 
-  mpMutexImu = new std::mutex();
+  mpMutexImu = std::make_shared<std::mutex>();
 }
 
 void Frame::AssignFeaturesToGrid() {
@@ -1231,7 +1229,7 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRigh
 
   AssignFeaturesToGrid();
 
-  mpMutexImu = new std::mutex();
+  mpMutexImu = std::make_shared<std::mutex>();
 
   UndistortKeyPoints();
 }
