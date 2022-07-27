@@ -629,7 +629,6 @@ bool LoopClosing::DetectCommonRegionsFromBoW(
     std::vector<KeyFrame*> vpCovKFi =
         pKFi->GetBestCovisibilityKeyFrames(nNumCovisibles);
     if (vpCovKFi.empty()) {
-      std::cout << "Covisible list empty" << std::endl;
       vpCovKFi.push_back(pKFi);
     } else {
       vpCovKFi.push_back(vpCovKFi[0]);
