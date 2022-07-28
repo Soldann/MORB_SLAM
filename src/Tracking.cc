@@ -1528,37 +1528,33 @@ void Tracking::PreintegrateIMU() {
   }
 
   while (true) {
-    bool bSleep = false;
-    {
-      unique_lock<mutex> lock(mMutexImuQueue);
-      if (!mlQueueImuData.empty()) {
-        IMU::Point* m = &mlQueueImuData.front();
-        cout.precision(17);
-        if (m->t < mCurrentFrame.mpPrevFrame->mTimeStamp - mImuPer) {
-          mlQueueImuData.pop_front();
-        } else if (m->t < mCurrentFrame.mTimeStamp - mImuPer) {
-          mvImuFromLastFrame.push_back(*m);
-          mlQueueImuData.pop_front();
-        } else {
-          mvImuFromLastFrame.push_back(*m);
-          break;
-        }
-      } else {
-        break;
-        bSleep = true;
-      }
+    unique_lock<mutex> lock(mMutexImuQueue);
+    if(mlQueueImuData.empty()) break;
+
+    IMU::Point* m = &mlQueueImuData.front();
+    if (m->t < mCurrentFrame.mpPrevFrame->mTimeStamp - mImuPer) {
+      // m is old and therefore invalid
+      mlQueueImuData.pop_front();
+    } else if (m->t < mCurrentFrame.mTimeStamp - mImuPer) {
+      // m is valid
+      mvImuFromLastFrame.push_back(*m);
+      mlQueueImuData.pop_front();
+    } else {
+      // m is newer than the current frame
+      mvImuFromLastFrame.push_back(*m);
+      break;
     }
-    if (bSleep) usleep(500);
   }
 
-  const int n = mvImuFromLastFrame.size() - 1;
-  if (n == 0) {
+  if (mvImuFromLastFrame.empty()) {
     cout << "Empty IMU measurements vector!!!\n";
     return;
   }
 
+  const int n = mvImuFromLastFrame.size();
   IMU::Preintegrated* pImuPreintegratedFromLastFrame =
       new IMU::Preintegrated(mLastFrame.mImuBias, mCurrentFrame.mImuCalib);
+
 
   for (int i = 0; i < n; i++) {
     float tstep;
