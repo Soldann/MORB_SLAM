@@ -62,10 +62,10 @@ class Sim3Solver {
 
   void Project(const std::vector<Eigen::Vector3f> &vP3Dw,
                std::vector<Eigen::Vector2f> &vP2D, Eigen::Matrix4f Tcw,
-               std::shared_ptr<GeometricCamera> pCamera);
+               const std::shared_ptr<GeometricCamera> &pCamera);
   void FromCameraToImage(const std::vector<Eigen::Vector3f> &vP3Dc,
                          std::vector<Eigen::Vector2f> &vP2D,
-                         std::shared_ptr<GeometricCamera> pCamera);
+                         const std::shared_ptr<GeometricCamera> &pCamera);
 
  protected:
   // KeyFrames and matches

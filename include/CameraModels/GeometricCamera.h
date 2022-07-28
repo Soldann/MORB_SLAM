@@ -54,15 +54,15 @@ class GeometricCamera {
       : mvParameters(_vParameters) {}
   ~GeometricCamera() {}
 
-  virtual cv::Point2f project(const cv::Point3f& p3D) = 0;
-  virtual Eigen::Vector2d project(const Eigen::Vector3d& v3D) = 0;
-  virtual Eigen::Vector2f project(const Eigen::Vector3f& v3D) = 0;
-  virtual Eigen::Vector2f projectMat(const cv::Point3f& p3D) = 0;
+  virtual cv::Point2f project(const cv::Point3f& p3D) const = 0;
+  virtual Eigen::Vector2d project(const Eigen::Vector3d& v3D) const = 0;
+  virtual Eigen::Vector2f project(const Eigen::Vector3f& v3D) const = 0;
+  virtual Eigen::Vector2f projectMat(const cv::Point3f& p3D) const = 0;
 
   virtual float uncertainty2(const Eigen::Matrix<double, 2, 1>& p2D) = 0;
 
-  virtual Eigen::Vector3f unprojectEig(const cv::Point2f& p2D) = 0;
-  virtual cv::Point3f unproject(const cv::Point2f& p2D) = 0;
+  virtual Eigen::Vector3f unprojectEig(const cv::Point2f& p2D) const = 0;
+  virtual cv::Point3f unproject(const cv::Point2f& p2D) const = 0;
 
   virtual Eigen::Matrix<double, 2, 3> projectJac(
       const Eigen::Vector3d& v3D) = 0;
@@ -74,10 +74,10 @@ class GeometricCamera {
                                        std::vector<cv::Point3f>& vP3D,
                                        std::vector<bool>& vbTriangulated) = 0;
 
-  virtual cv::Mat toK() = 0;
-  virtual Eigen::Matrix3f toK_() = 0;
+  virtual cv::Mat toK() const = 0;
+  virtual Eigen::Matrix3f toK_() const = 0;
 
-  virtual bool epipolarConstrain(std::shared_ptr<GeometricCamera> otherCamera,
+  virtual bool epipolarConstrain(const std::shared_ptr<GeometricCamera> &otherCamera,
                                  const cv::KeyPoint& kp1,
                                  const cv::KeyPoint& kp2,
                                  const Eigen::Matrix3f& R12,

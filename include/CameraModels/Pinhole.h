@@ -59,15 +59,15 @@ class Pinhole : public GeometricCamera {
     if (tvr) delete tvr;
   }
 
-  cv::Point2f project(const cv::Point3f& p3D);
-  Eigen::Vector2d project(const Eigen::Vector3d& v3D);
-  Eigen::Vector2f project(const Eigen::Vector3f& v3D);
-  Eigen::Vector2f projectMat(const cv::Point3f& p3D);
+  cv::Point2f project(const cv::Point3f& p3D) const;
+  Eigen::Vector2d project(const Eigen::Vector3d& v3D) const;
+  Eigen::Vector2f project(const Eigen::Vector3f& v3D) const;
+  Eigen::Vector2f projectMat(const cv::Point3f& p3D) const;
 
   float uncertainty2(const Eigen::Matrix<double, 2, 1>& p2D);
 
-  Eigen::Vector3f unprojectEig(const cv::Point2f& p2D);
-  cv::Point3f unproject(const cv::Point2f& p2D);
+  Eigen::Vector3f unprojectEig(const cv::Point2f& p2D) const;
+  cv::Point3f unproject(const cv::Point2f& p2D) const;
 
   Eigen::Matrix<double, 2, 3> projectJac(const Eigen::Vector3d& v3D);
 
@@ -78,10 +78,10 @@ class Pinhole : public GeometricCamera {
                                std::vector<cv::Point3f>& vP3D,
                                std::vector<bool>& vbTriangulated);
 
-  cv::Mat toK();
-  Eigen::Matrix3f toK_();
+  cv::Mat toK() const;
+  Eigen::Matrix3f toK_()const;
 
-  bool epipolarConstrain(std::shared_ptr<GeometricCamera> pCamera2, const cv::KeyPoint& kp1,
+  bool epipolarConstrain(const std::shared_ptr<GeometricCamera> &pCamera2, const cv::KeyPoint& kp1,
                          const cv::KeyPoint& kp2, const Eigen::Matrix3f& R12,
                          const Eigen::Vector3f& t12, const float sigmaLevel,
                          const float unc);
@@ -97,7 +97,7 @@ class Pinhole : public GeometricCamera {
   friend std::ostream& operator<<(std::ostream& os, const Pinhole& ph);
   friend std::istream& operator>>(std::istream& os, Pinhole& ph);
 
-  bool IsEqual(std::shared_ptr<GeometricCamera> pCam);
+  bool IsEqual(const std::shared_ptr<GeometricCamera> &pCam);
 
  private:
   // Parameters vector corresponds to

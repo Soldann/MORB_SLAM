@@ -152,7 +152,7 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRigh
              const double &timeStamp, const std::shared_ptr<ORBextractor> &extractorLeft,
              const std::shared_ptr<ORBextractor> &extractorRight, ORBVocabulary *voc, cv::Mat &K,
              cv::Mat &distCoef, const float &bf, const float &thDepth,
-             std::shared_ptr<GeometricCamera> pCamera, const std::string &pNameFile, int pnNumDataset,
+             const std::shared_ptr<GeometricCamera> &pCamera, const std::string &pNameFile, int pnNumDataset,
              Frame *pPrevF, const IMU::Calib &ImuCalib)
     : mpcpi(nullptr),
       mbHasPose(false),
@@ -280,7 +280,7 @@ Frame::~Frame(){}
 Frame::Frame(const Camera_ptr &cam, const cv::Mat &imGray, const cv::Mat &imDepth,
              const double &timeStamp, const std::shared_ptr<ORBextractor> &extractor,
              ORBVocabulary *voc, cv::Mat &K, cv::Mat &distCoef, const float &bf,
-             const float &thDepth, std::shared_ptr<GeometricCamera> pCamera,
+             const float &thDepth, const std::shared_ptr<GeometricCamera> &pCamera,
              const std::string &pNameFile, int pnNumDataset, Frame *pPrevF,
              const IMU::Calib &ImuCalib)
     : mpcpi(nullptr),
@@ -393,7 +393,7 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imGray, const cv::Mat &imDept
 
 Frame::Frame(const Camera_ptr &cam, const cv::Mat &imGray, const double &timeStamp,
              const std::shared_ptr<ORBextractor> &extractor, ORBVocabulary *voc,
-             std::shared_ptr<GeometricCamera> pCamera, cv::Mat &distCoef, const float &bf,
+             const std::shared_ptr<GeometricCamera> &pCamera, cv::Mat &distCoef, const float &bf,
              const float &thDepth, const std::string &pNameFile, int pnNumDataset,
              Frame *pPrevF, const IMU::Calib &ImuCalib)
     : mpcpi(nullptr),
@@ -1106,7 +1106,7 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRigh
              const double &timeStamp, const std::shared_ptr<ORBextractor> &extractorLeft,
              const std::shared_ptr<ORBextractor> &extractorRight, ORBVocabulary *voc, cv::Mat &K,
              cv::Mat &distCoef, const float &bf, const float &thDepth,
-             std::shared_ptr<GeometricCamera> pCamera, std::shared_ptr<GeometricCamera> pCamera2,
+             const std::shared_ptr<GeometricCamera> &pCamera, const std::shared_ptr<GeometricCamera> &pCamera2,
              const std::string &pNameFile, int pnNumDataset,
              Sophus::SE3f &Tlr, Frame *pPrevF, const IMU::Calib &ImuCalib)
     : mpcpi(nullptr),

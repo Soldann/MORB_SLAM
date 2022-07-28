@@ -94,7 +94,7 @@ void Atlas::AddMapPoint(MapPoint* pMP) {
   pMapMP->AddMapPoint(pMP);
 }
 
-std::shared_ptr<GeometricCamera> Atlas::AddCamera(std::shared_ptr<GeometricCamera> pCam) {
+std::shared_ptr<GeometricCamera> Atlas::AddCamera(const std::shared_ptr<GeometricCamera> &pCam) {
   // Check if the camera already exists
   bool bAlreadyInMap = false;
   int index_cam = -1;

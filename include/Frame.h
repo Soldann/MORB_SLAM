@@ -60,13 +60,13 @@ public:
     Frame(const Frame &frame);
 
     // Constructor for stereo cameras.
-    Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeStamp, const std::shared_ptr<ORBextractor> &extractorLeft, const std::shared_ptr<ORBextractor> &extractorRight, ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth, std::shared_ptr<GeometricCamera> pCamera, const std::string &pNameFile, int pnNumDataset, Frame* pPrevF = nullptr, const IMU::Calib &ImuCalib = IMU::Calib());
+    Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeStamp, const std::shared_ptr<ORBextractor> &extractorLeft, const std::shared_ptr<ORBextractor> &extractorRight, ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth, const std::shared_ptr<GeometricCamera> &pCamera, const std::string &pNameFile, int pnNumDataset, Frame* pPrevF = nullptr, const IMU::Calib &ImuCalib = IMU::Calib());
 
     // Constructor for RGB-D cameras.
-    Frame(const Camera_ptr &cam, const cv::Mat &imGray, const cv::Mat &imDepth, const double &timeStamp, const std::shared_ptr<ORBextractor> &extractor,ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth, std::shared_ptr<GeometricCamera> pCamera, const std::string &pNameFile, int pnNumDataset, Frame* pPrevF = nullptr, const IMU::Calib &ImuCalib = IMU::Calib());
+    Frame(const Camera_ptr &cam, const cv::Mat &imGray, const cv::Mat &imDepth, const double &timeStamp, const std::shared_ptr<ORBextractor> &extractor,ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth, const std::shared_ptr<GeometricCamera> &pCamera, const std::string &pNameFile, int pnNumDataset, Frame* pPrevF = nullptr, const IMU::Calib &ImuCalib = IMU::Calib());
 
     // Constructor for Monocular cameras.
-    Frame(const Camera_ptr &cam, const cv::Mat &imGray, const double &timeStamp, const std::shared_ptr<ORBextractor> &extractor,ORBVocabulary* voc, std::shared_ptr<GeometricCamera> pCamera, cv::Mat &distCoef, const float &bf, const float &thDepth, const std::string &pNameFile, int pnNumDataset,  Frame* pPrevF = nullptr, const IMU::Calib &ImuCalib = IMU::Calib());
+    Frame(const Camera_ptr &cam, const cv::Mat &imGray, const double &timeStamp, const std::shared_ptr<ORBextractor> &extractor,ORBVocabulary* voc, const std::shared_ptr<GeometricCamera> &pCamera, cv::Mat &distCoef, const float &bf, const float &thDepth, const std::string &pNameFile, int pnNumDataset,  Frame* pPrevF = nullptr, const IMU::Calib &ImuCalib = IMU::Calib());
 
     // Destructor
     virtual ~Frame();
@@ -347,7 +347,7 @@ public:
     //Grid for the right image
     std::vector<std::size_t> mGridRight[FRAME_GRID_COLS][FRAME_GRID_ROWS];
 
-    Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeStamp, const std::shared_ptr<ORBextractor> &extractorLeft, const std::shared_ptr<ORBextractor> &extractorRight, ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth, std::shared_ptr<GeometricCamera> pCamera, std::shared_ptr<GeometricCamera> pCamera2, const std::string &pNameFile, int pnNumDataset, Sophus::SE3f& Tlr,Frame* pPrevF = nullptr, const IMU::Calib &ImuCalib = IMU::Calib());
+    Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeStamp, const std::shared_ptr<ORBextractor> &extractorLeft, const std::shared_ptr<ORBextractor> &extractorRight, ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth, const std::shared_ptr<GeometricCamera> &pCamera, const std::shared_ptr<GeometricCamera> &pCamera2, const std::string &pNameFile, int pnNumDataset, Sophus::SE3f& Tlr,Frame* pPrevF = nullptr, const IMU::Calib &ImuCalib = IMU::Calib());
 
     //Stereo fisheye
     void ComputeStereoFishEyeMatches();
