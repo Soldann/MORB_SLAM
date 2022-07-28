@@ -149,10 +149,10 @@ Frame::Frame(const Frame &frame)
 }
 
 Frame::Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRight,
-             const double &timeStamp, ORBextractor *extractorLeft,
-             ORBextractor *extractorRight, ORBVocabulary *voc, cv::Mat &K,
+             const double &timeStamp, const std::shared_ptr<ORBextractor> &extractorLeft,
+             const std::shared_ptr<ORBextractor> &extractorRight, ORBVocabulary *voc, cv::Mat &K,
              cv::Mat &distCoef, const float &bf, const float &thDepth,
-             GeometricCamera *pCamera, const std::string &pNameFile, int pnNumDataset,
+             std::shared_ptr<GeometricCamera> pCamera, const std::string &pNameFile, int pnNumDataset,
              Frame *pPrevF, const IMU::Calib &ImuCalib)
     : mpcpi(nullptr),
       mbHasPose(false),
@@ -278,9 +278,9 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRigh
 Frame::~Frame(){}
 
 Frame::Frame(const Camera_ptr &cam, const cv::Mat &imGray, const cv::Mat &imDepth,
-             const double &timeStamp, ORBextractor *extractor,
+             const double &timeStamp, const std::shared_ptr<ORBextractor> &extractor,
              ORBVocabulary *voc, cv::Mat &K, cv::Mat &distCoef, const float &bf,
-             const float &thDepth, GeometricCamera *pCamera,
+             const float &thDepth, std::shared_ptr<GeometricCamera> pCamera,
              const std::string &pNameFile, int pnNumDataset, Frame *pPrevF,
              const IMU::Calib &ImuCalib)
     : mpcpi(nullptr),
@@ -392,8 +392,8 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imGray, const cv::Mat &imDept
 }
 
 Frame::Frame(const Camera_ptr &cam, const cv::Mat &imGray, const double &timeStamp,
-             ORBextractor *extractor, ORBVocabulary *voc,
-             GeometricCamera *pCamera, cv::Mat &distCoef, const float &bf,
+             const std::shared_ptr<ORBextractor> &extractor, ORBVocabulary *voc,
+             std::shared_ptr<GeometricCamera> pCamera, cv::Mat &distCoef, const float &bf,
              const float &thDepth, const std::string &pNameFile, int pnNumDataset,
              Frame *pPrevF, const IMU::Calib &ImuCalib)
     : mpcpi(nullptr),
@@ -403,8 +403,8 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imGray, const double &timeSta
       mpORBextractorLeft(extractor),
       mpORBextractorRight(nullptr),
       mTimeStamp(timeStamp),
-      mK(static_cast<Pinhole *>(pCamera)->toK()),
-      mK_(static_cast<Pinhole *>(pCamera)->toK_()),
+      mK(reinterpret_pointer_cast<Pinhole>(pCamera)->toK()),
+      mK_(reinterpret_pointer_cast<Pinhole>(pCamera)->toK_()),
       mDistCoef(distCoef.clone()),
       mbf(bf),
       mThDepth(thDepth),
@@ -458,10 +458,10 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imGray, const double &timeSta
     mfGridElementHeightInv = static_cast<float>(FRAME_GRID_ROWS) /
                              static_cast<float>(mnMaxY - mnMinY);
 
-    fx = static_cast<Pinhole *>(mpCamera)->toK().at<float>(0, 0);
-    fy = static_cast<Pinhole *>(mpCamera)->toK().at<float>(1, 1);
-    cx = static_cast<Pinhole *>(mpCamera)->toK().at<float>(0, 2);
-    cy = static_cast<Pinhole *>(mpCamera)->toK().at<float>(1, 2);
+    fx = reinterpret_pointer_cast<Pinhole>(mpCamera)->toK().at<float>(0, 0);
+    fy = reinterpret_pointer_cast<Pinhole>(mpCamera)->toK().at<float>(1, 1);
+    cx = reinterpret_pointer_cast<Pinhole>(mpCamera)->toK().at<float>(0, 2);
+    cy = reinterpret_pointer_cast<Pinhole>(mpCamera)->toK().at<float>(1, 2);
     invfx = 1.0f / fx;
     invfy = 1.0f / fy;
 
@@ -854,7 +854,7 @@ void Frame::UndistortKeyPoints() {
 
   // Undistort points
   mat = mat.reshape(2);
-  cv::undistortPoints(mat, mat, static_cast<Pinhole *>(mpCamera)->toK(),
+  cv::undistortPoints(mat, mat, reinterpret_pointer_cast<Pinhole>(mpCamera)->toK(),
                       mDistCoef, cv::Mat(), mK);
   mat = mat.reshape(1);
 
@@ -881,7 +881,7 @@ void Frame::ComputeImageBounds(const cv::Mat &imLeft) {
     mat.at<float>(3, 1) = imLeft.rows;
 
     mat = mat.reshape(2);
-    cv::undistortPoints(mat, mat, static_cast<Pinhole *>(mpCamera)->toK(),
+    cv::undistortPoints(mat, mat, reinterpret_pointer_cast<Pinhole>(mpCamera)->toK(),
                         mDistCoef, cv::Mat(), mK);
     mat = mat.reshape(1);
 
@@ -1103,10 +1103,10 @@ void Frame::setIntegrated() {
 }
 
 Frame::Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRight,
-             const double &timeStamp, ORBextractor *extractorLeft,
-             ORBextractor *extractorRight, ORBVocabulary *voc, cv::Mat &K,
+             const double &timeStamp, const std::shared_ptr<ORBextractor> &extractorLeft,
+             const std::shared_ptr<ORBextractor> &extractorRight, ORBVocabulary *voc, cv::Mat &K,
              cv::Mat &distCoef, const float &bf, const float &thDepth,
-             GeometricCamera *pCamera, GeometricCamera *pCamera2,
+             std::shared_ptr<GeometricCamera> pCamera, std::shared_ptr<GeometricCamera> pCamera2,
              const std::string &pNameFile, int pnNumDataset,
              Sophus::SE3f &Tlr, Frame *pPrevF, const IMU::Calib &ImuCalib)
     : mpcpi(nullptr),
@@ -1155,12 +1155,12 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRigh
       std::chrono::steady_clock::now();
 #endif
   auto leftFut = camera->queueLeft(std::bind(&Frame::ExtractORB, this, true, imLeft,
-                    static_cast<KannalaBrandt8 *>(mpCamera)->mvLappingArea[0],
-                    static_cast<KannalaBrandt8 *>(mpCamera)->mvLappingArea[1]));
+                    reinterpret_pointer_cast<KannalaBrandt8>(mpCamera)->mvLappingArea[0],
+                    reinterpret_pointer_cast<KannalaBrandt8>(mpCamera)->mvLappingArea[1]));
   auto rightFut = camera->queueRight(std::bind(
       &Frame::ExtractORB, this, false, imRight,
-      static_cast<KannalaBrandt8 *>(mpCamera2)->mvLappingArea[0],
-      static_cast<KannalaBrandt8 *>(mpCamera2)->mvLappingArea[1]));
+      reinterpret_pointer_cast<KannalaBrandt8>(mpCamera2)->mvLappingArea[0],
+      reinterpret_pointer_cast<KannalaBrandt8>(mpCamera2)->mvLappingArea[1]));
   if(!leftFut.get() || !rightFut.get()) return;
 #ifdef REGISTER_TIMES
   std::chrono::steady_clock::time_point time_EndExtORB =
@@ -1271,7 +1271,7 @@ void Frame::ComputeStereoFishEyeMatches() {
           sigma1 = mvLevelSigma2[mvKeys[(*it)[0].queryIdx + monoLeft].octave],
           sigma2 =
               mvLevelSigma2[mvKeysRight[(*it)[0].trainIdx + monoRight].octave];
-      float depth = static_cast<KannalaBrandt8 *>(mpCamera)->TriangulateMatches(
+      float depth = reinterpret_pointer_cast<KannalaBrandt8>(mpCamera)->TriangulateMatches(
           mpCamera2, mvKeys[(*it)[0].queryIdx + monoLeft],
           mvKeysRight[(*it)[0].trainIdx + monoRight], mRlr, mtlr, sigma1,
           sigma2, p3D);

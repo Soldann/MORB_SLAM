@@ -22,7 +22,7 @@
 #pragma once
 
 #include <assert.h>
-
+#include <memory>
 #include "GeometricCamera.h"
 #include "TwoViewReconstruction.h"
 
@@ -81,7 +81,7 @@ class Pinhole : public GeometricCamera {
   cv::Mat toK();
   Eigen::Matrix3f toK_();
 
-  bool epipolarConstrain(GeometricCamera* pCamera2, const cv::KeyPoint& kp1,
+  bool epipolarConstrain(std::shared_ptr<GeometricCamera> pCamera2, const cv::KeyPoint& kp1,
                          const cv::KeyPoint& kp2, const Eigen::Matrix3f& R12,
                          const Eigen::Vector3f& t12, const float sigmaLevel,
                          const float unc);
@@ -97,7 +97,7 @@ class Pinhole : public GeometricCamera {
   friend std::ostream& operator<<(std::ostream& os, const Pinhole& ph);
   friend std::istream& operator>>(std::istream& os, Pinhole& ph);
 
-  bool IsEqual(GeometricCamera* pCam);
+  bool IsEqual(std::shared_ptr<GeometricCamera> pCam);
 
  private:
   // Parameters vector corresponds to

@@ -319,7 +319,7 @@ void Map::SetLastMapChange(int currentChangeId) {
   mnMapChangeNotified = currentChangeId;
 }
 
-void Map::PreSave(std::set<GeometricCamera*>& spCams) {
+void Map::PreSave(std::set<std::shared_ptr<GeometricCamera>>& spCams) {
   int nMPWithoutObs = 0;
 
   std::set<MapPoint*> tmp_mspMapPoints;
@@ -386,7 +386,7 @@ void Map::PostLoad(
     KeyFrameDatabase* pKFDB,
     ORBVocabulary*
         pORBVoc /*, map<long unsigned int, KeyFrame*>& mpKeyFrameId*/,
-    map<unsigned int, GeometricCamera*>& mpCams) {
+    map<unsigned int, std::shared_ptr<GeometricCamera>>& mpCams) {
   std::copy(mvpBackupMapPoints.begin(), mvpBackupMapPoints.end(),
             std::inserter(mspMapPoints, mspMapPoints.begin()));
   std::copy(mvpBackupKeyFrames.begin(), mvpBackupKeyFrames.end(),

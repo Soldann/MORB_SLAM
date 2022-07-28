@@ -104,10 +104,10 @@ Tracking::Tracking(System* pSys, ORBVocabulary* pVoc, const Atlas_ptr &pAtlas,
   mbInitWith3KFs = false;
   mnNumDataset = 0;
 
-  vector<GeometricCamera*> vpCams = mpAtlas->GetAllCameras();
+  vector<std::shared_ptr<GeometricCamera>> vpCams = mpAtlas->GetAllCameras();
   std::cout << "There are " << vpCams.size() << " cameras in the atlas"
             << std::endl;
-  for (GeometricCamera* pCam : vpCams) {
+  for (std::shared_ptr<GeometricCamera> pCam : vpCams) {
     std::cout << "Camera " << pCam->GetId();
     if (pCam->GetType() == GeometricCamera::CAM_PINHOLE) {
       std::cout << " is pinhole" << std::endl;
@@ -607,15 +607,15 @@ void Tracking::newParameterLoader(Settings* settings) {
   int fMinThFAST = settings->minThFAST();
   float fScaleFactor = settings->scaleFactor();
 
-  mpORBextractorLeft = new ORBextractor(nFeatures, fScaleFactor, nLevels,
+  mpORBextractorLeft = std::make_shared<ORBextractor>(nFeatures, fScaleFactor, nLevels,
                                         fIniThFAST, fMinThFAST);
 
   if (mSensor == CameraType::STEREO || mSensor == CameraType::IMU_STEREO)
-    mpORBextractorRight = new ORBextractor(nFeatures, fScaleFactor, nLevels,
+    mpORBextractorRight = std::make_shared<ORBextractor>(nFeatures, fScaleFactor, nLevels,
                                            fIniThFAST, fMinThFAST);
 
   if (mSensor == CameraType::MONOCULAR || mSensor == CameraType::IMU_MONOCULAR)
-    mpIniORBextractor = new ORBextractor(5 * nFeatures, fScaleFactor, nLevels,
+    mpIniORBextractor = std::make_shared<ORBextractor>(5 * nFeatures, fScaleFactor, nLevels,
                                          fIniThFAST, fMinThFAST);
 
   // IMU parameters
@@ -629,7 +629,7 @@ void Tracking::newParameterLoader(Settings* settings) {
   float Naw = settings->accWalk();
 
   const float sf = sqrt(mImuFreq);
-  mpImuCalib = new IMU::Calib(Tbc, Ng * sf, Na * sf, Ngw / sf, Naw / sf);
+  mpImuCalib = std::make_shared<IMU::Calib>(Tbc, Ng * sf, Na * sf, Ngw / sf, Naw / sf);
 
   mpImuPreintegratedFromLastKF =
       new IMU::Preintegrated(IMU::Bias(), *mpImuCalib);
@@ -744,7 +744,7 @@ bool Tracking::ParseCamParamFile(cv::FileStorage& fSettings) {
 
     vector<float> vCamCalib{fx, fy, cx, cy};
 
-    mpCamera = new Pinhole(vCamCalib);
+    mpCamera = std::make_shared<Pinhole>(vCamCalib);
 
     mpCamera = mpAtlas->AddCamera(mpCamera);
 
@@ -866,7 +866,7 @@ bool Tracking::ParseCamParamFile(cv::FileStorage& fSettings) {
       }
 
       vector<float> vCamCalib{fx, fy, cx, cy, k1, k2, k3, k4};
-      mpCamera = new KannalaBrandt8(vCamCalib);
+      mpCamera = std::make_shared<KannalaBrandt8>(vCamCalib);
       mpCamera = mpAtlas->AddCamera(mpCamera);
       std::cout << "- Camera: Fisheye" << std::endl;
       std::cout << "- Image scale: " << mImageScale << std::endl;
@@ -1037,20 +1037,20 @@ bool Tracking::ParseCamParamFile(cv::FileStorage& fSettings) {
           rightLappingEnd = rightLappingEnd * mImageScale;
         }
 
-        static_cast<KannalaBrandt8*>(mpCamera)->mvLappingArea[0] =
+        reinterpret_pointer_cast<KannalaBrandt8>(mpCamera)->mvLappingArea[0] =
             leftLappingBegin;
-        static_cast<KannalaBrandt8*>(mpCamera)->mvLappingArea[1] =
+        reinterpret_pointer_cast<KannalaBrandt8>(mpCamera)->mvLappingArea[1] =
             leftLappingEnd;
 
         vector<float> vCamCalib2{fx, fy, cx, cy, k1, k2, k3, k4};
-        mpCamera2 = new KannalaBrandt8(vCamCalib2);
+        mpCamera2 = std::make_shared<KannalaBrandt8>(vCamCalib2);
         mpCamera2 = mpAtlas->AddCamera(mpCamera2);
 
         mTlr = Converter::toSophus(cvTlr);
 
-        static_cast<KannalaBrandt8*>(mpCamera2)->mvLappingArea[0] =
+        reinterpret_pointer_cast<KannalaBrandt8>(mpCamera2)->mvLappingArea[0] =
             rightLappingBegin;
-        static_cast<KannalaBrandt8*>(mpCamera2)->mvLappingArea[1] =
+        reinterpret_pointer_cast<KannalaBrandt8>(mpCamera2)->mvLappingArea[1] =
             rightLappingEnd;
 
         std::cout << "- Camera1 Lapping: " << leftLappingBegin << ", "
@@ -1213,15 +1213,15 @@ bool Tracking::ParseORBParamFile(cv::FileStorage& fSettings) {
     return false;
   }
 
-  mpORBextractorLeft = new ORBextractor(nFeatures, fScaleFactor, nLevels,
+  mpORBextractorLeft = std::make_shared<ORBextractor>(nFeatures, fScaleFactor, nLevels,
                                         fIniThFAST, fMinThFAST);
 
   if (mSensor == CameraType::STEREO || mSensor == CameraType::IMU_STEREO)
-    mpORBextractorRight = new ORBextractor(nFeatures, fScaleFactor, nLevels,
+    mpORBextractorRight = std::make_shared<ORBextractor>(nFeatures, fScaleFactor, nLevels,
                                            fIniThFAST, fMinThFAST);
 
   if (mSensor == CameraType::MONOCULAR || mSensor == CameraType::IMU_MONOCULAR)
-    mpIniORBextractor = new ORBextractor(5 * nFeatures, fScaleFactor, nLevels,
+    mpIniORBextractor = std::make_shared<ORBextractor>(5 * nFeatures, fScaleFactor, nLevels,
                                          fIniThFAST, fMinThFAST);
 
   cout << endl << "ORB Extractor Parameters: " << endl;
@@ -1269,7 +1269,7 @@ bool Tracking::ParseIMUParamFile(cv::FileStorage& fSettings) {
   node = fSettings["IMU.Frequency"];
   if (!node.empty() && node.isInt()) {
     mImuFreq = node.operator int();
-    mImuPer = 0.001;  // 1.0 / (double) mImuFreq;
+    mImuPer = 0.001;  // 1.0 / (double) mImuFreq;     //TODO: ESTO ESTA BIEN?
   } else {
     std::cerr << "*IMU.Frequency parameter doesn't exist or is not an integer*"
               << std::endl;
@@ -1336,7 +1336,7 @@ bool Tracking::ParseIMUParamFile(cv::FileStorage& fSettings) {
   cout << "IMU accelerometer noise: " << Na << " m/s^2/sqrt(Hz)" << endl;
   cout << "IMU accelerometer walk: " << Naw << " m/s^3/sqrt(Hz)" << endl;
 
-  mpImuCalib = new IMU::Calib(Tbc, Ng * sf, Na * sf, Ngw / sf, Naw / sf);
+  mpImuCalib = std::make_shared<IMU::Calib>(Tbc, Ng * sf, Na * sf, Ngw / sf, Naw / sf);
 
   mpImuPreintegratedFromLastKF =
       new IMU::Preintegrated(IMU::Bias(), *mpImuCalib);
@@ -1528,35 +1528,30 @@ void Tracking::PreintegrateIMU() {
   }
 
   while (true) {
-    bool bSleep = false;
-    {
-      unique_lock<mutex> lock(mMutexImuQueue);
-      if (!mlQueueImuData.empty()) {
-        IMU::Point* m = &mlQueueImuData.front();
-        cout.precision(17);
-        if (m->t < mCurrentFrame.mpPrevFrame->mTimeStamp - mImuPer) {
-          mlQueueImuData.pop_front();
-        } else if (m->t < mCurrentFrame.mTimeStamp - mImuPer) {
-          mvImuFromLastFrame.push_back(*m);
-          mlQueueImuData.pop_front();
-        } else {
-          mvImuFromLastFrame.push_back(*m);
-          break;
-        }
-      } else {
-        break;
-        bSleep = true;
-      }
+    unique_lock<mutex> lock(mMutexImuQueue);
+    if(mlQueueImuData.empty()) break;
+
+    IMU::Point* m = &mlQueueImuData.front();
+    if (m->t < mCurrentFrame.mpPrevFrame->mTimeStamp - mImuPer) {
+      // m is old and therefore invalid
+      mlQueueImuData.pop_front();
+    } else if (m->t < mCurrentFrame.mTimeStamp - mImuPer) {
+      // m is valid
+      mvImuFromLastFrame.push_back(*m);
+      mlQueueImuData.pop_front();
+    } else {
+      // m is newer than the current frame
+      // mvImuFromLastFrame.push_back(*m);
+      break;
     }
-    if (bSleep) usleep(500);
   }
 
-  const int n = mvImuFromLastFrame.size() - 1;
-  if (n == 0) {
+  if (mvImuFromLastFrame.empty()) {
     cout << "Empty IMU measurements vector!!!\n";
     return;
   }
 
+  const int n = mvImuFromLastFrame.size();
   IMU::Preintegrated* pImuPreintegratedFromLastFrame =
       new IMU::Preintegrated(mLastFrame.mImuBias, mCurrentFrame.mImuCalib);
 

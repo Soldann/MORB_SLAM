@@ -293,10 +293,10 @@ class KeyFrame {
                              float& v);
 
   void PreSave(set<KeyFrame*>& spKF, set<MapPoint*>& spMP,
-               set<GeometricCamera*>& spCam);
+               set<shared_ptr<GeometricCamera>>& spCam);
   void PostLoad(map<long unsigned int, KeyFrame*>& mpKFid,
                 map<long unsigned int, MapPoint*>& mpMPid,
-                map<unsigned int, GeometricCamera*>& mpCamId);
+                map<unsigned int, std::shared_ptr<GeometricCamera>>& mpCamId);
 
   void SetORBVocabulary(ORBVocabulary* pORBVoc);
   void SetKeyFrameDatabase(KeyFrameDatabase* pKFDB);
@@ -500,7 +500,7 @@ class KeyFrame {
   std::mutex mMutexMap;
 
  public:
-  GeometricCamera *mpCamera, *mpCamera2;
+  std::shared_ptr<GeometricCamera> mpCamera, mpCamera2;
 
   // Indexes of stereo observations correspondences
   std::vector<int> mvLeftToRightMatch, mvRightToLeftMatch;

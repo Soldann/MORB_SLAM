@@ -207,7 +207,7 @@ void Settings::readCamera1(cv::FileStorage& fSettings) {
 
     vCalibration = {fx, fy, cx, cy};
 
-    calibration1_ = new Pinhole(vCalibration);
+    calibration1_ = std::make_shared<Pinhole>(vCalibration);
     originalCalib1_ = new Pinhole(vCalibration);
 
     // Check if it is a distorted PinHole
@@ -247,7 +247,7 @@ void Settings::readCamera1(cv::FileStorage& fSettings) {
 
     vCalibration = {fx, fy, cx, cy};
 
-    calibration1_ = new Pinhole(vCalibration);
+    calibration1_ = std::make_shared<Pinhole>(vCalibration);
     originalCalib1_ = new Pinhole(vCalibration);
 
     // Rectified images are assumed to be ideal PinHole images (no distortion)
@@ -267,7 +267,7 @@ void Settings::readCamera1(cv::FileStorage& fSettings) {
 
     vCalibration = {fx, fy, cx, cy, k0, k1, k2, k3};
 
-    calibration1_ = new KannalaBrandt8(vCalibration);
+    calibration1_ = std::make_shared<KannalaBrandt8>(vCalibration);
     originalCalib1_ = new KannalaBrandt8(vCalibration);
 
     if (sensor_ == ORB_SLAM3::CameraType::STEREO || sensor_ == ORB_SLAM3::CameraType::IMU_STEREO) {
@@ -277,7 +277,7 @@ void Settings::readCamera1(cv::FileStorage& fSettings) {
           readParameter<int>(fSettings, "Camera1.overlappingEnd", found);
       std::vector<int> vOverlapping = {colBegin, colEnd};
 
-      static_cast<KannalaBrandt8*>(calibration1_)->mvLappingArea = vOverlapping;
+      std::reinterpret_pointer_cast<KannalaBrandt8>(calibration1_)->mvLappingArea = vOverlapping;
     }
   } else {
     std::cerr << "Error: " << cameraModel << " not known" << std::endl;
@@ -299,7 +299,7 @@ void Settings::readCamera2(cv::FileStorage& fSettings) {
 
     vCalibration = {fx, fy, cx, cy};
 
-    calibration2_ = new Pinhole(vCalibration);
+    calibration2_ = std::make_shared<Pinhole>(vCalibration);
     originalCalib2_ = new Pinhole(vCalibration);
 
     // Check if it is a distorted PinHole
@@ -336,7 +336,7 @@ void Settings::readCamera2(cv::FileStorage& fSettings) {
 
     vCalibration = {fx, fy, cx, cy, k0, k1, k2, k3};
 
-    calibration2_ = new KannalaBrandt8(vCalibration);
+    calibration2_ = std::make_shared<KannalaBrandt8>(vCalibration);
     originalCalib2_ = new KannalaBrandt8(vCalibration);
 
     int colBegin =
@@ -344,7 +344,7 @@ void Settings::readCamera2(cv::FileStorage& fSettings) {
     int colEnd = readParameter<int>(fSettings, "Camera2.overlappingEnd", found);
     std::vector<int> vOverlapping = {colBegin, colEnd};
 
-    static_cast<KannalaBrandt8*>(calibration2_)->mvLappingArea = vOverlapping;
+    std::reinterpret_pointer_cast<KannalaBrandt8>(calibration2_)->mvLappingArea = vOverlapping;
   }
 
   // Load stereo extrinsic calibration
@@ -420,14 +420,14 @@ void Settings::readImageInfo(cv::FileStorage& fSettings) {
             calibration2_->getParameter(2) * scaleColFactor, 2);
 
         if (cameraType_ == KannalaBrandt) {
-          static_cast<KannalaBrandt8*>(calibration1_)->mvLappingArea[0] *=
+          std::reinterpret_pointer_cast<KannalaBrandt8>(calibration1_)->mvLappingArea[0] *=
               scaleColFactor;
-          static_cast<KannalaBrandt8*>(calibration1_)->mvLappingArea[1] *=
+          std::reinterpret_pointer_cast<KannalaBrandt8>(calibration1_)->mvLappingArea[1] *=
               scaleColFactor;
 
-          static_cast<KannalaBrandt8*>(calibration2_)->mvLappingArea[0] *=
+          std::reinterpret_pointer_cast<KannalaBrandt8>(calibration2_)->mvLappingArea[0] *=
               scaleColFactor;
-          static_cast<KannalaBrandt8*>(calibration2_)->mvLappingArea[1] *=
+          std::reinterpret_pointer_cast<KannalaBrandt8>(calibration2_)->mvLappingArea[1] *=
               scaleColFactor;
         }
       }
@@ -519,9 +519,9 @@ void Settings::readOtherParameters(cv::FileStorage& fSettings) {
 
 void Settings::precomputeRectificationMaps() {
   // Precompute rectification maps, new calibrations, ...
-  cv::Mat K1 = static_cast<Pinhole*>(calibration1_)->toK();
+  cv::Mat K1 = std::reinterpret_pointer_cast<Pinhole>(calibration1_)->toK();
   K1.convertTo(K1, CV_64F);
-  cv::Mat K2 = static_cast<Pinhole*>(calibration2_)->toK();
+  cv::Mat K2 = std::reinterpret_pointer_cast<Pinhole>(calibration2_)->toK();
   K2.convertTo(K2, CV_64F);
 
   cv::Mat cvTlr;
@@ -651,9 +651,9 @@ std::ostream& operator<<(std::ostream& output, const Settings& settings) {
 
     if (settings.cameraType_ == Settings::KannalaBrandt) {
       auto vOverlapping1 =
-          static_cast<KannalaBrandt8*>(settings.calibration1_)->mvLappingArea;
+          std::reinterpret_pointer_cast<KannalaBrandt8>(settings.calibration1_)->mvLappingArea;
       auto vOverlapping2 =
-          static_cast<KannalaBrandt8*>(settings.calibration2_)->mvLappingArea;
+          std::reinterpret_pointer_cast<KannalaBrandt8>(settings.calibration2_)->mvLappingArea;
       output << "\t-Camera 1 overlapping area: [ " << vOverlapping1[0] << " , "
              << vOverlapping1[1] << " ]" << std::endl;
       output << "\t-Camera 2 overlapping area: [ " << vOverlapping2[0] << " , "

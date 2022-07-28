@@ -22,7 +22,7 @@
 #pragma once
 
 #include <assert.h>
-
+#include <memory>
 #include "GeometricCamera.h"
 #include "TwoViewReconstruction.h"
 
@@ -92,12 +92,12 @@ class KannalaBrandt8 : public GeometricCamera {
   cv::Mat toK();
   Eigen::Matrix3f toK_();
 
-  bool epipolarConstrain(GeometricCamera* pCamera2, const cv::KeyPoint& kp1,
+  bool epipolarConstrain(std::shared_ptr<GeometricCamera> pCamera2, const cv::KeyPoint& kp1,
                          const cv::KeyPoint& kp2, const Eigen::Matrix3f& R12,
                          const Eigen::Vector3f& t12, const float sigmaLevel,
                          const float unc);
 
-  float TriangulateMatches(GeometricCamera* pCamera2, const cv::KeyPoint& kp1,
+  float TriangulateMatches(std::shared_ptr<GeometricCamera> pCamera2, const cv::KeyPoint& kp1,
                            const cv::KeyPoint& kp2, const Eigen::Matrix3f& R12,
                            const Eigen::Vector3f& t12, const float sigmaLevel,
                            const float unc, Eigen::Vector3f& p3D);
@@ -115,7 +115,7 @@ class KannalaBrandt8 : public GeometricCamera {
 
   float GetPrecision() { return precision; }
 
-  bool IsEqual(GeometricCamera* pCam);
+  bool IsEqual(std::shared_ptr<GeometricCamera> pCam);
 
  private:
   const float precision;

@@ -233,7 +233,7 @@ class Tracking {
   std::mutex mMutexImuQueue;
 
   // Imu calibration parameters
-  IMU::Calib* mpImuCalib;
+  std::shared_ptr<IMU::Calib> mpImuCalib;
 
   // Last Bias Estimation (at keyframe creation)
   IMU::Bias mLastBias;
@@ -250,8 +250,9 @@ class Tracking {
   LoopClosing* mpLoopClosing;
 
   // ORB
-  ORBextractor *mpORBextractorLeft, *mpORBextractorRight;
-  ORBextractor* mpIniORBextractor;
+  std::shared_ptr<ORBextractor> mpORBextractorLeft;
+  std::shared_ptr<ORBextractor> mpORBextractorRight;
+  std::shared_ptr<ORBextractor> mpIniORBextractor;
 
   // BoW
   ORBVocabulary* mpORBVocabulary;
@@ -337,7 +338,8 @@ class Tracking {
   double mTime_LocalMapTrack;
   double mTime_NewKF_Dec;
 
-  GeometricCamera *mpCamera, *mpCamera2;
+  std::shared_ptr<GeometricCamera> mpCamera;
+  std::shared_ptr<GeometricCamera> mpCamera2;
 
   int initID, lastID;
 

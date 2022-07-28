@@ -23,6 +23,7 @@
 
 #include <boost/serialization/export.hpp>
 #include <boost/serialization/vector.hpp>
+#include <boost/serialization/shared_ptr.hpp>
 #include <mutex>
 #include <set>
 #include <map>
@@ -87,8 +88,8 @@ class Atlas {
   // void EraseMapPoint(MapPoint* pMP);
   // void EraseKeyFrame(KeyFrame* pKF);
 
-  GeometricCamera* AddCamera(GeometricCamera* pCam);
-  std::vector<GeometricCamera*> GetAllCameras();
+  std::shared_ptr<GeometricCamera> AddCamera(std::shared_ptr<GeometricCamera> pCam);
+  std::vector<std::shared_ptr<GeometricCamera>> GetAllCameras();
 
   /* All methods without Map pointer work on current map */
   void SetReferenceMapPoints(const std::vector<MapPoint*>& vpMPs);
@@ -146,7 +147,7 @@ class Atlas {
 
   Map* mpCurrentMap;
 
-  std::vector<GeometricCamera*> mvpCameras;
+  std::vector<std::shared_ptr<GeometricCamera>> mvpCameras;
 
   unsigned long int mnLastInitKFidMap;
 

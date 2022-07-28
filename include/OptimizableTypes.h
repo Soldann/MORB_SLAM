@@ -57,7 +57,7 @@ class EdgeSE3ProjectXYZOnlyPose
   virtual void linearizeOplus();
 
   Eigen::Vector3d Xw;
-  GeometricCamera* pCamera;
+  std::shared_ptr<GeometricCamera> pCamera;
 };
 
 class EdgeSE3ProjectXYZOnlyPoseToBody
@@ -87,7 +87,7 @@ class EdgeSE3ProjectXYZOnlyPoseToBody
   virtual void linearizeOplus();
 
   Eigen::Vector3d Xw;
-  GeometricCamera* pCamera;
+  std::shared_ptr<GeometricCamera> pCamera;
 
   g2o::SE3Quat mTrl;
 };
@@ -123,7 +123,7 @@ class EdgeSE3ProjectXYZ
 
   virtual void linearizeOplus();
 
-  GeometricCamera* pCamera;
+  std::shared_ptr<GeometricCamera> pCamera;
 };
 
 class EdgeSE3ProjectXYZToBody
@@ -158,7 +158,7 @@ class EdgeSE3ProjectXYZToBody
 
   virtual void linearizeOplus();
 
-  GeometricCamera* pCamera;
+  std::shared_ptr<GeometricCamera> pCamera;
   g2o::SE3Quat mTrl;
 };
 
@@ -180,7 +180,7 @@ class VertexSim3Expmap : public g2o::BaseVertex<7, g2o::Sim3> {
     setEstimate(s * estimate());
   }
 
-  GeometricCamera *pCamera1, *pCamera2;
+  std::shared_ptr<GeometricCamera> pCamera1, pCamera2;
 
   bool _fix_scale;
 };

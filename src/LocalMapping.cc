@@ -448,8 +448,8 @@ void LocalMapping::CreateNewMapPoints() {
 
     KeyFrame* pKF2 = vpNeighKFs[i];
 
-    GeometricCamera *pCamera1 = mpCurrentKeyFrame->mpCamera,
-                    *pCamera2 = pKF2->mpCamera;
+    std::shared_ptr<GeometricCamera> pCamera1 = mpCurrentKeyFrame->mpCamera,
+                    pCamera2 = pKF2->mpCamera;
 
     // Check first that baseline is not too short
     Eigen::Vector3f Ow2 = pKF2->GetCameraCenter();

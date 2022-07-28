@@ -110,7 +110,7 @@ Eigen::Matrix3f Pinhole::toK_() {
   return K;
 }
 
-bool Pinhole::epipolarConstrain(GeometricCamera *pCamera2,
+bool Pinhole::epipolarConstrain(std::shared_ptr<GeometricCamera> pCamera2,
                                 const cv::KeyPoint &kp1,
                                 const cv::KeyPoint &kp2,
                                 const Eigen::Matrix3f &R12,
@@ -154,10 +154,10 @@ std::istream &operator>>(std::istream &is, Pinhole &ph) {
   return is;
 }
 
-bool Pinhole::IsEqual(GeometricCamera *pCam) {
+bool Pinhole::IsEqual(std::shared_ptr<GeometricCamera> pCam) {
   if (pCam->GetType() != GeometricCamera::CAM_PINHOLE) return false;
 
-  Pinhole *pPinholeCam = (Pinhole *)pCam;
+  std::shared_ptr<Pinhole> pPinholeCam = std::static_pointer_cast<Pinhole>(pCam);
 
   if (size() != pPinholeCam->size()) return false;
 

@@ -99,7 +99,7 @@ public:
     std::vector<Eigen::Matrix3d> Rcb, Rbc;
     std::vector<Eigen::Vector3d> tcb, tbc;
     double bf;
-    std::vector<GeometricCamera*> pCamera;
+    std::vector<std::shared_ptr<GeometricCamera>> pCamera;
 
     // For posegraph 4DoF
     Eigen::Matrix3d Rwb0;

@@ -30,6 +30,7 @@
 #include <unistd.h>
 
 #include <string>
+#include <memory>
 
 #include "CameraModels/GeometricCamera.h"
 
@@ -65,8 +66,8 @@ class Settings {
    * Getter methods
    */
   CameraType cameraType() const { return cameraType_; }
-  GeometricCamera* camera1() { return calibration1_; }
-  GeometricCamera* camera2() { return calibration2_; }
+  std::shared_ptr<GeometricCamera> camera1() { return calibration1_; }
+  std::shared_ptr<GeometricCamera> camera2() { return calibration2_; }
   cv::Mat camera1DistortionCoef() {
     return cv::Mat(vPinHoleDistorsion1_.size(), 1, CV_32F,
                    vPinHoleDistorsion1_.data());
@@ -168,7 +169,7 @@ class Settings {
   /*
    * Visual stuff
    */
-  GeometricCamera *calibration1_, *calibration2_;  // Camera calibration
+  std::shared_ptr<GeometricCamera> calibration1_, calibration2_;  // Camera calibration
   GeometricCamera *originalCalib1_, *originalCalib2_;
   std::vector<float> vPinHoleDistorsion1_, vPinHoleDistorsion2_;
 

@@ -77,7 +77,7 @@ class GeometricCamera {
   virtual cv::Mat toK() = 0;
   virtual Eigen::Matrix3f toK_() = 0;
 
-  virtual bool epipolarConstrain(GeometricCamera* otherCamera,
+  virtual bool epipolarConstrain(std::shared_ptr<GeometricCamera> otherCamera,
                                  const cv::KeyPoint& kp1,
                                  const cv::KeyPoint& kp2,
                                  const Eigen::Matrix3f& R12,

@@ -62,10 +62,10 @@ class Sim3Solver {
 
   void Project(const std::vector<Eigen::Vector3f> &vP3Dw,
                std::vector<Eigen::Vector2f> &vP2D, Eigen::Matrix4f Tcw,
-               GeometricCamera *pCamera);
+               std::shared_ptr<GeometricCamera> pCamera);
   void FromCameraToImage(const std::vector<Eigen::Vector3f> &vP3Dc,
                          std::vector<Eigen::Vector2f> &vP2D,
-                         GeometricCamera *pCamera);
+                         std::shared_ptr<GeometricCamera> pCamera);
 
  protected:
   // KeyFrames and matches
@@ -131,7 +131,7 @@ class Sim3Solver {
   // cv::Mat mK1;
   // cv::Mat mK2;
 
-  GeometricCamera *pCamera1, *pCamera2;
+  std::shared_ptr<GeometricCamera> pCamera1, pCamera2;
 };
 
 }  // namespace ORB_SLAM3
