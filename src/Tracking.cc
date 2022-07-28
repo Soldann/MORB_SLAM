@@ -1528,30 +1528,35 @@ void Tracking::PreintegrateIMU() {
   }
 
   while (true) {
-    unique_lock<mutex> lock(mMutexImuQueue);
-    if(mlQueueImuData.empty()) break;
-
-    IMU::Point* m = &mlQueueImuData.front();
-    if (m->t < mCurrentFrame.mpPrevFrame->mTimeStamp - mImuPer) {
-      // m is old and therefore invalid
-      mlQueueImuData.pop_front();
-    } else if (m->t < mCurrentFrame.mTimeStamp - mImuPer) {
-      // m is valid
-      mvImuFromLastFrame.push_back(*m);
-      mlQueueImuData.pop_front();
-    } else {
-      // m is newer than the current frame
-      // mvImuFromLastFrame.push_back(*m);
-      break;
+    bool bSleep = false;
+    {
+      unique_lock<mutex> lock(mMutexImuQueue);
+      if (!mlQueueImuData.empty()) {
+        IMU::Point* m = &mlQueueImuData.front();
+        cout.precision(17);
+        if (m->t < mCurrentFrame.mpPrevFrame->mTimeStamp - mImuPer) {
+          mlQueueImuData.pop_front();
+        } else if (m->t < mCurrentFrame.mTimeStamp - mImuPer) {
+          mvImuFromLastFrame.push_back(*m);
+          mlQueueImuData.pop_front();
+        } else {
+          mvImuFromLastFrame.push_back(*m);
+          break;
+        }
+      } else {
+        break;
+        bSleep = true;
+      }
     }
+    if (bSleep) usleep(500);
   }
 
-  if (mvImuFromLastFrame.empty()) {
+  const int n = mvImuFromLastFrame.size() - 1;
+  if (n == 0) {
     cout << "Empty IMU measurements vector!!!\n";
     return;
   }
 
-  const int n = mvImuFromLastFrame.size();
   IMU::Preintegrated* pImuPreintegratedFromLastFrame =
       new IMU::Preintegrated(mLastFrame.mImuBias, mCurrentFrame.mImuCalib);
 
@@ -1700,7 +1705,7 @@ void Tracking::Track() {
       mlQueueImuData.clear();
       CreateMapInAtlas();
       return;
-    } 
+    }
   }
 
   if (CameraType::isInertial(mSensor) && mpLastKeyFrame)
