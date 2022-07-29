@@ -1541,7 +1541,7 @@ void Tracking::PreintegrateIMU() {
       mlQueueImuData.pop_front();
     } else {
       // m is newer than the current frame
-      // mvImuFromLastFrame.push_back(*m);
+      mvImuFromLastFrame.push_back(*m);
       break;
     }
   }
@@ -1554,6 +1554,7 @@ void Tracking::PreintegrateIMU() {
   const int n = mvImuFromLastFrame.size();
   IMU::Preintegrated* pImuPreintegratedFromLastFrame =
       new IMU::Preintegrated(mLastFrame.mImuBias, mCurrentFrame.mImuCalib);
+
 
   for (int i = 0; i < n; i++) {
     float tstep;
@@ -1700,7 +1701,7 @@ void Tracking::Track() {
       mlQueueImuData.clear();
       CreateMapInAtlas();
       return;
-    } 
+    }
   }
 
   if (CameraType::isInertial(mSensor) && mpLastKeyFrame)
