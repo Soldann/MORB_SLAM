@@ -726,7 +726,7 @@ void EdgeInertialGS::linearizeOplus() {
       Rbw1 * (VP2->estimate().twb - VP1->estimate().twb - VV1->estimate() * dt);
 }
 
-EdgePriorPoseImu::EdgePriorPoseImu(ConstraintPoseImu* c) {
+EdgePriorPoseImu::EdgePriorPoseImu(std::shared_ptr<ConstraintPoseImu> c) {
   resize(4);
   Rwb = c->Rwb;
   twb = c->twb;

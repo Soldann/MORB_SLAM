@@ -4750,13 +4750,13 @@ int Optimizer::PoseInertialOptimizationLastKeyFrame(Frame* pFrame,
   }
 
   pFrame->mpcpi =
-      new ConstraintPoseImu(VP->estimate().Rwb, VP->estimate().twb,
+      std::make_shared<ConstraintPoseImu>(VP->estimate().Rwb, VP->estimate().twb,
                             VV->estimate(), VG->estimate(), VA->estimate(), H);
 
   return nInitialCorrespondences - nBad;
 }
 
-static ConstraintPoseImu* oldMpcpi = nullptr;
+static std::shared_ptr<ConstraintPoseImu> oldMpcpi = nullptr;
 
 int Optimizer::PoseInertialOptimizationLastFrame(Frame* pFrame, bool bRecInit) {
   g2o::SparseOptimizer optimizer;
@@ -5147,14 +5147,13 @@ int Optimizer::PoseInertialOptimizationLastFrame(Frame* pFrame, bool bRecInit) {
 
   H = Marginalize(H, 0, 14);
 
-  pFrame->mpcpi = new ConstraintPoseImu(
+  pFrame->mpcpi = std::make_shared<ConstraintPoseImu>(
       VP->estimate().Rwb, VP->estimate().twb, VV->estimate(), VG->estimate(),
       VA->estimate(), H.block<15, 15>(15, 15));
   if (oldMpcpi == pFp->mpcpi) {
     std::cerr << "\033[22;34mSAME MPCPI" << std::endl;
   } else {
     oldMpcpi = pFp->mpcpi;
-    delete pFp->mpcpi;
     pFp->mpcpi = nullptr;
   }
   return nInitialCorrespondences - nBad;
