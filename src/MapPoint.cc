@@ -49,7 +49,7 @@ MapPoint::MapPoint()
   mpReplaced = nullptr;
 }
 
-MapPoint::MapPoint(const Eigen::Vector3f& Pos, KeyFrame* pRefKF, Map* pMap)
+MapPoint::MapPoint(const Eigen::Vector3f& Pos, KeyFrame* pRefKF, std::shared_ptr<Map> pMap)
     : mnFirstKFid(pRefKF->mnId),
       mnFirstFrame(pRefKF->mnFrameId),
       nObs(0),
@@ -84,7 +84,7 @@ MapPoint::MapPoint(const Eigen::Vector3f& Pos, KeyFrame* pRefKF, Map* pMap)
 }
 
 MapPoint::MapPoint(const double invDepth, cv::Point2f uv_init, KeyFrame* pRefKF,
-                   KeyFrame* pHostKF, Map* pMap)
+                   KeyFrame* pHostKF, std::shared_ptr<Map> pMap)
     : mnFirstKFid(pRefKF->mnId),
       mnFirstFrame(pRefKF->mnFrameId),
       nObs(0),
@@ -119,7 +119,7 @@ MapPoint::MapPoint(const double invDepth, cv::Point2f uv_init, KeyFrame* pRefKF,
   mnId = nNextId++;
 }
 
-MapPoint::MapPoint(const Eigen::Vector3f& Pos, Map* pMap, Frame* pFrame,
+MapPoint::MapPoint(const Eigen::Vector3f& Pos, std::shared_ptr<Map> pMap, Frame* pFrame,
                    const int& idxF)
     : mnFirstKFid(-1),
       mnFirstFrame(pFrame->mnId),
@@ -578,12 +578,12 @@ void MapPoint::PrintObservations() {
   }
 }
 
-Map* MapPoint::GetMap() {
+std::shared_ptr<Map> MapPoint::GetMap() {
   unique_lock<mutex> lock(mMutexMap);
   return mpMap;
 }
 
-void MapPoint::UpdateMap(Map* pMap) {
+void MapPoint::UpdateMap(std::shared_ptr<Map> pMap) {
   unique_lock<mutex> lock(mMutexMap);
   mpMap = pMap;
 }

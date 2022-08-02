@@ -49,18 +49,18 @@ class Optimizer {
                                int nIterations = 5, bool *pbStopFlag = nullptr,
                                const unsigned long nLoopKF = 0,
                                const bool bRobust = true);
-  void static GlobalBundleAdjustemnt(Map *pMap, int nIterations = 5,
+  void static GlobalBundleAdjustemnt(std::shared_ptr<Map> pMap, int nIterations = 5,
                                      bool *pbStopFlag = nullptr,
                                      const unsigned long nLoopKF = 0,
                                      const bool bRobust = true);
-  void static FullInertialBA(Map *pMap, int its, const bool bFixLocal = false,
+  void static FullInertialBA(std::shared_ptr<Map> pMap, int its, const bool bFixLocal = false,
                              const unsigned long nLoopKF = 0,
                              bool *pbStopFlag = nullptr, bool bInit = false,
                              float priorG = 1e2, float priorA = 1e6,
                              Eigen::VectorXd *vSingVal = nullptr,
                              bool *bHess = nullptr);
 
-  void static LocalBundleAdjustment(KeyFrame *pKF, bool *pbStopFlag, Map *pMap,
+  void static LocalBundleAdjustment(KeyFrame *pKF, bool *pbStopFlag, std::shared_ptr<Map> pMap,
                                     int &num_fixedKF, int &num_OptKF,
                                     int &num_MPs, int &num_edges);
 
@@ -73,7 +73,7 @@ class Optimizer {
   // if bFixScale is true, 6DoF optimization (stereo,rgbd), 7DoF otherwise
   // (mono)
   void static OptimizeEssentialGraph(
-      Map *pMap, KeyFrame *pLoopKF, KeyFrame *pCurKF,
+      std::shared_ptr<Map> pMap, KeyFrame *pLoopKF, KeyFrame *pCurKF,
       const LoopClosing::KeyFrameAndPose &NonCorrectedSim3,
       const LoopClosing::KeyFrameAndPose &CorrectedSim3,
       const map<KeyFrame *, set<KeyFrame *> > &LoopConnections,
@@ -86,7 +86,7 @@ class Optimizer {
 
   // For inertial loopclosing
   void static OptimizeEssentialGraph4DoF(
-      Map *pMap, KeyFrame *pLoopKF, KeyFrame *pCurKF,
+      std::shared_ptr<Map> pMap, KeyFrame *pLoopKF, KeyFrame *pCurKF,
       const LoopClosing::KeyFrameAndPose &NonCorrectedSim3,
       const LoopClosing::KeyFrameAndPose &CorrectedSim3,
       const map<KeyFrame *, set<KeyFrame *> > &LoopConnections);
@@ -102,12 +102,12 @@ class Optimizer {
 
   // For inertial systems
 
-  void static LocalInertialBA(KeyFrame *pKF, bool *pbStopFlag, Map *pMap,
+  void static LocalInertialBA(KeyFrame *pKF, bool *pbStopFlag, std::shared_ptr<Map> pMap,
                               int &num_fixedKF, int &num_OptKF, int &num_MPs,
                               int &num_edges, bool bLarge = false,
                               bool bRecInit = false);
   void static MergeInertialBA(KeyFrame *pCurrKF, KeyFrame *pMergeKF,
-                              bool *pbStopFlag, Map *pMap,
+                              bool *pbStopFlag, std::shared_ptr<Map> pMap,
                               LoopClosing::KeyFrameAndPose &corrPoses);
 
   // Local BA in welding area when two maps are merged
@@ -122,16 +122,16 @@ class Optimizer {
                                      const int &end);
 
   // Inertial pose-graph
-  void static InertialOptimization(Map *pMap, Eigen::Matrix3d &Rwg,
+  void static InertialOptimization(std::shared_ptr<Map> pMap, Eigen::Matrix3d &Rwg,
                                    double &scale, Eigen::Vector3d &bg,
                                    Eigen::Vector3d &ba, bool bMono,
                                    Eigen::MatrixXd &covInertial,
                                    bool bFixedVel = false, bool bGauss = false,
                                    float priorG = 1e2, float priorA = 1e6);
-  void static InertialOptimization(Map *pMap, Eigen::Vector3d &bg,
+  void static InertialOptimization(std::shared_ptr<Map> pMap, Eigen::Vector3d &bg,
                                    Eigen::Vector3d &ba, float priorG = 1e2,
                                    float priorA = 1e6);
-  void static InertialOptimization(Map *pMap, Eigen::Matrix3d &Rwg,
+  void static InertialOptimization(std::shared_ptr<Map> pMap, Eigen::Matrix3d &Rwg,
                                    double &scale);
 
   ;

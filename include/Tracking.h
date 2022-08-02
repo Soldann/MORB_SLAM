@@ -105,7 +105,7 @@ class Tracking {
   void SaveSubTrajectory(string strNameFile_frames, string strNameFile_kf,
                          string strFolder = "");
   void SaveSubTrajectory(string strNameFile_frames, string strNameFile_kf,
-                         Map* pMap);
+                         std::shared_ptr<Map> pMap);
 
   float GetImageScale();
 

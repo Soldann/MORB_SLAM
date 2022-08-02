@@ -120,7 +120,7 @@ bool MapDrawer::ParseViewerParamFile(cv::FileStorage &fSettings) {
 }
 
 void MapDrawer::DrawMapPoints() {
-  Map *pActiveMap = mpAtlas->GetCurrentMap();
+  std::shared_ptr<Map> pActiveMap = mpAtlas->GetCurrentMap();
   if (!pActiveMap) return;
 
   const vector<MapPoint *> &vpMPs = pActiveMap->GetAllMapPoints();
@@ -162,7 +162,7 @@ void MapDrawer::DrawKeyFrames(const bool bDrawKF, const bool bDrawGraph,
   const float h = w * 0.75;
   const float z = w * 0.6;
 
-  Map *pActiveMap = mpAtlas->GetCurrentMap();
+  std::shared_ptr<Map> pActiveMap = mpAtlas->GetCurrentMap();
   // DEBUG LBA
   std::set<long unsigned int> sOptKFs = pActiveMap->msOptKFs;
   std::set<long unsigned int> sFixedKFs = pActiveMap->msFixedKFs;
@@ -295,10 +295,10 @@ void MapDrawer::DrawKeyFrames(const bool bDrawKF, const bool bDrawGraph,
     glEnd();
   }
 
-  vector<Map *> vpMaps = mpAtlas->GetAllMaps();
+  vector<std::shared_ptr<Map>> vpMaps = mpAtlas->GetAllMaps();
 
   if (bDrawKF) {
-    for (Map *pMap : vpMaps) {
+    for (std::shared_ptr<Map> pMap : vpMaps) {
       if (pMap == pActiveMap) continue;
 
       vector<KeyFrame *> vpKFs = pMap->GetAllKeyFrames();

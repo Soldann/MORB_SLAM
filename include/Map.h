@@ -25,7 +25,7 @@
 #include <set>
 #include <pangolin/pangolin.h>
 #include <mutex>
-
+#include <memory>
 #include <boost/serialization/base_object.hpp>
 
 
@@ -129,8 +129,8 @@ public:
 
     unsigned int GetLowerKFID();
 
-    void PreSave(std::set<std::shared_ptr<GeometricCamera>> &spCams);
-    void PostLoad(KeyFrameDatabase* pKFDB, ORBVocabulary* pORBVoc/*, map<long unsigned int, KeyFrame*>& mpKeyFrameId*/, map<unsigned int, std::shared_ptr<GeometricCamera>> &mpCams);
+    void PreSave(std::set<std::shared_ptr<GeometricCamera>> &spCams, std::shared_ptr<Map> sharedMap);
+    void PostLoad(KeyFrameDatabase* pKFDB, ORBVocabulary* pORBVoc/*, map<long unsigned int, KeyFrame*>& mpKeyFrameId*/, map<unsigned int, std::shared_ptr<GeometricCamera>> &mpCams, std::shared_ptr<Map> sharedMap);
 
     void printReprojectionError(list<KeyFrame*> &lpLocalWindowKFs, KeyFrame* mpCurrentKF, string &name, string &name_folder);
 

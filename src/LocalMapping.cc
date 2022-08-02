@@ -1043,7 +1043,7 @@ void LocalMapping::RequestReset() {
   cout << "LM: Map reset, Done!!!" << endl;
 }
 
-void LocalMapping::RequestResetActiveMap(Map* pMap) {
+void LocalMapping::RequestResetActiveMap(std::shared_ptr<Map> pMap) {
   {
     unique_lock<mutex> lock(mMutexReset);
     cout << "LM: Active map reset recieved" << endl;

@@ -59,7 +59,7 @@ class KeyFrameDatabase {
   void erase(KeyFrame* pKF);
 
   void clear();
-  void clearMap(Map* pMap);
+  void clearMap(std::shared_ptr<Map> pMap);
 
   // Loop Detection(DEPRECATED)
   std::vector<KeyFrame*> DetectLoopCandidates(KeyFrame* pKF, float minScore);
@@ -75,7 +75,7 @@ class KeyFrameDatabase {
                              int nNumCandidates);
 
   // Relocalization
-  std::vector<KeyFrame*> DetectRelocalizationCandidates(Frame* F, Map* pMap);
+  std::vector<KeyFrame*> DetectRelocalizationCandidates(Frame* F, std::shared_ptr<Map> pMap);
 
   void PreSave();
   void PostLoad(map<long unsigned int, KeyFrame*> mpKFid);

@@ -1032,7 +1032,7 @@ void LoopClosing::CorrectLoop() {
                             mg2oLoopScw.translation() / mg2oLoopScw.scale());
   mpCurrentKF->SetPose(correctedTcw.cast<float>());
 
-  Map* pLoopMap = mpCurrentKF->GetMap();
+  std::shared_ptr<Map> pLoopMap = mpCurrentKF->GetMap();
 
 #ifdef REGISTER_TIMES
   /*KeyFrame* pKF = mpCurrentKF;
@@ -1288,8 +1288,8 @@ void LoopClosing::MergeLocal() {
   // and MPs from the current map. Later, the elements of the current map will
   // be transform to the new active map reference, in order to keep real time
   // tracking
-  Map* pCurrentMap = mpCurrentKF->GetMap();
-  Map* pMergeMap = mpMergeMatchedKF->GetMap();
+  std::shared_ptr<Map> pCurrentMap = mpCurrentKF->GetMap();
+  std::shared_ptr<Map> pMergeMap = mpMergeMatchedKF->GetMap();
 
   // std::cout << "Merge local, Active map: " << pCurrentMap->GetId() <<
   // std::endl; std::cout << "Merge local, Non-Active map: " <<
@@ -1858,8 +1858,8 @@ void LoopClosing::MergeLocal2() {
   }
   // cout << "Local Map stopped" << endl;
 
-  Map* pCurrentMap = mpCurrentKF->GetMap();
-  Map* pMergeMap = mpMergeMatchedKF->GetMap();
+  std::shared_ptr<Map> pCurrentMap = mpCurrentKF->GetMap();
+  std::shared_ptr<Map> pMergeMap = mpMergeMatchedKF->GetMap();
 
   {
     float s_on = mSold_new.scale();
@@ -2162,7 +2162,7 @@ void LoopClosing::SearchAndFuse(const KeyFrameAndPose& CorrectedPosesMap,
        mit != mend; mit++) {
     int num_replaces = 0;
     KeyFrame* pKFi = mit->first;
-    Map* pMap = pKFi->GetMap();
+    std::shared_ptr<Map> pMap = pKFi->GetMap();
 
     g2o::Sim3 g2oScw = mit->second;
     Sophus::Sim3f Scw = Converter::toSophus(g2oScw);
@@ -2200,7 +2200,7 @@ void LoopClosing::SearchAndFuse(const vector<KeyFrame*>& vConectedKFs,
        mit++) {
     int num_replaces = 0;
     KeyFrame* pKF = (*mit);
-    Map* pMap = pKF->GetMap();
+    std::shared_ptr<Map> pMap = pKF->GetMap();
     Sophus::SE3f Tcw = pKF->GetPose();
     Sophus::Sim3f Scw(Tcw.unit_quaternion(), Tcw.translation());
     Scw.setScale(1.f);
@@ -2243,7 +2243,7 @@ void LoopClosing::RequestReset() {
   }
 }
 
-void LoopClosing::RequestResetActiveMap(Map* pMap) {
+void LoopClosing::RequestResetActiveMap(std::shared_ptr<Map> pMap) {
   {
     unique_lock<mutex> lock(mMutexReset);
     mbResetActiveMapRequested = true;
@@ -2280,7 +2280,7 @@ void LoopClosing::ResetIfRequested() {
   }
 }
 
-void LoopClosing::RunGlobalBundleAdjustment(Map* pActiveMap,
+void LoopClosing::RunGlobalBundleAdjustment(std::shared_ptr<Map> pActiveMap,
                                             unsigned long nLoopKF) {
   Verbose::PrintMess("Starting Global Bundle Adjustment",
                      Verbose::VERBOSITY_NORMAL);

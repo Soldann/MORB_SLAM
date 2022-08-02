@@ -64,10 +64,10 @@ public:
     void InsertKeyFrame(KeyFrame *pKF);
 
     void RequestReset();
-    void RequestResetActiveMap(Map* pMap);
+    void RequestResetActiveMap(std::shared_ptr<Map> pMap);
 
     // This function will run in a separate thread
-    void RunGlobalBundleAdjustment(Map* pActiveMap, unsigned long nLoopKF);
+    void RunGlobalBundleAdjustment(std::shared_ptr<Map> pActiveMap, unsigned long nLoopKF);
 
     bool isRunningGBA(){
         unique_lock<std::mutex> lock(mMutexGBA);
@@ -145,7 +145,7 @@ protected:
     void ResetIfRequested();
     bool mbResetRequested;
     bool mbResetActiveMapRequested;
-    Map* mpMapToReset;
+    std::shared_ptr<Map> mpMapToReset;
     std::mutex mMutexReset;
 
     bool CheckFinish();
@@ -182,7 +182,7 @@ protected:
     g2o::Sim3 mg2oScw;
 
     //-------
-    Map* mpLastMap;
+    std::shared_ptr<Map> mpLastMap;
 
     bool mbLoopDetected;
     int mnLoopNumCoincidences;

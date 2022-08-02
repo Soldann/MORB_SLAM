@@ -57,7 +57,7 @@ class LocalMapping {
   // Thread Synch
   void RequestStop();
   void RequestReset();
-  void RequestResetActiveMap(Map* pMap);
+  void RequestResetActiveMap(std::shared_ptr<Map> pMap);
   bool Stop();
   void Release();
   bool isStopped();
@@ -144,7 +144,7 @@ class LocalMapping {
   void ResetIfRequested();
   bool mbResetRequested;
   bool mbResetRequestedActiveMap;
-  Map* mpMapToReset;
+  std::shared_ptr<Map> mpMapToReset;
   std::mutex mMutexReset;
 
   bool CheckFinish();

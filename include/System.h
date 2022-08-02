@@ -141,8 +141,8 @@ public:
     void SaveTrajectoryEuRoC(const string &filename);
     void SaveKeyFrameTrajectoryEuRoC(const string &filename);
 
-    void SaveTrajectoryEuRoC(const string &filename, Map* pMap);
-    void SaveKeyFrameTrajectoryEuRoC(const string &filename, Map* pMap);
+    void SaveTrajectoryEuRoC(const string &filename, std::shared_ptr<Map> pMap);
+    void SaveKeyFrameTrajectoryEuRoC(const string &filename, std::shared_ptr<Map> pMap);
 
     // Save data used for initialization debug
     void SaveDebugData(const int &iniIdx);

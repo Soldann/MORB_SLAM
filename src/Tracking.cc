@@ -1684,7 +1684,7 @@ void Tracking::Track() {
     return;
   }
 
-  Map* pCurrentMap = mpAtlas->GetCurrentMap(mpSystem);
+  std::shared_ptr<Map> pCurrentMap = mpAtlas->GetCurrentMap(mpSystem);
   if (!pCurrentMap) {
     // if (!mpSystem->isShutDown()){
     //   cout << "ERROR: There is not an active map in the atlas" << endl;
@@ -3519,7 +3519,7 @@ void Tracking::Reset(bool bLocMap) {
 void Tracking::ResetActiveMap(bool bLocMap) {
   Verbose::PrintMess("Active map Reseting", Verbose::VERBOSITY_NORMAL);
 
-  Map* pMap = mpAtlas->GetCurrentMap();
+  std::shared_ptr<Map> pMap = mpAtlas->GetCurrentMap();
 
   if (!bLocMap) {
     Verbose::PrintMess("Reseting Local Mapper...",
@@ -3553,7 +3553,7 @@ void Tracking::ResetActiveMap(bool bLocMap) {
   // lbLost.reserve(mlbLost.size());
   unsigned int index = mnFirstFrameId;
   cout << "mnFirstFrameId = " << mnFirstFrameId << endl;
-  for (Map* pMap : mpAtlas->GetAllMaps()) {
+  for (std::shared_ptr<Map> pMap : mpAtlas->GetAllMaps()) {
     if (pMap->GetAllKeyFrames().size() > 0) {
       if (index > pMap->GetLowerKFID()) index = pMap->GetLowerKFID();
     }
@@ -3635,7 +3635,7 @@ void Tracking::InformOnlyTracking(const bool& flag) { mbOnlyTracking = flag; }
 
 void Tracking::UpdateFrameIMU(const float s, const IMU::Bias& b,
                               KeyFrame* pCurrentKeyFrame) {
-  Map* pMap = pCurrentKeyFrame->GetMap();
+  std::shared_ptr<Map> pMap = pCurrentKeyFrame->GetMap();
   // unsigned int index = mnFirstFrameId; // UNUSED
   list<ORB_SLAM3::KeyFrame*>::iterator lRit = mlpReferences.begin();
   list<bool>::iterator lbL = mlbLost.begin();
@@ -3719,7 +3719,7 @@ void Tracking::SaveSubTrajectory(string strNameFile_frames,
 }
 
 void Tracking::SaveSubTrajectory(string strNameFile_frames,
-                                 string strNameFile_kf, Map* pMap) {
+                                 string strNameFile_kf, std::shared_ptr<Map> pMap) {
   mpSystem->SaveTrajectoryEuRoC(strNameFile_frames, pMap);
   if (!strNameFile_kf.empty())
     mpSystem->SaveKeyFrameTrajectoryEuRoC(strNameFile_kf, pMap);

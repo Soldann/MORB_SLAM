@@ -1,0 +1,1441 @@
+Using argument -j12
+Configuring and building Thirdparty/DBoW2 ...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /orin_ssd/MORB_SLAM/Thirdparty/DBoW2/build
+Consolidate compiler generated dependencies of target DBoW2
+[100%] Built target DBoW2
+Configuring and building Thirdparty/g2o ...
+-- BUILD TYPE:Release
+-- Compiling on Unix
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /orin_ssd/MORB_SLAM/Thirdparty/g2o/build
+Consolidate compiler generated dependencies of target g2o
+[100%] Built target g2o
+Configuring and building Thirdparty/Sophus ...
+-- Found installed version of Eigen: /usr/lib/cmake/eigen3
+-- Found required Ceres dependency: Eigen version 3.3.7 in /usr/include/eigen3
+-- Found required Ceres dependency: glog
+-- Found installed version of gflags: /usr/lib/aarch64-linux-gnu/cmake/gflags
+-- Detected gflags version: 2.2.2
+-- Found required Ceres dependency: gflags
+-- Found Ceres version: 1.14.0 installed in: /usr with components: [EigenSparse, SparseLinearAlgebraLibrary, LAPACK, SuiteSparse, CXSparse, SchurSpecializations, OpenMP, Multithreading]
+-- Found installed version of Eigen: /usr/lib/cmake/eigen3
+-- Found required Ceres dependency: Eigen version 3.3.7 in /usr/include/eigen3
+-- Found required Ceres dependency: glog
+-- Found installed version of gflags: /usr/lib/aarch64-linux-gnu/cmake/gflags
+-- Detected gflags version: 2.2.2
+-- Found required Ceres dependency: gflags
+-- Found Ceres version: 1.14.0 installed in: /usr with components: [EigenSparse, SparseLinearAlgebraLibrary, LAPACK, SuiteSparse, CXSparse, SchurSpecializations, OpenMP, Multithreading]
+-- CERES found
+-- Found installed version of Eigen: /usr/lib/cmake/eigen3
+-- Found required Ceres dependency: Eigen version 3.3.7 in /usr/include/eigen3
+-- Found required Ceres dependency: glog
+-- Found installed version of gflags: /usr/lib/aarch64-linux-gnu/cmake/gflags
+-- Detected gflags version: 2.2.2
+-- Found required Ceres dependency: gflags
+-- Found Ceres version: 1.14.0 installed in: /usr with components: [EigenSparse, SparseLinearAlgebraLibrary, LAPACK, SuiteSparse, CXSparse, SchurSpecializations, OpenMP, Multithreading]
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /orin_ssd/MORB_SLAM/Thirdparty/Sophus/build
+Consolidate compiler generated dependencies of target test_common
+Consolidate compiler generated dependencies of target test_rxso2
+Consolidate compiler generated dependencies of target test_so2
+Consolidate compiler generated dependencies of target test_so3
+Consolidate compiler generated dependencies of target test_rxso3
+Consolidate compiler generated dependencies of target test_geometry
+Consolidate compiler generated dependencies of target test_sim2
+Consolidate compiler generated dependencies of target test_sim3
+Consolidate compiler generated dependencies of target test_velocities
+Consolidate compiler generated dependencies of target test_se3
+Consolidate compiler generated dependencies of target test_se2
+Consolidate compiler generated dependencies of target test_ceres_se3.cpp
+[ 15%] Built target test_common
+[ 15%] Built target test_so2
+[ 23%] Built target test_sim2
+[ 30%] Built target test_sim3
+[ 46%] Built target test_velocities
+[ 46%] Built target test_rxso2
+[ 53%] Built target test_rxso3
+[ 69%] Built target test_se3
+[ 69%] Built target test_geometry
+[ 84%] Built target test_ceres_se3.cpp
+[ 84%] Built target test_se2
+[ 92%] Built target test_so3
+Consolidate compiler generated dependencies of target HelloSO3
+[100%] Built target HelloSO3
+Configuring and building ORB_SLAM3 ...
+-- Build type: RelWithDebInfo
+-- OPENCV VERSION:
+-- 4.5.4
+-- BUILD TYPE:RelWithDebInfo
+-- Compiling on Unix
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /orin_ssd/MORB_SLAM/build
+-- Build type: RelWithDebInfo
+-- OPENCV VERSION:
+-- 4.5.4
+-- BUILD TYPE:RelWithDebInfo
+-- Compiling on Unix
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /orin_ssd/MORB_SLAM/build
+[  6%] Built target DBoW2
+[ 33%] Built target g2o
+[ 34%] Building CXX object CMakeFiles/MORB_SLAM.dir/src/Tracking.cc.o
+[ 34%] Building CXX object CMakeFiles/MORB_SLAM.dir/src/System.cc.o
+[ 35%] Building CXX object CMakeFiles/MORB_SLAM.dir/src/LocalMapping.cc.o
+[ 36%] Building CXX object CMakeFiles/MORB_SLAM.dir/src/LoopClosing.cc.o
+[ 37%] Building CXX object CMakeFiles/MORB_SLAM.dir/src/ORBmatcher.cc.o
+[ 39%] Building CXX object CMakeFiles/MORB_SLAM.dir/src/MapPoint.cc.o
+[ 39%] Building CXX object CMakeFiles/MORB_SLAM.dir/src/FrameDrawer.cc.o
+[ 41%] Building CXX object CMakeFiles/MORB_SLAM.dir/src/KeyFrame.cc.o
+[ 41%] Building CXX object CMakeFiles/MORB_SLAM.dir/src/Atlas.cc.o
+[ 42%] Building CXX object CMakeFiles/MORB_SLAM.dir/src/Map.cc.o
+[ 43%] Building CXX object CMakeFiles/MORB_SLAM.dir/src/MapDrawer.cc.o
+[ 44%] Building CXX object CMakeFiles/MORB_SLAM.dir/src/Optimizer.cc.o
+/orin_ssd/MORB_SLAM/src/Map.cc: In member function ‘void ORB_SLAM3::Map::PreSave(std::set<std::shared_ptr<ORB_SLAM3::GeometricCamera> >&, std::shared_ptr<ORB_SLAM3::Map>)’:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:32: error: no match for ‘operator!=’ (operand types are ‘std::shared_ptr<ORB_SLAM3::Map>’ and ‘std::__shared_ptr<ORB_SLAM3::Map, __gnu_cxx::_S_atomic>::element_type*’ {aka ‘ORB_SLAM3::Map*’})
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |            ~~~~~~~~~~~~~~~~~~~ ^~ ~~~~~~~~~~~~~~~
+      |                             |                  |
+      |                             |                  std::__shared_ptr<ORB_SLAM3::Map, __gnu_cxx::_S_atomic>::element_type* {aka ORB_SLAM3::Map*}
+      |                             std::shared_ptr<ORB_SLAM3::Map>
+In file included from /usr/include/c++/9/bits/stl_algobase.h:64,
+                 from /usr/include/c++/9/bits/stl_tree.h:63,
+                 from /usr/include/c++/9/map:60,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/stl_pair.h:461:5: note: candidate: ‘template<class _T1, class _T2> constexpr bool std::operator!=(const std::pair<_T1, _T2>&, const std::pair<_T1, _T2>&)’
+  461 |     operator!=(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y)
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/stl_pair.h:461:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::pair<_T1, _T2>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/bits/stl_algobase.h:67,
+                 from /usr/include/c++/9/bits/stl_tree.h:63,
+                 from /usr/include/c++/9/map:60,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/stl_iterator.h:337:5: note: candidate: ‘template<class _Iterator> constexpr bool std::operator!=(const std::reverse_iterator<_Iterator>&, const std::reverse_iterator<_Iterator>&)’
+  337 |     operator!=(const reverse_iterator<_Iterator>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/stl_iterator.h:337:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::reverse_iterator<_Iterator>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/bits/stl_algobase.h:67,
+                 from /usr/include/c++/9/bits/stl_tree.h:63,
+                 from /usr/include/c++/9/map:60,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/stl_iterator.h:375:5: note: candidate: ‘template<class _IteratorL, class _IteratorR> constexpr bool std::operator!=(const std::reverse_iterator<_Iterator>&, const std::reverse_iterator<_IteratorR>&)’
+  375 |     operator!=(const reverse_iterator<_IteratorL>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/stl_iterator.h:375:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::reverse_iterator<_Iterator>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/bits/stl_algobase.h:67,
+                 from /usr/include/c++/9/bits/stl_tree.h:63,
+                 from /usr/include/c++/9/map:60,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/stl_iterator.h:1148:5: note: candidate: ‘template<class _IteratorL, class _IteratorR> constexpr bool std::operator!=(const std::move_iterator<_IteratorL>&, const std::move_iterator<_IteratorR>&)’
+ 1148 |     operator!=(const move_iterator<_IteratorL>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/stl_iterator.h:1148:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::move_iterator<_IteratorL>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/bits/stl_algobase.h:67,
+                 from /usr/include/c++/9/bits/stl_tree.h:63,
+                 from /usr/include/c++/9/map:60,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/stl_iterator.h:1154:5: note: candidate: ‘template<class _Iterator> constexpr bool std::operator!=(const std::move_iterator<_IteratorL>&, const std::move_iterator<_IteratorL>&)’
+ 1154 |     operator!=(const move_iterator<_Iterator>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/stl_iterator.h:1154:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::move_iterator<_IteratorL>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/bits/stl_tree.h:64,
+                 from /usr/include/c++/9/map:60,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/allocator.h:173:5: note: candidate: ‘template<class _T1, class _T2> bool std::operator!=(const std::allocator<_Tp1>&, const std::allocator<_T2>&)’
+  173 |     operator!=(const allocator<_T1>&, const allocator<_T2>&)
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/allocator.h:173:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::allocator<_Tp1>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/bits/char_traits.h:40,
+                 from /usr/include/c++/9/string:40,
+                 from /usr/include/c++/9/stdexcept:39,
+                 from /usr/include/c++/9/optional:38,
+                 from /usr/include/c++/9/bits/node_handle.h:39,
+                 from /usr/include/c++/9/bits/stl_tree.h:72,
+                 from /usr/include/c++/9/map:60,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/postypes.h:227:5: note: candidate: ‘template<class _StateT> bool std::operator!=(const std::fpos<_StateT>&, const std::fpos<_StateT>&)’
+  227 |     operator!=(const fpos<_StateT>& __lhs, const fpos<_StateT>& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/postypes.h:227:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::fpos<_StateT>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/bits/basic_string.h:48,
+                 from /usr/include/c++/9/string:55,
+                 from /usr/include/c++/9/stdexcept:39,
+                 from /usr/include/c++/9/optional:38,
+                 from /usr/include/c++/9/bits/node_handle.h:39,
+                 from /usr/include/c++/9/bits/stl_tree.h:72,
+                 from /usr/include/c++/9/map:60,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/string_view:489:5: note: candidate: ‘template<class _CharT, class _Traits> constexpr bool std::operator!=(std::basic_string_view<_CharT, _Traits>, std::basic_string_view<_CharT, _Traits>)’
+  489 |     operator!=(basic_string_view<_CharT, _Traits> __x,
+      |     ^~~~~~~~
+/usr/include/c++/9/string_view:489:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘std::basic_string_view<_CharT, _Traits>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/bits/basic_string.h:48,
+                 from /usr/include/c++/9/string:55,
+                 from /usr/include/c++/9/stdexcept:39,
+                 from /usr/include/c++/9/optional:38,
+                 from /usr/include/c++/9/bits/node_handle.h:39,
+                 from /usr/include/c++/9/bits/stl_tree.h:72,
+                 from /usr/include/c++/9/map:60,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/string_view:495:5: note: candidate: ‘template<class _CharT, class _Traits> constexpr bool std::operator!=(std::basic_string_view<_CharT, _Traits>, std::__detail::__idt<std::basic_string_view<_CharT, _Traits> >)’
+  495 |     operator!=(basic_string_view<_CharT, _Traits> __x,
+      |     ^~~~~~~~
+/usr/include/c++/9/string_view:495:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘std::basic_string_view<_CharT, _Traits>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/bits/basic_string.h:48,
+                 from /usr/include/c++/9/string:55,
+                 from /usr/include/c++/9/stdexcept:39,
+                 from /usr/include/c++/9/optional:38,
+                 from /usr/include/c++/9/bits/node_handle.h:39,
+                 from /usr/include/c++/9/bits/stl_tree.h:72,
+                 from /usr/include/c++/9/map:60,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/string_view:501:5: note: candidate: ‘template<class _CharT, class _Traits> constexpr bool std::operator!=(std::__detail::__idt<std::basic_string_view<_CharT, _Traits> >, std::basic_string_view<_CharT, _Traits>)’
+  501 |     operator!=(__detail::__idt<basic_string_view<_CharT, _Traits>> __x,
+      |     ^~~~~~~~
+/usr/include/c++/9/string_view:501:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   mismatched types ‘std::basic_string_view<_CharT, _Traits>’ and ‘std::__shared_ptr<ORB_SLAM3::Map, __gnu_cxx::_S_atomic>::element_type*’ {aka ‘ORB_SLAM3::Map*’}
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/string:55,
+                 from /usr/include/c++/9/stdexcept:39,
+                 from /usr/include/c++/9/optional:38,
+                 from /usr/include/c++/9/bits/node_handle.h:39,
+                 from /usr/include/c++/9/bits/stl_tree.h:72,
+                 from /usr/include/c++/9/map:60,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/basic_string.h:6191:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> bool std::operator!=(const std::__cxx11::basic_string<_CharT, _Traits, _Allocator>&, const std::__cxx11::basic_string<_CharT, _Traits, _Allocator>&)’
+ 6191 |     operator!=(const basic_string<_CharT, _Traits, _Alloc>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/basic_string.h:6191:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::__cxx11::basic_string<_CharT, _Traits, _Allocator>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/string:55,
+                 from /usr/include/c++/9/stdexcept:39,
+                 from /usr/include/c++/9/optional:38,
+                 from /usr/include/c++/9/bits/node_handle.h:39,
+                 from /usr/include/c++/9/bits/stl_tree.h:72,
+                 from /usr/include/c++/9/map:60,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/basic_string.h:6204:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> bool std::operator!=(const _CharT*, const std::__cxx11::basic_string<_CharT, _Traits, _Allocator>&)’
+ 6204 |     operator!=(const _CharT* __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/basic_string.h:6204:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   mismatched types ‘const _CharT*’ and ‘std::shared_ptr<ORB_SLAM3::Map>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/string:55,
+                 from /usr/include/c++/9/stdexcept:39,
+                 from /usr/include/c++/9/optional:38,
+                 from /usr/include/c++/9/bits/node_handle.h:39,
+                 from /usr/include/c++/9/bits/stl_tree.h:72,
+                 from /usr/include/c++/9/map:60,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/basic_string.h:6216:5: note: candidate: ‘template<class _CharT, class _Traits, class _Alloc> bool std::operator!=(const std::__cxx11::basic_string<_CharT, _Traits, _Allocator>&, const _CharT*)’
+ 6216 |     operator!=(const basic_string<_CharT, _Traits, _Alloc>& __lhs,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/basic_string.h:6216:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::__cxx11::basic_string<_CharT, _Traits, _Allocator>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/bits/node_handle.h:39,
+                 from /usr/include/c++/9/bits/stl_tree.h:72,
+                 from /usr/include/c++/9/map:60,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/optional:992:5: note: candidate: ‘template<class _Tp, class _Up> constexpr std::__optional_relop_t<decltype ((declval<_Tp>() != declval<_Up>()))> std::operator!=(const std::optional<_Tp>&, const std::optional<_Up>&)’
+  992 |     operator!=(const optional<_Tp>& __lhs, const optional<_Up>& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/9/optional:992:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::optional<_Tp>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/bits/node_handle.h:39,
+                 from /usr/include/c++/9/bits/stl_tree.h:72,
+                 from /usr/include/c++/9/map:60,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/optional:1044:5: note: candidate: ‘template<class _Tp> constexpr bool std::operator!=(const std::optional<_Tp>&, std::nullopt_t)’
+ 1044 |     operator!=(const optional<_Tp>& __lhs, nullopt_t) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/9/optional:1044:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::optional<_Tp>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/bits/node_handle.h:39,
+                 from /usr/include/c++/9/bits/stl_tree.h:72,
+                 from /usr/include/c++/9/map:60,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/optional:1049:5: note: candidate: ‘template<class _Tp> constexpr bool std::operator!=(std::nullopt_t, const std::optional<_Tp>&)’
+ 1049 |     operator!=(nullopt_t, const optional<_Tp>& __rhs) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/9/optional:1049:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   mismatched types ‘const std::optional<_Tp>’ and ‘std::__shared_ptr<ORB_SLAM3::Map, __gnu_cxx::_S_atomic>::element_type*’ {aka ‘ORB_SLAM3::Map*’}
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/bits/node_handle.h:39,
+                 from /usr/include/c++/9/bits/stl_tree.h:72,
+                 from /usr/include/c++/9/map:60,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/optional:1107:5: note: candidate: ‘template<class _Tp, class _Up> constexpr std::__optional_relop_t<decltype ((declval<_Tp>() != declval<_Up>()))> std::operator!=(const std::optional<_Tp>&, const _Up&)’
+ 1107 |     operator!=(const optional<_Tp>& __lhs, const _Up& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/9/optional:1107:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::optional<_Tp>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/bits/node_handle.h:39,
+                 from /usr/include/c++/9/bits/stl_tree.h:72,
+                 from /usr/include/c++/9/map:60,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/optional:1113:5: note: candidate: ‘template<class _Tp, class _Up> constexpr std::__optional_relop_t<decltype ((declval<_Up>() != declval<_Tp>()))> std::operator!=(const _Up&, const std::optional<_Tp>&)’
+ 1113 |     operator!=(const _Up& __lhs, const optional<_Tp>& __rhs)
+      |     ^~~~~~~~
+/usr/include/c++/9/optional:1113:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   mismatched types ‘const std::optional<_Tp>’ and ‘std::__shared_ptr<ORB_SLAM3::Map, __gnu_cxx::_S_atomic>::element_type*’ {aka ‘ORB_SLAM3::Map*’}
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/tuple:39,
+                 from /usr/include/c++/9/bits/stl_map.h:63,
+                 from /usr/include/c++/9/map:61,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/array:257:5: note: candidate: ‘template<class _Tp, long unsigned int _Nm> bool std::operator!=(const std::array<_Tp, _Nm>&, const std::array<_Tp, _Nm>&)’
+  257 |     operator!=(const array<_Tp, _Nm>& __one, const array<_Tp, _Nm>& __two)
+      |     ^~~~~~~~
+/usr/include/c++/9/array:257:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::array<_Tp, _Nm>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/bits/stl_map.h:63,
+                 from /usr/include/c++/9/map:61,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/tuple:1445:5: note: candidate: ‘template<class ... _TElements, class ... _UElements> constexpr bool std::operator!=(const std::tuple<_Tps ...>&, const std::tuple<_Args2 ...>&)’
+ 1445 |     operator!=(const tuple<_TElements...>& __t,
+      |     ^~~~~~~~
+/usr/include/c++/9/tuple:1445:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::tuple<_Tps ...>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/map:61,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/stl_map.h:1479:5: note: candidate: ‘template<class _Key, class _Tp, class _Compare, class _Alloc> bool std::operator!=(const std::map<_Key, _Tp, _Compare, _Allocator>&, const std::map<_Key, _Tp, _Compare, _Allocator>&)’
+ 1479 |     operator!=(const map<_Key, _Tp, _Compare, _Alloc>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/stl_map.h:1479:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::map<_Key, _Tp, _Compare, _Allocator>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/map:62,
+                 from /usr/include/boost/serialization/map.hpp:20,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/stl_multimap.h:1143:5: note: candidate: ‘template<class _Key, class _Tp, class _Compare, class _Alloc> bool std::operator!=(const std::multimap<_Key, _Tp, _Compare, _Allocator>&, const std::multimap<_Key, _Tp, _Compare, _Allocator>&)’
+ 1143 |     operator!=(const multimap<_Key, _Tp, _Compare, _Alloc>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/stl_multimap.h:1143:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::multimap<_Key, _Tp, _Compare, _Allocator>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/memory:80,
+                 from /usr/include/boost/smart_ptr/scoped_ptr.hpp:22,
+                 from /usr/include/boost/scoped_ptr.hpp:13,
+                 from /usr/include/boost/archive/detail/basic_iarchive.hpp:23,
+                 from /usr/include/boost/serialization/map.hpp:24,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/unique_ptr.h:732:5: note: candidate: ‘template<class _Tp, class _Dp, class _Up, class _Ep> bool std::operator!=(const std::unique_ptr<_Tp, _Dp>&, const std::unique_ptr<_Up, _Ep>&)’
+  732 |     operator!=(const unique_ptr<_Tp, _Dp>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/unique_ptr.h:732:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::unique_ptr<_Tp, _Dp>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/memory:80,
+                 from /usr/include/boost/smart_ptr/scoped_ptr.hpp:22,
+                 from /usr/include/boost/scoped_ptr.hpp:13,
+                 from /usr/include/boost/archive/detail/basic_iarchive.hpp:23,
+                 from /usr/include/boost/serialization/map.hpp:24,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/unique_ptr.h:738:5: note: candidate: ‘template<class _Tp, class _Dp> bool std::operator!=(const std::unique_ptr<_Tp, _Dp>&, std::nullptr_t)’
+  738 |     operator!=(const unique_ptr<_Tp, _Dp>& __x, nullptr_t) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/unique_ptr.h:738:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::unique_ptr<_Tp, _Dp>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/memory:80,
+                 from /usr/include/boost/smart_ptr/scoped_ptr.hpp:22,
+                 from /usr/include/boost/scoped_ptr.hpp:13,
+                 from /usr/include/boost/archive/detail/basic_iarchive.hpp:23,
+                 from /usr/include/boost/serialization/map.hpp:24,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/unique_ptr.h:743:5: note: candidate: ‘template<class _Tp, class _Dp> bool std::operator!=(std::nullptr_t, const std::unique_ptr<_Tp, _Dp>&)’
+  743 |     operator!=(nullptr_t, const unique_ptr<_Tp, _Dp>& __x) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/unique_ptr.h:743:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   mismatched types ‘const std::unique_ptr<_Tp, _Dp>’ and ‘std::__shared_ptr<ORB_SLAM3::Map, __gnu_cxx::_S_atomic>::element_type*’ {aka ‘ORB_SLAM3::Map*’}
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/bits/shared_ptr.h:52,
+                 from /usr/include/c++/9/memory:81,
+                 from /usr/include/boost/smart_ptr/scoped_ptr.hpp:22,
+                 from /usr/include/boost/scoped_ptr.hpp:13,
+                 from /usr/include/boost/archive/detail/basic_iarchive.hpp:23,
+                 from /usr/include/boost/serialization/map.hpp:24,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/shared_ptr_base.h:1428:5: note: candidate: ‘template<class _Tp1, class _Tp2, __gnu_cxx::_Lock_policy _Lp> bool std::operator!=(const std::__shared_ptr<_Tp1, _Lp>&, const std::__shared_ptr<_Tp2, _Lp>&)’
+ 1428 |     operator!=(const __shared_ptr<_Tp1, _Lp>& __a,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/shared_ptr_base.h:1428:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   mismatched types ‘const std::__shared_ptr<_Tp2, _Lp>’ and ‘std::__shared_ptr<ORB_SLAM3::Map, __gnu_cxx::_S_atomic>::element_type*’ {aka ‘ORB_SLAM3::Map*’}
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/bits/shared_ptr.h:52,
+                 from /usr/include/c++/9/memory:81,
+                 from /usr/include/boost/smart_ptr/scoped_ptr.hpp:22,
+                 from /usr/include/boost/scoped_ptr.hpp:13,
+                 from /usr/include/boost/archive/detail/basic_iarchive.hpp:23,
+                 from /usr/include/boost/serialization/map.hpp:24,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/shared_ptr_base.h:1434:5: note: candidate: ‘template<class _Tp, __gnu_cxx::_Lock_policy _Lp> bool std::operator!=(const std::__shared_ptr<_Tp, _Lp>&, std::nullptr_t)’
+ 1434 |     operator!=(const __shared_ptr<_Tp, _Lp>& __a, nullptr_t) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/shared_ptr_base.h:1434:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:48: note:   cannot convert ‘sharedMap.std::shared_ptr<ORB_SLAM3::Map>::<anonymous>.std::__shared_ptr<ORB_SLAM3::Map, __gnu_cxx::_S_atomic>::get()’ (type ‘std::__shared_ptr<ORB_SLAM3::Map, __gnu_cxx::_S_atomic>::element_type*’ {aka ‘ORB_SLAM3::Map*’}) to type ‘std::nullptr_t’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                   ~~~~~~~~~~~~~^~
+In file included from /usr/include/c++/9/bits/shared_ptr.h:52,
+                 from /usr/include/c++/9/memory:81,
+                 from /usr/include/boost/smart_ptr/scoped_ptr.hpp:22,
+                 from /usr/include/boost/scoped_ptr.hpp:13,
+                 from /usr/include/boost/archive/detail/basic_iarchive.hpp:23,
+                 from /usr/include/boost/serialization/map.hpp:24,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/shared_ptr_base.h:1439:5: note: candidate: ‘template<class _Tp, __gnu_cxx::_Lock_policy _Lp> bool std::operator!=(std::nullptr_t, const std::__shared_ptr<_Tp, _Lp>&)’
+ 1439 |     operator!=(nullptr_t, const __shared_ptr<_Tp, _Lp>& __a) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/shared_ptr_base.h:1439:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   mismatched types ‘const std::__shared_ptr<_Tp, _Lp>’ and ‘std::__shared_ptr<ORB_SLAM3::Map, __gnu_cxx::_S_atomic>::element_type*’ {aka ‘ORB_SLAM3::Map*’}
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/memory:81,
+                 from /usr/include/boost/smart_ptr/scoped_ptr.hpp:22,
+                 from /usr/include/boost/scoped_ptr.hpp:13,
+                 from /usr/include/boost/archive/detail/basic_iarchive.hpp:23,
+                 from /usr/include/boost/serialization/map.hpp:24,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/shared_ptr.h:398:5: note: candidate: ‘template<class _Tp, class _Up> bool std::operator!=(const std::shared_ptr<_Tp>&, const std::shared_ptr<_Tp>&)’
+  398 |     operator!=(const shared_ptr<_Tp>& __a, const shared_ptr<_Up>& __b) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/shared_ptr.h:398:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   mismatched types ‘const std::shared_ptr<_Tp>’ and ‘std::__shared_ptr<ORB_SLAM3::Map, __gnu_cxx::_S_atomic>::element_type*’ {aka ‘ORB_SLAM3::Map*’}
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/memory:81,
+                 from /usr/include/boost/smart_ptr/scoped_ptr.hpp:22,
+                 from /usr/include/boost/scoped_ptr.hpp:13,
+                 from /usr/include/boost/archive/detail/basic_iarchive.hpp:23,
+                 from /usr/include/boost/serialization/map.hpp:24,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/shared_ptr.h:403:5: note: candidate: ‘template<class _Tp> bool std::operator!=(const std::shared_ptr<_Tp>&, std::nullptr_t)’
+  403 |     operator!=(const shared_ptr<_Tp>& __a, nullptr_t) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/shared_ptr.h:403:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:48: note:   cannot convert ‘sharedMap.std::shared_ptr<ORB_SLAM3::Map>::<anonymous>.std::__shared_ptr<ORB_SLAM3::Map, __gnu_cxx::_S_atomic>::get()’ (type ‘std::__shared_ptr<ORB_SLAM3::Map, __gnu_cxx::_S_atomic>::element_type*’ {aka ‘ORB_SLAM3::Map*’}) to type ‘std::nullptr_t’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                   ~~~~~~~~~~~~~^~
+In file included from /usr/include/c++/9/memory:81,
+                 from /usr/include/boost/smart_ptr/scoped_ptr.hpp:22,
+                 from /usr/include/boost/scoped_ptr.hpp:13,
+                 from /usr/include/boost/archive/detail/basic_iarchive.hpp:23,
+                 from /usr/include/boost/serialization/map.hpp:24,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/shared_ptr.h:408:5: note: candidate: ‘template<class _Tp> bool std::operator!=(std::nullptr_t, const std::shared_ptr<_Tp>&)’
+  408 |     operator!=(nullptr_t, const shared_ptr<_Tp>& __a) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/shared_ptr.h:408:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   mismatched types ‘const std::shared_ptr<_Tp>’ and ‘std::__shared_ptr<ORB_SLAM3::Map, __gnu_cxx::_S_atomic>::element_type*’ {aka ‘ORB_SLAM3::Map*’}
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/vector:67,
+                 from /usr/include/boost/archive/detail/helper_collection.hpp:20,
+                 from /usr/include/boost/archive/detail/basic_iarchive.hpp:28,
+                 from /usr/include/boost/serialization/map.hpp:24,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/stl_vector.h:1912:5: note: candidate: ‘template<class _Tp, class _Alloc> bool std::operator!=(const std::vector<_Tp, _Alloc>&, const std::vector<_Tp, _Alloc>&)’
+ 1912 |     operator!=(const vector<_Tp, _Alloc>& __x, const vector<_Tp, _Alloc>& __y)
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/stl_vector.h:1912:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::vector<_Tp, _Alloc>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/functional:59,
+                 from /usr/include/c++/9/pstl/glue_algorithm_defs.h:13,
+                 from /usr/include/c++/9/algorithm:71,
+                 from /usr/include/boost/archive/detail/helper_collection.hpp:23,
+                 from /usr/include/boost/archive/detail/basic_iarchive.hpp:28,
+                 from /usr/include/boost/serialization/map.hpp:24,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/std_function.h:764:5: note: candidate: ‘template<class _Res, class ... _Args> bool std::operator!=(const std::function<_Res(_ArgTypes ...)>&, std::nullptr_t)’
+  764 |     operator!=(const function<_Res(_Args...)>& __f, nullptr_t) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/std_function.h:764:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::function<_Res(_ArgTypes ...)>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/functional:59,
+                 from /usr/include/c++/9/pstl/glue_algorithm_defs.h:13,
+                 from /usr/include/c++/9/algorithm:71,
+                 from /usr/include/boost/archive/detail/helper_collection.hpp:23,
+                 from /usr/include/boost/archive/detail/basic_iarchive.hpp:28,
+                 from /usr/include/boost/serialization/map.hpp:24,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/std_function.h:770:5: note: candidate: ‘template<class _Res, class ... _Args> bool std::operator!=(std::nullptr_t, const std::function<_Res(_ArgTypes ...)>&)’
+  770 |     operator!=(nullptr_t, const function<_Res(_Args...)>& __f) noexcept
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/std_function.h:770:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   mismatched types ‘const std::function<_Res(_ArgTypes ...)>’ and ‘std::__shared_ptr<ORB_SLAM3::Map, __gnu_cxx::_S_atomic>::element_type*’ {aka ‘ORB_SLAM3::Map*’}
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/unordered_map:47,
+                 from /usr/include/c++/9/functional:61,
+                 from /usr/include/c++/9/pstl/glue_algorithm_defs.h:13,
+                 from /usr/include/c++/9/algorithm:71,
+                 from /usr/include/boost/archive/detail/helper_collection.hpp:23,
+                 from /usr/include/boost/archive/detail/basic_iarchive.hpp:28,
+                 from /usr/include/boost/serialization/map.hpp:24,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/unordered_map.h:2099:5: note: candidate: ‘template<class _Key, class _Tp, class _Hash, class _Pred, class _Alloc> bool std::operator!=(const std::unordered_map<_Key1, _Tp1, _Hash1, _Pred1, _Alloc1>&, const std::unordered_map<_Key1, _Tp1, _Hash1, _Pred1, _Alloc1>&)’
+ 2099 |     operator!=(const unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/unordered_map.h:2099:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::unordered_map<_Key1, _Tp1, _Hash1, _Pred1, _Alloc1>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/unordered_map:47,
+                 from /usr/include/c++/9/functional:61,
+                 from /usr/include/c++/9/pstl/glue_algorithm_defs.h:13,
+                 from /usr/include/c++/9/algorithm:71,
+                 from /usr/include/boost/archive/detail/helper_collection.hpp:23,
+                 from /usr/include/boost/archive/detail/basic_iarchive.hpp:28,
+                 from /usr/include/boost/serialization/map.hpp:24,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/unordered_map.h:2111:5: note: candidate: ‘template<class _Key, class _Tp, class _Hash, class _Pred, class _Alloc> bool std::operator!=(const std::unordered_multimap<_Key1, _Tp1, _Hash1, _Pred1, _Alloc1>&, const std::unordered_multimap<_Key1, _Tp1, _Hash1, _Pred1, _Alloc1>&)’
+ 2111 |     operator!=(const unordered_multimap<_Key, _Tp, _Hash, _Pred, _Alloc>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/unordered_map.h:2111:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::unordered_multimap<_Key1, _Tp1, _Hash1, _Pred1, _Alloc1>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/bits/ios_base.h:46,
+                 from /usr/include/c++/9/ios:42,
+                 from /usr/include/c++/9/ostream:38,
+                 from /usr/include/c++/9/iterator:64,
+                 from /usr/include/boost/operators.hpp:98,
+                 from /usr/include/boost/serialization/strong_typedef.hpp:27,
+                 from /usr/include/boost/serialization/collection_size_type.hpp:10,
+                 from /usr/include/boost/serialization/map.hpp:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/system_error:319:3: note: candidate: ‘bool std::operator!=(const std::error_code&, const std::error_code&)’
+  319 |   operator!=(const error_code& __lhs, const error_code& __rhs) noexcept
+      |   ^~~~~~~~
+/usr/include/c++/9/system_error:319:32: note:   no known conversion for argument 1 from ‘std::shared_ptr<ORB_SLAM3::Map>’ to ‘const std::error_code&’
+  319 |   operator!=(const error_code& __lhs, const error_code& __rhs) noexcept
+      |              ~~~~~~~~~~~~~~~~~~^~~~~
+/usr/include/c++/9/system_error:323:3: note: candidate: ‘bool std::operator!=(const std::error_code&, const std::error_condition&)’
+  323 |   operator!=(const error_code& __lhs, const error_condition& __rhs) noexcept
+      |   ^~~~~~~~
+/usr/include/c++/9/system_error:323:32: note:   no known conversion for argument 1 from ‘std::shared_ptr<ORB_SLAM3::Map>’ to ‘const std::error_code&’
+  323 |   operator!=(const error_code& __lhs, const error_condition& __rhs) noexcept
+      |              ~~~~~~~~~~~~~~~~~~^~~~~
+/usr/include/c++/9/system_error:327:3: note: candidate: ‘bool std::operator!=(const std::error_condition&, const std::error_code&)’
+  327 |   operator!=(const error_condition& __lhs, const error_code& __rhs) noexcept
+      |   ^~~~~~~~
+/usr/include/c++/9/system_error:327:37: note:   no known conversion for argument 1 from ‘std::shared_ptr<ORB_SLAM3::Map>’ to ‘const std::error_condition&’
+  327 |   operator!=(const error_condition& __lhs, const error_code& __rhs) noexcept
+      |              ~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+/usr/include/c++/9/system_error:331:3: note: candidate: ‘bool std::operator!=(const std::error_condition&, const std::error_condition&)’
+  331 |   operator!=(const error_condition& __lhs,
+      |   ^~~~~~~~
+/usr/include/c++/9/system_error:331:37: note:   no known conversion for argument 1 from ‘std::shared_ptr<ORB_SLAM3::Map>’ to ‘const std::error_condition&’
+  331 |   operator!=(const error_condition& __lhs,
+      |              ~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+In file included from /usr/include/c++/9/bits/locale_facets.h:48,
+                 from /usr/include/c++/9/bits/basic_ios.h:37,
+                 from /usr/include/c++/9/ios:44,
+                 from /usr/include/c++/9/ostream:38,
+                 from /usr/include/c++/9/iterator:64,
+                 from /usr/include/boost/operators.hpp:98,
+                 from /usr/include/boost/serialization/strong_typedef.hpp:27,
+                 from /usr/include/boost/serialization/collection_size_type.hpp:10,
+                 from /usr/include/boost/serialization/map.hpp:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/streambuf_iterator.h:214:5: note: candidate: ‘template<class _CharT, class _Traits> bool std::operator!=(const std::istreambuf_iterator<_CharT, _Traits>&, const std::istreambuf_iterator<_CharT, _Traits>&)’
+  214 |     operator!=(const istreambuf_iterator<_CharT, _Traits>& __a,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/streambuf_iterator.h:214:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::istreambuf_iterator<_CharT, _Traits>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/iterator:66,
+                 from /usr/include/boost/operators.hpp:98,
+                 from /usr/include/boost/serialization/strong_typedef.hpp:27,
+                 from /usr/include/boost/serialization/collection_size_type.hpp:10,
+                 from /usr/include/boost/serialization/map.hpp:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:25,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/stream_iterator.h:141:5: note: candidate: ‘template<class _Tp, class _CharT, class _Traits, class _Dist> bool std::operator!=(const std::istream_iterator<_Tp, _CharT, _Traits, _Dist>&, const std::istream_iterator<_Tp, _CharT, _Traits, _Dist>&)’
+  141 |     operator!=(const istream_iterator<_Tp, _CharT, _Traits, _Dist>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/stream_iterator.h:141:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::istream_iterator<_Tp, _CharT, _Traits, _Dist>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/complex:481:5: note: candidate: ‘template<class _Tp> constexpr bool std::operator!=(const std::complex<_Tp>&, const std::complex<_Tp>&)’
+  481 |     operator!=(const complex<_Tp>& __x, const complex<_Tp>& __y)
+      |     ^~~~~~~~
+/usr/include/c++/9/complex:481:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::complex<_Tp>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/complex:486:5: note: candidate: ‘template<class _Tp> constexpr bool std::operator!=(const std::complex<_Tp>&, const _Tp&)’
+  486 |     operator!=(const complex<_Tp>& __x, const _Tp& __y)
+      |     ^~~~~~~~
+/usr/include/c++/9/complex:486:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::complex<_Tp>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/complex:491:5: note: candidate: ‘template<class _Tp> constexpr bool std::operator!=(const _Tp&, const std::complex<_Tp>&)’
+  491 |     operator!=(const _Tp& __x, const complex<_Tp>& __y)
+      |     ^~~~~~~~
+/usr/include/c++/9/complex:491:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   mismatched types ‘const std::complex<_Tp>’ and ‘std::__shared_ptr<ORB_SLAM3::Map, __gnu_cxx::_S_atomic>::element_type*’ {aka ‘ORB_SLAM3::Map*’}
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:421:5: note: candidate: ‘template<class _UIntType, _UIntType __a, _UIntType __c, _UIntType __m> bool std::operator!=(const std::linear_congruential_engine<_UIntType, __a, __c, __m>&, const std::linear_congruential_engine<_UIntType, __a, __c, __m>&)’
+  421 |     operator!=(const std::linear_congruential_engine<_UIntType, __a,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:421:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::linear_congruential_engine<_UIntType, __a, __c, __m>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:658:5: note: candidate: ‘template<class _UIntType, long unsigned int __w, long unsigned int __n, long unsigned int __m, long unsigned int __r, _UIntType __a, long unsigned int __u, _UIntType __d, long unsigned int __s, _UIntType __b, long unsigned int __t, _UIntType __c, long unsigned int __l, _UIntType __f> bool std::operator!=(const std::mersenne_twister_engine<_UIntType, __w, __n, __m, __r, __a, __u, __d, __s, __b, __t, __c, __l, __f>&, const std::mersenne_twister_engine<_UIntType, __w, __n, __m, __r, __a, __u, __d, __s, __b, __t, __c, __l, __f>&)’
+  658 |     operator!=(const std::mersenne_twister_engine<_UIntType, __w, __n, __m,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:658:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::mersenne_twister_engine<_UIntType, __w, __n, __m, __r, __a, __u, __d, __s, __b, __t, __c, __l, __f>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:859:5: note: candidate: ‘template<class _UIntType, long unsigned int __w, long unsigned int __s, long unsigned int __r> bool std::operator!=(const std::subtract_with_carry_engine<_UIntType, __w, __s, __r>&, const std::subtract_with_carry_engine<_UIntType, __w, __s, __r>&)’
+  859 |     operator!=(const std::subtract_with_carry_engine<_UIntType, __w,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:859:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::subtract_with_carry_engine<_UIntType, __w, __s, __r>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:1082:5: note: candidate: ‘template<class _RandomNumberEngine, long unsigned int __p, long unsigned int __r> bool std::operator!=(const std::discard_block_engine<_RandomNumberEngine, __p, __r>&, const std::discard_block_engine<_RandomNumberEngine, __p, __r>&)’
+ 1082 |     operator!=(const std::discard_block_engine<_RandomNumberEngine, __p,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:1082:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::discard_block_engine<_RandomNumberEngine, __p, __r>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:1279:5: note: candidate: ‘template<class _RandomNumberEngine, long unsigned int __w, class _UIntType> bool std::operator!=(const std::independent_bits_engine<_RandomNumberEngine, __w, _UIntType>&, const std::independent_bits_engine<_RandomNumberEngine, __w, _UIntType>&)’
+ 1279 |     operator!=(const std::independent_bits_engine<_RandomNumberEngine, __w,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:1279:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::independent_bits_engine<_RandomNumberEngine, __w, _UIntType>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:1532:5: note: candidate: ‘template<class _RandomNumberEngine, long unsigned int __k> bool std::operator!=(const std::shuffle_order_engine<_RandomNumberEngine, __k>&, const std::shuffle_order_engine<_RandomNumberEngine, __k>&)’
+ 1532 |     operator!=(const std::shuffle_order_engine<_RandomNumberEngine,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:1532:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::shuffle_order_engine<_RandomNumberEngine, __k>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:1692:5: note: candidate: ‘template<class _IntType> bool std::operator!=(const std::uniform_int_distribution<_IntType>&, const std::uniform_int_distribution<_IntType>&)’
+ 1692 |     operator!=(const std::uniform_int_distribution<_IntType>& __d1,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:1692:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::uniform_int_distribution<_IntType>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:1913:5: note: candidate: ‘template<class _IntType> bool std::operator!=(const std::uniform_real_distribution<_IntType>&, const std::uniform_real_distribution<_IntType>&)’
+ 1913 |     operator!=(const std::uniform_real_distribution<_IntType>& __d1,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:1913:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::uniform_real_distribution<_IntType>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:2170:5: note: candidate: ‘template<class _RealType> bool std::operator!=(const std::normal_distribution<_RealType>&, const std::normal_distribution<_RealType>&)’
+ 2170 |     operator!=(const std::normal_distribution<_RealType>& __d1,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:2170:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::normal_distribution<_RealType>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:2381:5: note: candidate: ‘template<class _RealType> bool std::operator!=(const std::lognormal_distribution<_RealType>&, const std::lognormal_distribution<_RealType>&)’
+ 2381 |     operator!=(const std::lognormal_distribution<_RealType>& __d1,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:2381:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::lognormal_distribution<_RealType>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:2612:6: note: candidate: ‘template<class _RealType> bool std::operator!=(const std::gamma_distribution<_RealType>&, const std::gamma_distribution<_RealType>&)’
+ 2612 |      operator!=(const std::gamma_distribution<_RealType>& __d1,
+      |      ^~~~~~~~
+/usr/include/c++/9/bits/random.h:2612:6: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::gamma_distribution<_RealType>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:2836:5: note: candidate: ‘template<class _RealType> bool std::operator!=(const std::chi_squared_distribution<_RealType>&, const std::chi_squared_distribution<_RealType>&)’
+ 2836 |     operator!=(const std::chi_squared_distribution<_RealType>& __d1,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:2836:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::chi_squared_distribution<_RealType>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:3010:5: note: candidate: ‘template<class _RealType> bool std::operator!=(const std::cauchy_distribution<_RealType>&, const std::cauchy_distribution<_RealType>&)’
+ 3010 |     operator!=(const std::cauchy_distribution<_RealType>& __d1,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:3010:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::cauchy_distribution<_RealType>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:3274:5: note: candidate: ‘template<class _RealType> bool std::operator!=(const std::fisher_f_distribution<_RealType>&, const std::fisher_f_distribution<_RealType>&)’
+ 3274 |     operator!=(const std::fisher_f_distribution<_RealType>& __d1,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:3274:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::fisher_f_distribution<_RealType>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:3496:5: note: candidate: ‘template<class _RealType> bool std::operator!=(const std::student_t_distribution<_RealType>&, const std::student_t_distribution<_RealType>&)’
+ 3496 |     operator!=(const std::student_t_distribution<_RealType>& __d1,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:3496:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::student_t_distribution<_RealType>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:3684:3: note: candidate: ‘bool std::operator!=(const std::bernoulli_distribution&, const std::bernoulli_distribution&)’
+ 3684 |   operator!=(const std::bernoulli_distribution& __d1,
+      |   ^~~~~~~~
+/usr/include/c++/9/bits/random.h:3684:49: note:   no known conversion for argument 1 from ‘std::shared_ptr<ORB_SLAM3::Map>’ to ‘const std::bernoulli_distribution&’
+ 3684 |   operator!=(const std::bernoulli_distribution& __d1,
+      |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+/usr/include/c++/9/bits/random.h:3959:5: note: candidate: ‘template<class _IntType> bool std::operator!=(const std::binomial_distribution<_IntType>&, const std::binomial_distribution<_IntType>&)’
+ 3959 |     operator!=(const std::binomial_distribution<_IntType>& __d1,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:3959:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::binomial_distribution<_IntType>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:4138:5: note: candidate: ‘template<class _IntType> bool std::operator!=(const std::geometric_distribution<_IntType>&, const std::geometric_distribution<_IntType>&)’
+ 4138 |     operator!=(const std::geometric_distribution<_IntType>& __d1,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:4138:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::geometric_distribution<_IntType>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:4392:5: note: candidate: ‘template<class _IntType> bool std::operator!=(const std::negative_binomial_distribution<_IntType>&, const std::negative_binomial_distribution<_IntType>&)’
+ 4392 |     operator!=(const std::negative_binomial_distribution<_IntType>& __d1,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:4392:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::negative_binomial_distribution<_IntType>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:4618:5: note: candidate: ‘template<class _IntType> bool std::operator!=(const std::poisson_distribution<_IntType>&, const std::poisson_distribution<_IntType>&)’
+ 4618 |     operator!=(const std::poisson_distribution<_IntType>& __d1,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:4618:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::poisson_distribution<_IntType>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:4809:5: note: candidate: ‘template<class _RealType> bool std::operator!=(const std::exponential_distribution<_RealType>&, const std::exponential_distribution<_RealType>&)’
+ 4809 |     operator!=(const std::exponential_distribution<_RealType>& __d1,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:4809:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::exponential_distribution<_RealType>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:5019:5: note: candidate: ‘template<class _RealType> bool std::operator!=(const std::weibull_distribution<_RealType>&, const std::weibull_distribution<_RealType>&)’
+ 5019 |     operator!=(const std::weibull_distribution<_RealType>& __d1,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:5019:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::weibull_distribution<_RealType>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:5229:5: note: candidate: ‘template<class _RealType> bool std::operator!=(const std::extreme_value_distribution<_RealType>&, const std::extreme_value_distribution<_RealType>&)’
+ 5229 |     operator!=(const std::extreme_value_distribution<_RealType>& __d1,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:5229:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::extreme_value_distribution<_RealType>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:5494:5: note: candidate: ‘template<class _IntType> bool std::operator!=(const std::discrete_distribution<_IntType>&, const std::discrete_distribution<_IntType>&)’
+ 5494 |     operator!=(const std::discrete_distribution<_IntType>& __d1,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:5494:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::discrete_distribution<_IntType>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:5765:5: note: candidate: ‘template<class _RealType> bool std::operator!=(const std::piecewise_constant_distribution<_RealType>&, const std::piecewise_constant_distribution<_RealType>&)’
+ 5765 |     operator!=(const std::piecewise_constant_distribution<_RealType>& __d1,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:5765:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::piecewise_constant_distribution<_RealType>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/random:49,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/common.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/types.hpp:8,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/rotation_matrix.hpp:10,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/so2.hpp:14,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:27,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/random.h:6038:5: note: candidate: ‘template<class _RealType> bool std::operator!=(const std::piecewise_linear_distribution<_RealType>&, const std::piecewise_linear_distribution<_RealType>&)’
+ 6038 |     operator!=(const std::piecewise_linear_distribution<_RealType>& __d1,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/random.h:6038:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::piecewise_linear_distribution<_RealType>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/set:61,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/g2o/g2o/types/../core/optimizable_graph.h:30,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/g2o/g2o/types/../core/base_vertex.h:30,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h:34,
+                 from /orin_ssd/MORB_SLAM/include/Converter.h:27,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:32,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/stl_set.h:1003:5: note: candidate: ‘template<class _Key, class _Compare, class _Alloc> bool std::operator!=(const std::set<_Key, _Compare, _Allocator>&, const std::set<_Key, _Compare, _Allocator>&)’
+ 1003 |     operator!=(const set<_Key, _Compare, _Alloc>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/stl_set.h:1003:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::set<_Key, _Compare, _Allocator>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/set:62,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/g2o/g2o/types/../core/optimizable_graph.h:30,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/g2o/g2o/types/../core/base_vertex.h:30,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h:34,
+                 from /orin_ssd/MORB_SLAM/include/Converter.h:27,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:32,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/stl_multiset.h:988:5: note: candidate: ‘template<class _Key, class _Compare, class _Alloc> bool std::operator!=(const std::multiset<_Key, _Compare, _Allocator>&, const std::multiset<_Key, _Compare, _Allocator>&)’
+  988 |     operator!=(const multiset<_Key, _Compare, _Alloc>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/stl_multiset.h:988:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::multiset<_Key, _Compare, _Allocator>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/list:63,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/g2o/g2o/types/../core/optimizable_graph.h:32,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/g2o/g2o/types/../core/base_vertex.h:30,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h:34,
+                 from /orin_ssd/MORB_SLAM/include/Converter.h:27,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:32,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/stl_list.h:2032:5: note: candidate: ‘template<class _Tp, class _Alloc> bool std::operator!=(const std::__cxx11::list<_Tp, _Alloc>&, const std::__cxx11::list<_Tp, _Alloc>&)’
+ 2032 |     operator!=(const list<_Tp, _Alloc>& __x, const list<_Tp, _Alloc>& __y)
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/stl_list.h:2032:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::__cxx11::list<_Tp, _Alloc>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/deque:67,
+                 from /usr/include/c++/9/stack:60,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/g2o/g2o/types/../core/base_vertex.h:38,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h:34,
+                 from /orin_ssd/MORB_SLAM/include/Converter.h:27,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:32,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/stl_deque.h:299:5: note: candidate: ‘template<class _Tp, class _Ref, class _Ptr> bool std::operator!=(const std::_Deque_iterator<_Tp, _Ref, _Ptr>&, const std::_Deque_iterator<_Tp, _Ref, _Ptr>&)’
+  299 |     operator!=(const _Deque_iterator<_Tp, _Ref, _Ptr>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/stl_deque.h:299:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::_Deque_iterator<_Tp, _Ref, _Ptr>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/deque:67,
+                 from /usr/include/c++/9/stack:60,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/g2o/g2o/types/../core/base_vertex.h:38,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h:34,
+                 from /orin_ssd/MORB_SLAM/include/Converter.h:27,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:32,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/stl_deque.h:306:5: note: candidate: ‘template<class _Tp, class _RefL, class _PtrL, class _RefR, class _PtrR> bool std::operator!=(const std::_Deque_iterator<_Tp, _Ref, _Ptr>&, const std::_Deque_iterator<_Tp, _RefR, _PtrR>&)’
+  306 |     operator!=(const _Deque_iterator<_Tp, _RefL, _PtrL>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/stl_deque.h:306:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::_Deque_iterator<_Tp, _Ref, _Ptr>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/deque:67,
+                 from /usr/include/c++/9/stack:60,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/g2o/g2o/types/../core/base_vertex.h:38,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h:34,
+                 from /orin_ssd/MORB_SLAM/include/Converter.h:27,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:32,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/stl_deque.h:2338:5: note: candidate: ‘template<class _Tp, class _Alloc> bool std::operator!=(const std::deque<_Tp, _Alloc>&, const std::deque<_Tp, _Alloc>&)’
+ 2338 |     operator!=(const deque<_Tp, _Alloc>& __x,
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/stl_deque.h:2338:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::deque<_Tp, _Alloc>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/stack:61,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/g2o/g2o/types/../core/base_vertex.h:38,
+                 from /orin_ssd/MORB_SLAM/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h:34,
+                 from /orin_ssd/MORB_SLAM/include/Converter.h:27,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:32,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/stl_stack.h:337:5: note: candidate: ‘template<class _Tp, class _Seq> bool std::operator!=(const std::stack<_Tp, _Seq>&, const std::stack<_Tp, _Seq>&)’
+  337 |     operator!=(const stack<_Tp, _Seq>& __x, const stack<_Tp, _Seq>& __y)
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/stl_stack.h:337:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::stack<_Tp, _Seq>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /usr/include/c++/9/queue:64,
+                 from /usr/local/include/opencv4/opencv2/stitching/detail/util_inl.hpp:46,
+                 from /usr/local/include/opencv4/opencv2/stitching/detail/util.hpp:119,
+                 from /usr/local/include/opencv4/opencv2/stitching/detail/motion_estimators.hpp:48,
+                 from /usr/local/include/opencv4/opencv2/stitching.hpp:50,
+                 from /usr/local/include/opencv4/opencv2/opencv.hpp:86,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:36,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/bits/stl_queue.h:362:5: note: candidate: ‘template<class _Tp, class _Seq> bool std::operator!=(const std::queue<_Tp, _Seq>&, const std::queue<_Tp, _Seq>&)’
+  362 |     operator!=(const queue<_Tp, _Seq>& __x, const queue<_Tp, _Seq>& __y)
+      |     ^~~~~~~~
+/usr/include/c++/9/bits/stl_queue.h:362:5: note:   template argument deduction/substitution failed:
+/orin_ssd/MORB_SLAM/src/Map.cc:339:49: note:   ‘std::shared_ptr<ORB_SLAM3::Map>’ is not derived from ‘const std::queue<_Tp, _Seq>’
+  339 |       if ((it->first->GetMap() != sharedMap.get() && this == sharedMap.get()) || it->first->isBad()) {
+      |                                                 ^
+In file included from /orin_ssd/MORB_SLAM/include/Camera.hpp:2,
+                 from /orin_ssd/MORB_SLAM/include/Frame.h:41,
+                 from /orin_ssd/MORB_SLAM/include/KeyFrame.h:31,
+                 from /orin_ssd/MORB_SLAM/include/MapPoint.h:22,
+                 from /orin_ssd/MORB_SLAM/include/Map.h:22,
+                 from /orin_ssd/MORB_SLAM/src/Map.cc:22:
+/usr/include/c++/9/thread:286:3: note: candidate: ‘bool std::operator!=(std::thread::id, std::thread::id)’
+  286 |   operator!=(thread::id __x, thread::id __y) noexcept
+      |   ^~~~~~~~
+/usr/include/c++/9/thread:286:25: note:   no known conversion for argument 1 from ‘std::shared_ptr<ORB_SLAM3::Map>’ to ‘std::thread::id’
+  286 |   operator!=(thread::id __x, thread::id __y) noexcept
+      |              ~~~~~~~~~~~^~~
+make[2]: *** [CMakeFiles/MORB_SLAM.dir/build.make:244: CMakeFiles/MORB_SLAM.dir/src/Map.cc.o] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[2]: *** [CMakeFiles/MORB_SLAM.dir/build.make:76: CMakeFiles/MORB_SLAM.dir/src/System.cc.o] Interrupt
+make[2]: *** [CMakeFiles/MORB_SLAM.dir/build.make:104: CMakeFiles/MORB_SLAM.dir/src/Tracking.cc.o] Interrupt
+make[2]: *** [CMakeFiles/MORB_SLAM.dir/build.make:272: CMakeFiles/MORB_SLAM.dir/src/Optimizer.cc.o] Interrupt
+make[2]: *** [CMakeFiles/MORB_SLAM.dir/build.make:118: CMakeFiles/MORB_SLAM.dir/src/LocalMapping.cc.o] Interrupt
+make[2]: *** wait: No child processes.  Stop.
+make[1]: *** [CMakeFiles/Makefile2:166: CMakeFiles/MORB_SLAM.dir/all] Error 2
+make: *** [Makefile:136: all] Interrupt

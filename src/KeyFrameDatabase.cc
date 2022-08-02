@@ -68,7 +68,7 @@ void KeyFrameDatabase::clear() {
   mvInvertedFile.resize(mpVoc->size());
 }
 
-void KeyFrameDatabase::clearMap(Map* pMap) {
+void KeyFrameDatabase::clearMap(std::shared_ptr<Map> pMap) {
   unique_lock<mutex> lock(mMutex);
 
   // Erase elements in the Inverse File for the entry
@@ -705,7 +705,7 @@ void KeyFrameDatabase::DetectNBestCandidates(KeyFrame* pKF,
 }
 
 vector<KeyFrame*> KeyFrameDatabase::DetectRelocalizationCandidates(Frame* F,
-                                                                   Map* pMap) {
+                                                                   std::shared_ptr<Map> pMap) {
   list<KeyFrame*> lKFsSharingWords;
 
   // Search all keyframes that share a word with current frame

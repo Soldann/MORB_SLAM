@@ -91,7 +91,7 @@ KeyFrame::KeyFrame()
       NLeft(0),
       NRight(0) {}
 
-KeyFrame::KeyFrame(Frame &F, Map *pMap, KeyFrameDatabase *pKFDB)
+KeyFrame::KeyFrame(Frame &F, std::shared_ptr<Map> pMap, KeyFrameDatabase *pKFDB)
     : bImu(pMap->isImuInitialized()),
       mnFrameId(F.mnId),
       mTimeStamp(F.mTimeStamp),
@@ -846,12 +846,12 @@ IMU::Bias KeyFrame::GetImuBias() {
   return mImuBias;
 }
 
-Map *KeyFrame::GetMap() {
+std::shared_ptr<Map> KeyFrame::GetMap() {
   unique_lock<mutex> lock(mMutexMap);
   return mpMap;
 }
 
-void KeyFrame::UpdateMap(Map *pMap) {
+void KeyFrame::UpdateMap(std::shared_ptr<Map> pMap) {
   unique_lock<mutex> lock(mMutexMap);
   mpMap = pMap;
 }

@@ -630,12 +630,12 @@ void System::SaveTrajectoryEuRoC(const string& filename) {
   endl; return;
   }*/
 
-  vector<Map*> vpMaps = mpAtlas->GetAllMaps();
+  vector<std::shared_ptr<Map>> vpMaps = mpAtlas->GetAllMaps();
   size_t numMaxKFs = 0;
-  Map* pBiggerMap = nullptr;
+  std::shared_ptr<Map> pBiggerMap = nullptr;
   std::cout << "There are " << std::to_string(vpMaps.size())
             << " maps in the atlas" << std::endl;
-  for (Map* pMap : vpMaps) {
+  for (std::shared_ptr<Map> pMap : vpMaps) {
     std::cout << "  Map " << std::to_string(pMap->GetId()) << " has "
               << std::to_string(pMap->GetAllKeyFrames().size()) << " KFs"
               << std::endl;
@@ -744,7 +744,7 @@ void System::SaveTrajectoryEuRoC(const string& filename) {
   cout << endl << "End of saving trajectory to " << filename << " ..." << endl;
 }
 
-void System::SaveTrajectoryEuRoC(const string& filename, Map* pMap) {
+void System::SaveTrajectoryEuRoC(const string& filename, std::shared_ptr<Map> pMap) {
   cout << endl
        << "Saving trajectory of map " << pMap->GetId() << " to " << filename
        << " ..." << endl;
@@ -1046,10 +1046,10 @@ void System::SaveKeyFrameTrajectoryEuRoC(const string& filename) {
   cout << endl
        << "Saving keyframe trajectory to " << filename << " ... Euroc" << endl;
 
-  vector<Map*> vpMaps = mpAtlas->GetAllMaps();
-  Map* pBiggerMap = nullptr;
+  vector<std::shared_ptr<Map>> vpMaps = mpAtlas->GetAllMaps();
+  std::shared_ptr<Map> pBiggerMap = nullptr;
   size_t numMaxKFs = 0;
-  for (Map* pMap : vpMaps) {
+  for (std::shared_ptr<Map> pMap : vpMaps) {
     if (pMap && pMap->GetAllKeyFrames().size() > numMaxKFs) {
       numMaxKFs = pMap->GetAllKeyFrames().size();
       pBiggerMap = pMap;
@@ -1098,7 +1098,7 @@ void System::SaveKeyFrameTrajectoryEuRoC(const string& filename) {
   f.close();
 }
 
-void System::SaveKeyFrameTrajectoryEuRoC(const string& filename, Map* pMap) {
+void System::SaveKeyFrameTrajectoryEuRoC(const string& filename, std::shared_ptr<Map> pMap) {
   cout << endl
        << "Saving keyframe trajectory of map " << pMap->GetId() << " to "
        << filename << " ..." << endl;
