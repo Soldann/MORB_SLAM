@@ -27,6 +27,7 @@
 #include <mutex>
 #include <memory>
 #include <boost/serialization/base_object.hpp>
+#include <stdexcept>
 
 
 namespace ORB_SLAM3

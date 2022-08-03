@@ -320,6 +320,11 @@ void Map::SetLastMapChange(int currentChangeId) {
 }
 
 void Map::PreSave(std::set<std::shared_ptr<GeometricCamera>>& spCams, std::shared_ptr<Map> sharedMap) {
+
+  if(this != sharedMap.get()){
+    throw std::runtime_error("The shared map is not equivalent to this");
+  }
+
   int nMPWithoutObs = 0;
 
   std::set<MapPoint*> tmp_mspMapPoints;
@@ -336,7 +341,7 @@ void Map::PreSave(std::set<std::shared_ptr<GeometricCamera>>& spCams, std::share
     for (map<KeyFrame*, std::tuple<int, int>>::iterator it = mpObs.begin(),
                                                         end = mpObs.end();
          it != end; ++it) {
-      if ((it->first->GetMap() != sharedMap && this == sharedMap.get()) || it->first->isBad()) {
+      if ((it->first->GetMap() != sharedMap) || it->first->isBad()) {
         pMPi->EraseObservation(it->first);
       }
     }
@@ -387,6 +392,11 @@ void Map::PostLoad(
     ORBVocabulary*
         pORBVoc /*, map<long unsigned int, KeyFrame*>& mpKeyFrameId*/,
     map<unsigned int, std::shared_ptr<GeometricCamera>>& mpCams, std::shared_ptr<Map> sharedMap) {
+
+  if(this != sharedMap.get()){
+  throw std::runtime_error("The shared map is not equivalent to this");
+  }
+
   std::copy(mvpBackupMapPoints.begin(), mvpBackupMapPoints.end(),
             std::inserter(mspMapPoints, mspMapPoints.begin()));
   std::copy(mvpBackupKeyFrames.begin(), mvpBackupKeyFrames.end(),
@@ -394,7 +404,7 @@ void Map::PostLoad(
 
   map<long unsigned int, MapPoint*> mpMapPointId;
   for (MapPoint* pMPi : mspMapPoints) {
-    if ((!pMPi || pMPi->isBad()) || this != sharedMap.get()) continue;
+    if (!pMPi || pMPi->isBad()) continue;
 
     pMPi->UpdateMap(sharedMap);
     mpMapPointId[pMPi->mnId] = pMPi;
