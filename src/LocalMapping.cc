@@ -30,6 +30,7 @@
 #include "ORBmatcher.h"
 #include "Optimizer.h"
 
+#include <math.h> 
 namespace ORB_SLAM3 {
 
 LocalMapping::LocalMapping(System* pSys, const Atlas_ptr &pAtlas, const float bMonocular,
@@ -1167,13 +1168,21 @@ void LocalMapping::InitializeIMU(float priorG, float priorA, bool bFIBA) {
     Eigen::Matrix3f Rwg;
     Eigen::Vector3f dirG;
     dirG.setZero();
+    // std::cout << "Keyframes---------------------------------------------: " << N << std::endl;
     for (vector<KeyFrame*>::iterator itKF = vpKF.begin(); itKF != vpKF.end();
          itKF++) {
-      if (!(*itKF)->mpImuPreintegrated) continue;
-      if (!(*itKF)->mPrevKF) continue;
+
+      // std::cout << "Hello" << std::endl;
+      if (!(*itKF)->mpImuPreintegrated) continue; // || isnan((*itKF)->mpImuPreintegrated->GetUpdatedDeltaVelocity().sum())
+      if (!(*itKF)->mPrevKF) continue; //  || isnan((*itKF)->mPrevKF->GetImuRotation().sum()
+
+      // std::cout << "initDirG------------------------------------------------------: " << dirG << std::endl;
+      // std::cout << "getImuRot------------------------------------------------------: " << (*itKF)->mPrevKF->GetImuRotation() << std::endl;
+      // std::cout << "getUpdDeltaV------------------------------------------------------: " <<(*itKF)->mpImuPreintegrated->GetUpdatedDeltaVelocity() << std::endl;
 
       dirG -= (*itKF)->mPrevKF->GetImuRotation() *
               (*itKF)->mpImuPreintegrated->GetUpdatedDeltaVelocity();
+      // std::cout << "dirGLoop------------------------------------------------------: " << dirG << std::endl;
       Eigen::Vector3f _vel =
           ((*itKF)->GetImuPosition() - (*itKF)->mPrevKF->GetImuPosition()) /
           (*itKF)->mpImuPreintegrated->dT;
@@ -1181,16 +1190,29 @@ void LocalMapping::InitializeIMU(float priorG, float priorA, bool bFIBA) {
       (*itKF)->mPrevKF->SetVelocity(_vel);
     }
 
+    // if(dirG.sum() == 0){ mRwg << 0.99600422382354736,0.059227496385574341,0.066840663552284241,
+    //   0.059227496385574341,0.12209725379943848,-0.99074935913085938,
+    //   -0.066840663552284241,0.99074935913085938,0.11810147762298584;
+    // } else{
+    std::cout << "dirGBeforeNorm------------------------------------------------------: " << dirG << std::endl;
     dirG = dirG / dirG.norm();
+    std::cout << "dirGAfterNorm------------------------------------------------------: " << dirG << std::endl;
     Eigen::Vector3f gI(0.0f, 0.0f, -1.0f);
     Eigen::Vector3f v = gI.cross(dirG);
     const float nv = v.norm();
+    
     const float cosg = gI.dot(dirG);
     const float ang = acos(cosg);
+
+    std::cout << "v------------------------------------------------------: " << v << std::endl;
+    std::cout << "ang------------------------------------------------------: " << ang << std::endl;
+    std::cout << "nv------------------------------------------------------: " << nv << std::endl;
+
     Eigen::Vector3f vzg = v * ang / nv;
     Rwg = Sophus::SO3f::exp(vzg).matrix();
     mRwg = Rwg.cast<double>();
     mTinit = mpCurrentKeyFrame->mTimeStamp - mFirstTs;
+//}
   } else {
     mRwg = Eigen::Matrix3d::Identity();
     mbg = mpCurrentKeyFrame->GetGyroBias().cast<double>();

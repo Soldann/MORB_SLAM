@@ -10,7 +10,7 @@ echo "Configuring and building Thirdparty/DBoW2 ..."
 cd Thirdparty/DBoW2
 mkdir build 2> /dev/null
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
 make ${jobs}
 
 cd ../../g2o
@@ -19,7 +19,7 @@ echo "Configuring and building Thirdparty/g2o ..."
 
 mkdir build 2> /dev/null
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
 make ${jobs}
 
 cd ../../Sophus
@@ -28,7 +28,7 @@ echo "Configuring and building Thirdparty/Sophus ..."
 
 mkdir build 2> /dev/null
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
 make ${jobs}
 
 cd ../../../

@@ -153,11 +153,13 @@ int Map::GetLastBigChangeIdx() {
 
 vector<KeyFrame*> Map::GetAllKeyFrames() {
   unique_lock<mutex> lock(mMutexMap);
+  // std::cout << "Size of mspKeyFrames: " << mspKeyFrames.size() << std::endl;
   return vector<KeyFrame*>(mspKeyFrames.begin(), mspKeyFrames.end());
 }
 
 vector<MapPoint*> Map::GetAllMapPoints() {
   unique_lock<mutex> lock(mMutexMap);
+  // std::cout << "Size of mspMapPoints: " << mspMapPoints.size() << std::endl;
   return vector<MapPoint*>(mspMapPoints.begin(), mspMapPoints.end());
 }
 
