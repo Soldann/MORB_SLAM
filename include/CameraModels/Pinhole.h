@@ -26,7 +26,7 @@
 #include "GeometricCamera.h"
 #include "TwoViewReconstruction.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 class Pinhole : public GeometricCamera {
   friend class boost::serialization::access;
 
@@ -104,7 +104,7 @@ class Pinhole : public GeometricCamera {
   //      [fx, fy, cx, cy]
   TwoViewReconstruction* tvr;
 };
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM
 
 // BOOST_CLASS_EXPORT_KEY(ORBSLAM2::Pinhole)
 

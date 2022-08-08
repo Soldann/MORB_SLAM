@@ -31,7 +31,7 @@
 #include "Optimizer.h"
 
 #include <math.h> 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 LocalMapping::LocalMapping(System* pSys, const Atlas_ptr &pAtlas, const float bMonocular,
                            bool bInertial, const string& _strSeqName)
@@ -1461,4 +1461,4 @@ double LocalMapping::GetCurrKFTime() {
 
 KeyFrame* LocalMapping::GetCurrKF() { return mpCurrentKeyFrame; }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

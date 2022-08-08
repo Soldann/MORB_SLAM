@@ -26,7 +26,7 @@
 #include <vector>
 #include "ImprovedTypes.hpp"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 class MapPoint;
 class Viewer;
@@ -68,4 +68,4 @@ class FrameDrawer {
   std::vector<std::pair<cv::Point2f, cv::Point2f>> mvTracks;
 };
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

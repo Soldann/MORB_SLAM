@@ -36,7 +36,7 @@
 #include "MapPoint.h"
 #include "Pinhole.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 class Map;
 class MapPoint;
 class KeyFrame;
@@ -160,4 +160,4 @@ class Atlas {
 
 };  // class Atlas
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

@@ -25,7 +25,7 @@
 #include <opencv2/core/core.hpp>
 #include <sophus/se3.hpp>
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 class KeyFrame;
 
@@ -77,5 +77,5 @@ class GeometricTools {
   }
 };
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM
 

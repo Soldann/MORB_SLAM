@@ -34,7 +34,7 @@
 
 #include "SerializationUtils.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 namespace IMU {
 
@@ -269,4 +269,4 @@ Eigen::Matrix3f NormalizeRotation(const Eigen::Matrix3f &R);
 
 }  // namespace IMU
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

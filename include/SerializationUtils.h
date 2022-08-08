@@ -29,7 +29,7 @@
 #include <sophus/se3.hpp>
 #include <vector>
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 template <class Archive>
 void serializeSophusSE3(Archive& ar, Sophus::SE3f& T,
@@ -150,5 +150,5 @@ void serializeVectorKeyPoints(Archive& ar, const std::vector<cv::KeyPoint>& vKP,
   }
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM
 

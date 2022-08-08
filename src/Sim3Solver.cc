@@ -29,7 +29,7 @@
 #include "KeyFrame.h"
 #include "ORBmatcher.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 Sim3Solver::Sim3Solver(KeyFrame *pKF1, KeyFrame *pKF2,
                        const vector<MapPoint *> &vpMatched12,
@@ -451,4 +451,4 @@ void Sim3Solver::FromCameraToImage(const vector<Eigen::Vector3f> &vP3Dc,
   }
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

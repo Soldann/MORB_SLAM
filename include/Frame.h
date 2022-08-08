@@ -40,7 +40,7 @@
 
 #include "Camera.hpp"
 
-namespace ORB_SLAM3
+namespace MORB_SLAM
 {
 #define FRAME_GRID_ROWS 48
 #define FRAME_GRID_COLS 64

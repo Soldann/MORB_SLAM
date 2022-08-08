@@ -29,7 +29,7 @@
 #include "MapDrawer.h"
 #include "Settings.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 class Viewer {
   void newParameterLoader(const Settings& settings);
@@ -74,4 +74,4 @@ class Viewer {
   bool mbClosed;
 };
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

@@ -26,7 +26,7 @@
 
 #include "KeyFrame.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 class Sim3Solver {
  public:
@@ -134,4 +134,4 @@ class Sim3Solver {
   std::shared_ptr<GeometricCamera> pCamera1, pCamera2;
 };
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

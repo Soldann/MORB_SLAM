@@ -31,7 +31,7 @@
 #include "Optimizer.h"
 #include "Sim3Solver.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 LoopClosing::LoopClosing(const Atlas_ptr &pAtlas, KeyFrameDatabase* pDB,
                          ORBVocabulary* pVoc, const bool bFixScale,
@@ -2555,4 +2555,4 @@ bool LoopClosing::isFinished() {
   return mbFinished;
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

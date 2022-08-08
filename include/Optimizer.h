@@ -38,7 +38,7 @@
 #include "g2o/types/types_seven_dof_expmap.h"
 #include "g2o/types/types_six_dof_expmap.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 class LoopClosing;
 
@@ -137,5 +137,5 @@ class Optimizer {
   ;
 };
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM
 

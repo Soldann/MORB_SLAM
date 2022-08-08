@@ -28,7 +28,7 @@
 #include "GeometricTools.h"
 
 using namespace std;
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 TwoViewReconstruction::TwoViewReconstruction(const Eigen::Matrix3f &k,
                                              float sigma, int iterations) {
   mK = k;
@@ -904,4 +904,4 @@ void TwoViewReconstruction::DecomposeE(const Eigen::Matrix3f &E,
   if (R2.determinant() < 0) R2 = -R2;
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

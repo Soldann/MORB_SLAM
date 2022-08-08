@@ -26,7 +26,7 @@
 #include "Converter.h"
 #include "ImuTypes.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 long unsigned int KeyFrame::nNextId = 0;
 
@@ -1157,4 +1157,4 @@ void KeyFrame::SetKeyFrameDatabase(KeyFrameDatabase *pKFDB) {
   mpKeyFrameDB = pKFDB;
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

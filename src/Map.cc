@@ -23,7 +23,7 @@
 
 #include <mutex>
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 long unsigned int Map::nNextId = 0;
 
@@ -453,4 +453,4 @@ void Map::PostLoad(
   mvpBackupMapPoints.clear();
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

@@ -39,7 +39,7 @@
 #include "g2o/solvers/linear_solver_eigen.h"
 #include "g2o/types/types_six_dof_expmap.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 bool sortByVal(const pair<MapPoint*, int>& a, const pair<MapPoint*, int>& b) {
   return (a.second < b.second);
 }
@@ -81,10 +81,10 @@ void Optimizer::BundleAdjustment(const vector<KeyFrame*>& vpKFs,
 
   const int nExpectedSize = (vpKFs.size()) * vpMP.size();
 
-  vector<ORB_SLAM3::EdgeSE3ProjectXYZ*> vpEdgesMono;
+  vector<MORB_SLAM::EdgeSE3ProjectXYZ*> vpEdgesMono;
   vpEdgesMono.reserve(nExpectedSize);
 
-  vector<ORB_SLAM3::EdgeSE3ProjectXYZToBody*> vpEdgesBody;
+  vector<MORB_SLAM::EdgeSE3ProjectXYZToBody*> vpEdgesBody;
   vpEdgesBody.reserve(nExpectedSize);
 
   vector<KeyFrame*> vpEdgeKFMono;
@@ -158,7 +158,7 @@ void Optimizer::BundleAdjustment(const vector<KeyFrame*>& vpKFs,
         Eigen::Matrix<double, 2, 1> obs;
         obs << kpUn.pt.x, kpUn.pt.y;
 
-        ORB_SLAM3::EdgeSE3ProjectXYZ* e = new ORB_SLAM3::EdgeSE3ProjectXYZ();
+        MORB_SLAM::EdgeSE3ProjectXYZ* e = new MORB_SLAM::EdgeSE3ProjectXYZ();
 
         e->setVertex(0, dynamic_cast<g2o::OptimizableGraph::Vertex*>(
                             optimizer.vertex(id)));
@@ -230,8 +230,8 @@ void Optimizer::BundleAdjustment(const vector<KeyFrame*>& vpKFs,
           cv::KeyPoint kp = pKF->mvKeysRight[rightIndex];
           obs << kp.pt.x, kp.pt.y;
 
-          ORB_SLAM3::EdgeSE3ProjectXYZToBody* e =
-              new ORB_SLAM3::EdgeSE3ProjectXYZToBody();
+          MORB_SLAM::EdgeSE3ProjectXYZToBody* e =
+              new MORB_SLAM::EdgeSE3ProjectXYZToBody();
 
           e->setVertex(0, dynamic_cast<g2o::OptimizableGraph::Vertex*>(
                               optimizer.vertex(id)));
@@ -300,7 +300,7 @@ void Optimizer::BundleAdjustment(const vector<KeyFrame*>& vpKFs,
         vector<MapPoint*> vpMonoMPsOpt, vpStereoMPsOpt;
 
         for (size_t i2 = 0, iend = vpEdgesMono.size(); i2 < iend; i2++) {
-          ORB_SLAM3::EdgeSE3ProjectXYZ* e = vpEdgesMono[i2];
+          MORB_SLAM::EdgeSE3ProjectXYZ* e = vpEdgesMono[i2];
           MapPoint* pMP = vpMapPointEdgeMono[i2];
           KeyFrame* pKFedge = vpEdgeKFMono[i2];
 
@@ -786,8 +786,8 @@ int Optimizer::PoseOptimization(Frame* pFrame) {
   // Set MapPoint vertices
   const int N = pFrame->N;
 
-  vector<ORB_SLAM3::EdgeSE3ProjectXYZOnlyPose*> vpEdgesMono;
-  vector<ORB_SLAM3::EdgeSE3ProjectXYZOnlyPoseToBody*> vpEdgesMono_FHR;
+  vector<MORB_SLAM::EdgeSE3ProjectXYZOnlyPose*> vpEdgesMono;
+  vector<MORB_SLAM::EdgeSE3ProjectXYZOnlyPoseToBody*> vpEdgesMono_FHR;
   vector<size_t> vnIndexEdgeMono, vnIndexEdgeRight;
   vpEdgesMono.reserve(N);
   vpEdgesMono_FHR.reserve(N);
@@ -819,8 +819,8 @@ int Optimizer::PoseOptimization(Frame* pFrame) {
             const cv::KeyPoint& kpUn = pFrame->mvKeysUn[i];
             obs << kpUn.pt.x, kpUn.pt.y;
 
-            ORB_SLAM3::EdgeSE3ProjectXYZOnlyPose* e =
-                new ORB_SLAM3::EdgeSE3ProjectXYZOnlyPose();
+            MORB_SLAM::EdgeSE3ProjectXYZOnlyPose* e =
+                new MORB_SLAM::EdgeSE3ProjectXYZOnlyPose();
 
             e->setVertex(0, dynamic_cast<g2o::OptimizableGraph::Vertex*>(
                                 optimizer.vertex(0)));
@@ -890,8 +890,8 @@ int Optimizer::PoseOptimization(Frame* pFrame) {
             Eigen::Matrix<double, 2, 1> obs;
             obs << kpUn.pt.x, kpUn.pt.y;
 
-            ORB_SLAM3::EdgeSE3ProjectXYZOnlyPose* e =
-                new ORB_SLAM3::EdgeSE3ProjectXYZOnlyPose();
+            MORB_SLAM::EdgeSE3ProjectXYZOnlyPose* e =
+                new MORB_SLAM::EdgeSE3ProjectXYZOnlyPose();
 
             e->setVertex(0, dynamic_cast<g2o::OptimizableGraph::Vertex*>(
                                 optimizer.vertex(0)));
@@ -918,8 +918,8 @@ int Optimizer::PoseOptimization(Frame* pFrame) {
 
             pFrame->mvbOutlier[i] = false;
 
-            ORB_SLAM3::EdgeSE3ProjectXYZOnlyPoseToBody* e =
-                new ORB_SLAM3::EdgeSE3ProjectXYZOnlyPoseToBody();
+            MORB_SLAM::EdgeSE3ProjectXYZOnlyPoseToBody* e =
+                new MORB_SLAM::EdgeSE3ProjectXYZOnlyPoseToBody();
 
             e->setVertex(0, dynamic_cast<g2o::OptimizableGraph::Vertex*>(
                                 optimizer.vertex(0)));
@@ -968,7 +968,7 @@ int Optimizer::PoseOptimization(Frame* pFrame) {
 
     nBad = 0;
     for (size_t i = 0, iend = vpEdgesMono.size(); i < iend; i++) {
-      ORB_SLAM3::EdgeSE3ProjectXYZOnlyPose* e = vpEdgesMono[i];
+      MORB_SLAM::EdgeSE3ProjectXYZOnlyPose* e = vpEdgesMono[i];
 
       const size_t idx = vnIndexEdgeMono[i];
 
@@ -991,7 +991,7 @@ int Optimizer::PoseOptimization(Frame* pFrame) {
     }
 
     for (size_t i = 0, iend = vpEdgesMono_FHR.size(); i < iend; i++) {
-      ORB_SLAM3::EdgeSE3ProjectXYZOnlyPoseToBody* e = vpEdgesMono_FHR[i];
+      MORB_SLAM::EdgeSE3ProjectXYZOnlyPoseToBody* e = vpEdgesMono_FHR[i];
 
       const size_t idx = vnIndexEdgeRight[i];
 
@@ -1186,10 +1186,10 @@ void Optimizer::LocalBundleAdjustment(KeyFrame* pKF, bool* pbStopFlag,
   const int nExpectedSize =
       (lLocalKeyFrames.size() + lFixedCameras.size()) * lLocalMapPoints.size();
 
-  vector<ORB_SLAM3::EdgeSE3ProjectXYZ*> vpEdgesMono;
+  vector<MORB_SLAM::EdgeSE3ProjectXYZ*> vpEdgesMono;
   vpEdgesMono.reserve(nExpectedSize);
 
-  vector<ORB_SLAM3::EdgeSE3ProjectXYZToBody*> vpEdgesBody;
+  vector<MORB_SLAM::EdgeSE3ProjectXYZToBody*> vpEdgesBody;
   vpEdgesBody.reserve(nExpectedSize);
 
   vector<KeyFrame*> vpEdgeKFMono;
@@ -1250,7 +1250,7 @@ void Optimizer::LocalBundleAdjustment(KeyFrame* pKF, bool* pbStopFlag,
           Eigen::Matrix<double, 2, 1> obs;
           obs << kpUn.pt.x, kpUn.pt.y;
 
-          ORB_SLAM3::EdgeSE3ProjectXYZ* e = new ORB_SLAM3::EdgeSE3ProjectXYZ();
+          MORB_SLAM::EdgeSE3ProjectXYZ* e = new MORB_SLAM::EdgeSE3ProjectXYZ();
 
           e->setVertex(0, dynamic_cast<g2o::OptimizableGraph::Vertex*>(
                               optimizer.vertex(id)));
@@ -1319,8 +1319,8 @@ void Optimizer::LocalBundleAdjustment(KeyFrame* pKF, bool* pbStopFlag,
             cv::KeyPoint kp = pKFi->mvKeysRight[rightIndex];
             obs << kp.pt.x, kp.pt.y;
 
-            ORB_SLAM3::EdgeSE3ProjectXYZToBody* e =
-                new ORB_SLAM3::EdgeSE3ProjectXYZToBody();
+            MORB_SLAM::EdgeSE3ProjectXYZToBody* e =
+                new MORB_SLAM::EdgeSE3ProjectXYZToBody();
 
             e->setVertex(0, dynamic_cast<g2o::OptimizableGraph::Vertex*>(
                                 optimizer.vertex(id)));
@@ -1365,7 +1365,7 @@ void Optimizer::LocalBundleAdjustment(KeyFrame* pKF, bool* pbStopFlag,
 
   // Check inlier observations
   for (size_t i = 0, iend = vpEdgesMono.size(); i < iend; i++) {
-    ORB_SLAM3::EdgeSE3ProjectXYZ* e = vpEdgesMono[i];
+    MORB_SLAM::EdgeSE3ProjectXYZ* e = vpEdgesMono[i];
     MapPoint* pMP = vpMapPointEdgeMono[i];
 
     if (pMP->isBad()) continue;
@@ -1377,7 +1377,7 @@ void Optimizer::LocalBundleAdjustment(KeyFrame* pKF, bool* pbStopFlag,
   }
 
   for (size_t i = 0, iend = vpEdgesBody.size(); i < iend; i++) {
-    ORB_SLAM3::EdgeSE3ProjectXYZToBody* e = vpEdgesBody[i];
+    MORB_SLAM::EdgeSE3ProjectXYZToBody* e = vpEdgesBody[i];
     MapPoint* pMP = vpMapPointEdgeBody[i];
 
     if (pMP->isBad()) continue;
@@ -2086,7 +2086,7 @@ int Optimizer::OptimizeSim3(KeyFrame* pKF1, KeyFrame* pKF2,
   const Eigen::Vector3f t2w = pKF2->GetTranslation();
 
   // Set Sim3 vertex
-  ORB_SLAM3::VertexSim3Expmap* vSim3 = new ORB_SLAM3::VertexSim3Expmap();
+  MORB_SLAM::VertexSim3Expmap* vSim3 = new MORB_SLAM::VertexSim3Expmap();
   vSim3->_fix_scale = bFixScale;
   vSim3->setEstimate(g2oS12);
   vSim3->setId(0);
@@ -2098,8 +2098,8 @@ int Optimizer::OptimizeSim3(KeyFrame* pKF1, KeyFrame* pKF2,
   // Set MapPoint vertices
   const int N = vpMatches1.size();
   const vector<MapPoint*> vpMapPoints1 = pKF1->GetMapPointMatches();
-  vector<ORB_SLAM3::EdgeSim3ProjectXYZ*> vpEdges12;
-  vector<ORB_SLAM3::EdgeInverseSim3ProjectXYZ*> vpEdges21;
+  vector<MORB_SLAM::EdgeSim3ProjectXYZ*> vpEdges12;
+  vector<MORB_SLAM::EdgeInverseSim3ProjectXYZ*> vpEdges21;
   vector<size_t> vnIndexEdge;
   vector<bool> vbIsInKF2;
 
@@ -2191,7 +2191,7 @@ int Optimizer::OptimizeSim3(KeyFrame* pKF1, KeyFrame* pKF2,
     const cv::KeyPoint& kpUn1 = pKF1->mvKeysUn[i];
     obs1 << kpUn1.pt.x, kpUn1.pt.y;
 
-    ORB_SLAM3::EdgeSim3ProjectXYZ* e12 = new ORB_SLAM3::EdgeSim3ProjectXYZ();
+    MORB_SLAM::EdgeSim3ProjectXYZ* e12 = new MORB_SLAM::EdgeSim3ProjectXYZ();
 
     e12->setVertex(
         0, dynamic_cast<g2o::OptimizableGraph::Vertex*>(optimizer.vertex(id2)));
@@ -2228,8 +2228,8 @@ int Optimizer::OptimizeSim3(KeyFrame* pKF1, KeyFrame* pKF2,
       nOutKF2++;
     }
 
-    ORB_SLAM3::EdgeInverseSim3ProjectXYZ* e21 =
-        new ORB_SLAM3::EdgeInverseSim3ProjectXYZ();
+    MORB_SLAM::EdgeInverseSim3ProjectXYZ* e21 =
+        new MORB_SLAM::EdgeInverseSim3ProjectXYZ();
 
     e21->setVertex(
         0, dynamic_cast<g2o::OptimizableGraph::Vertex*>(optimizer.vertex(id1)));
@@ -2259,8 +2259,8 @@ int Optimizer::OptimizeSim3(KeyFrame* pKF1, KeyFrame* pKF2,
   int nBad = 0;
   int nBadOutKF2 = 0;
   for (size_t i = 0; i < vpEdges12.size(); i++) {
-    ORB_SLAM3::EdgeSim3ProjectXYZ* e12 = vpEdges12[i];
-    ORB_SLAM3::EdgeInverseSim3ProjectXYZ* e21 = vpEdges21[i];
+    MORB_SLAM::EdgeSim3ProjectXYZ* e12 = vpEdges12[i];
+    MORB_SLAM::EdgeInverseSim3ProjectXYZ* e21 = vpEdges21[i];
     if (!e12 || !e21) continue;
 
     if (e12->chi2() > th2 || e21->chi2() > th2) {
@@ -2268,8 +2268,8 @@ int Optimizer::OptimizeSim3(KeyFrame* pKF1, KeyFrame* pKF2,
       vpMatches1[idx] = nullptr;
       optimizer.removeEdge(e12);
       optimizer.removeEdge(e21);
-      vpEdges12[i] = static_cast<ORB_SLAM3::EdgeSim3ProjectXYZ*>(nullptr);
-      vpEdges21[i] = static_cast<ORB_SLAM3::EdgeInverseSim3ProjectXYZ*>(nullptr);
+      vpEdges12[i] = static_cast<MORB_SLAM::EdgeSim3ProjectXYZ*>(nullptr);
+      vpEdges21[i] = static_cast<MORB_SLAM::EdgeInverseSim3ProjectXYZ*>(nullptr);
       nBad++;
 
       if (!vbIsInKF2[i]) {
@@ -2298,8 +2298,8 @@ int Optimizer::OptimizeSim3(KeyFrame* pKF1, KeyFrame* pKF2,
   int nIn = 0;
   mAcumHessian = Eigen::MatrixXd::Zero(7, 7);
   for (size_t i = 0; i < vpEdges12.size(); i++) {
-    ORB_SLAM3::EdgeSim3ProjectXYZ* e12 = vpEdges12[i];
-    ORB_SLAM3::EdgeInverseSim3ProjectXYZ* e21 = vpEdges21[i];
+    MORB_SLAM::EdgeSim3ProjectXYZ* e12 = vpEdges12[i];
+    MORB_SLAM::EdgeInverseSim3ProjectXYZ* e21 = vpEdges21[i];
     if (!e12 || !e21) continue;
 
     e12->computeError();
@@ -3526,7 +3526,7 @@ void Optimizer::LocalBundleAdjustment(KeyFrame* pMainKF,
   const int nExpectedSize =
       (vpAdjustKF.size() + vpFixedKF.size()) * vpMPs.size();
 
-  vector<ORB_SLAM3::EdgeSE3ProjectXYZ*> vpEdgesMono;
+  vector<MORB_SLAM::EdgeSE3ProjectXYZ*> vpEdgesMono;
   vpEdgesMono.reserve(nExpectedSize);
 
   vector<KeyFrame*> vpEdgeKFMono;
@@ -3585,7 +3585,7 @@ void Optimizer::LocalBundleAdjustment(KeyFrame* pMainKF,
         Eigen::Matrix<double, 2, 1> obs;
         obs << kpUn.pt.x, kpUn.pt.y;
 
-        ORB_SLAM3::EdgeSE3ProjectXYZ* e = new ORB_SLAM3::EdgeSE3ProjectXYZ();
+        MORB_SLAM::EdgeSE3ProjectXYZ* e = new MORB_SLAM::EdgeSE3ProjectXYZ();
 
         e->setVertex(0, dynamic_cast<g2o::OptimizableGraph::Vertex*>(
                             optimizer.vertex(id)));
@@ -3663,7 +3663,7 @@ void Optimizer::LocalBundleAdjustment(KeyFrame* pMainKF,
     // Check inlier observations
     int badMonoMP = 0, badStereoMP = 0;
     for (size_t i = 0, iend = vpEdgesMono.size(); i < iend; i++) {
-      ORB_SLAM3::EdgeSE3ProjectXYZ* e = vpEdgesMono[i];
+      MORB_SLAM::EdgeSE3ProjectXYZ* e = vpEdgesMono[i];
       MapPoint* pMP = vpMapPointEdgeMono[i];
 
       if (pMP->isBad()) continue;
@@ -3705,7 +3705,7 @@ void Optimizer::LocalBundleAdjustment(KeyFrame* pMainKF,
   // Check inlier observations
   int badMonoMP = 0, badStereoMP = 0;
   for (size_t i = 0, iend = vpEdgesMono.size(); i < iend; i++) {
-    ORB_SLAM3::EdgeSE3ProjectXYZ* e = vpEdgesMono[i];
+    MORB_SLAM::EdgeSE3ProjectXYZ* e = vpEdgesMono[i];
     MapPoint* pMP = vpMapPointEdgeMono[i];
 
     if (pMP->isBad()) continue;
@@ -3796,7 +3796,7 @@ void Optimizer::LocalBundleAdjustment(KeyFrame* pMainKF,
     vector<MapPoint*> vpMonoMPsBad, vpStereoMPsBad;
 
     for (size_t i = 0, iend = vpEdgesMono.size(); i < iend; i++) {
-      ORB_SLAM3::EdgeSE3ProjectXYZ* e = vpEdgesMono[i];
+      MORB_SLAM::EdgeSE3ProjectXYZ* e = vpEdgesMono[i];
       MapPoint* pMP = vpMapPointEdgeMono[i];
       KeyFrame* pKFedge = vpEdgeKFMono[i];
 
@@ -5470,4 +5470,4 @@ void Optimizer::OptimizeEssentialGraph4DoF(
   pMap->IncreaseChangeIndex();
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

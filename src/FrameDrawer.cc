@@ -28,7 +28,7 @@
 #include "Atlas.h"
 #include "Tracking.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 FrameDrawer::FrameDrawer(const Atlas_ptr &pAtlas) : both(false), mpAtlas(pAtlas) {
   mState = Tracker::SYSTEM_NOT_READY;
@@ -336,4 +336,4 @@ void FrameDrawer::Update(const Tracking_ptr &pTracker) {
   mState = static_cast<int>(pTracker->mLastProcessedState);
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

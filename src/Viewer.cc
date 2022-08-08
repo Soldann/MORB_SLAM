@@ -34,7 +34,7 @@
 #include "Atlas.h"
 #include "Tracking.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 void Viewer::setBoth(const bool b){
   both = true;
@@ -367,4 +367,4 @@ void Viewer::close(){
   mbClosed = true;
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

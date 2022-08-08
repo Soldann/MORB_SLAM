@@ -26,7 +26,7 @@
 #include "Converter.h"
 #include "GeometricTools.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 namespace IMU {
 
@@ -406,4 +406,4 @@ Calib::Calib(const Calib &calib) {
 
 }  // namespace IMU
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

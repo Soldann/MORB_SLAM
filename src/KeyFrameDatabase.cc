@@ -28,7 +28,7 @@
 
 using namespace std;
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 KeyFrameDatabase::KeyFrameDatabase(const ORBVocabulary& voc) : mpVoc(&voc) {
   mvInvertedFile.resize(voc.size());
@@ -822,4 +822,4 @@ void KeyFrameDatabase::SetORBVocabulary(ORBVocabulary* pORBVoc) {
   mvInvertedFile.resize(mpVoc->size());
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

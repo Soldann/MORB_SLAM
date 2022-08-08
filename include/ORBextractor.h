@@ -25,7 +25,7 @@
 #include <opencv2/opencv.hpp>
 #include <vector>
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 class ExtractorNode {
  public:
@@ -99,4 +99,4 @@ class ORBextractor {
   std::vector<float> mvInvLevelSigma2;
 };
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

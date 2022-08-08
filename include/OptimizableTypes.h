@@ -29,7 +29,7 @@
 
 #include "g2o/core/base_unary_edge.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 class EdgeSE3ProjectXYZOnlyPose
     : public g2o::BaseUnaryEdge<2, Eigen::Vector2d, g2o::VertexSE3Expmap> {
  public:
@@ -187,7 +187,7 @@ class VertexSim3Expmap : public g2o::BaseVertex<7, g2o::Sim3> {
 
 class EdgeSim3ProjectXYZ
     : public g2o::BaseBinaryEdge<2, Eigen::Vector2d, g2o::VertexSBAPointXYZ,
-                                 ORB_SLAM3::VertexSim3Expmap> {
+                                 MORB_SLAM::VertexSim3Expmap> {
  public:
   
   EdgeSim3ProjectXYZ();
@@ -195,8 +195,8 @@ class EdgeSim3ProjectXYZ
   virtual bool write(std::ostream& os) const;
 
   void computeError() {
-    const ORB_SLAM3::VertexSim3Expmap* v1 =
-        static_cast<const ORB_SLAM3::VertexSim3Expmap*>(_vertices[1]);
+    const MORB_SLAM::VertexSim3Expmap* v1 =
+        static_cast<const MORB_SLAM::VertexSim3Expmap*>(_vertices[1]);
     const g2o::VertexSBAPointXYZ* v2 =
         static_cast<const g2o::VertexSBAPointXYZ*>(_vertices[0]);
 
@@ -217,8 +217,8 @@ class EdgeInverseSim3ProjectXYZ
   virtual bool write(std::ostream& os) const;
 
   void computeError() {
-    const ORB_SLAM3::VertexSim3Expmap* v1 =
-        static_cast<const ORB_SLAM3::VertexSim3Expmap*>(_vertices[1]);
+    const MORB_SLAM::VertexSim3Expmap* v1 =
+        static_cast<const MORB_SLAM::VertexSim3Expmap*>(_vertices[1]);
     const g2o::VertexSBAPointXYZ* v2 =
         static_cast<const g2o::VertexSBAPointXYZ*>(_vertices[0]);
 
@@ -230,4 +230,4 @@ class EdgeInverseSim3ProjectXYZ
   // virtual void linearizeOplus();
 };
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

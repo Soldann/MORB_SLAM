@@ -30,7 +30,7 @@
 #include <stdexcept>
 
 
-namespace ORB_SLAM3
+namespace MORB_SLAM
 {
 
 class MapPoint;
@@ -202,4 +202,4 @@ protected:
 
 };
 
-} //namespace ORB_SLAM3
+} //namespace MORB_SLAM

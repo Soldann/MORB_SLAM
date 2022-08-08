@@ -29,7 +29,7 @@
 #include "sophus/geometry.hpp"
 #include "sophus/sim3.hpp"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 class Converter {
  public:
@@ -75,4 +75,4 @@ class Converter {
   static Sophus::Sim3f toSophus(const g2o::Sim3 &S);
 };
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

@@ -34,7 +34,7 @@
 
 #include "CameraModels/GeometricCamera.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 class System;
 
@@ -235,5 +235,5 @@ class Settings {
    */
   float thFarPoints_;
 };
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM
 

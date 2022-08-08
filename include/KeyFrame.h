@@ -37,7 +37,7 @@
 #include "ORBextractor.h"
 #include "SerializationUtils.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 class Map;
 class MapPoint;
@@ -538,5 +538,5 @@ class KeyFrame {
   }
 };
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM
 

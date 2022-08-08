@@ -12,7 +12,7 @@
 #include <deque>
 #include <utility>
 
-namespace ORB_SLAM3{
+namespace MORB_SLAM{
 
 
 template<typename T>
@@ -89,4 +89,4 @@ public:
 typedef std::shared_ptr<Camera> Camera_ptr;
 typedef std::weak_ptr<Camera> Camera_wptr;
 
-} // namespace ORB_SLAM3
+} // namespace MORB_SLAM

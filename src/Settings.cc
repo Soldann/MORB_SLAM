@@ -30,7 +30,7 @@
 #include "CameraModels/KannalaBrandt8.h"
 #include "CameraModels/Pinhole.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 template <>
 float Settings::readParameter<float>(cv::FileStorage& fSettings,
@@ -152,7 +152,7 @@ Settings::Settings(const std::string& configFile, const int& sensor)
   std::cout << "\t-Loaded camera 1" << std::endl;
 
   // Read second camera if stereo (not rectified)
-  if (sensor_ == ORB_SLAM3::CameraType::STEREO || sensor_ == ORB_SLAM3::CameraType::IMU_STEREO) {
+  if (sensor_ == MORB_SLAM::CameraType::STEREO || sensor_ == MORB_SLAM::CameraType::IMU_STEREO) {
     readCamera2(fSettings);
     std::cout << "\t-Loaded camera 2" << std::endl;
   }
@@ -161,13 +161,13 @@ Settings::Settings(const std::string& configFile, const int& sensor)
   readImageInfo(fSettings);
   std::cout << "\t-Loaded image info" << std::endl;
 
-  if (sensor_ == ORB_SLAM3::CameraType::IMU_MONOCULAR || sensor_ == ORB_SLAM3::CameraType::IMU_STEREO ||
-      sensor_ == ORB_SLAM3::CameraType::IMU_RGBD) {
+  if (sensor_ == MORB_SLAM::CameraType::IMU_MONOCULAR || sensor_ == MORB_SLAM::CameraType::IMU_STEREO ||
+      sensor_ == MORB_SLAM::CameraType::IMU_RGBD) {
     readIMU(fSettings);
     std::cout << "\t-Loaded IMU calibration" << std::endl;
   }
 
-  if (sensor_ == ORB_SLAM3::CameraType::RGBD || sensor_ == ORB_SLAM3::CameraType::IMU_RGBD) {
+  if (sensor_ == MORB_SLAM::CameraType::RGBD || sensor_ == MORB_SLAM::CameraType::IMU_RGBD) {
     readRGBD(fSettings);
     std::cout << "\t-Loaded RGB-D calibration" << std::endl;
   }
@@ -232,7 +232,7 @@ void Settings::readCamera1(cv::FileStorage& fSettings) {
     }
 
     // Check if we need to correct distortion from the images
-    if ((sensor_ == ORB_SLAM3::CameraType::MONOCULAR || sensor_ == ORB_SLAM3::CameraType::IMU_MONOCULAR) &&
+    if ((sensor_ == MORB_SLAM::CameraType::MONOCULAR || sensor_ == MORB_SLAM::CameraType::IMU_MONOCULAR) &&
         vPinHoleDistorsion1_.size() != 0) {
       bNeedToUndistort_ = true;
     }
@@ -270,7 +270,7 @@ void Settings::readCamera1(cv::FileStorage& fSettings) {
     calibration1_ = std::make_shared<KannalaBrandt8>(vCalibration);
     originalCalib1_ = new KannalaBrandt8(vCalibration);
 
-    if (sensor_ == ORB_SLAM3::CameraType::STEREO || sensor_ == ORB_SLAM3::CameraType::IMU_STEREO) {
+    if (sensor_ == MORB_SLAM::CameraType::STEREO || sensor_ == MORB_SLAM::CameraType::IMU_STEREO) {
       int colBegin =
           readParameter<int>(fSettings, "Camera1.overlappingBegin", found);
       int colEnd =
@@ -388,7 +388,7 @@ void Settings::readImageInfo(cv::FileStorage& fSettings) {
       calibration1_->setParameter(
           calibration1_->getParameter(3) * scaleRowFactor, 3);
 
-      if ((sensor_ == ORB_SLAM3::CameraType::STEREO || sensor_ == ORB_SLAM3::CameraType::IMU_STEREO) &&
+      if ((sensor_ == MORB_SLAM::CameraType::STEREO || sensor_ == MORB_SLAM::CameraType::IMU_STEREO) &&
           cameraType_ != Rectified) {
         calibration2_->setParameter(
             calibration2_->getParameter(1) * scaleRowFactor, 1);
@@ -412,7 +412,7 @@ void Settings::readImageInfo(cv::FileStorage& fSettings) {
       calibration1_->setParameter(
           calibration1_->getParameter(2) * scaleColFactor, 2);
 
-      if ((sensor_ == ORB_SLAM3::CameraType::STEREO || sensor_ == ORB_SLAM3::CameraType::IMU_STEREO) &&
+      if ((sensor_ == MORB_SLAM::CameraType::STEREO || sensor_ == MORB_SLAM::CameraType::IMU_STEREO) &&
           cameraType_ != Rectified) {
         calibration2_->setParameter(
             calibration2_->getParameter(0) * scaleColFactor, 0);
@@ -554,7 +554,7 @@ void Settings::precomputeRectificationMaps() {
   bf_ = b_ * P1.at<double>(0, 0);
 
   // Update relative pose between camera 1 and IMU if necessary
-  if (sensor_ == ORB_SLAM3::CameraType::IMU_STEREO) {
+  if (sensor_ == MORB_SLAM::CameraType::IMU_STEREO) {
     Eigen::Matrix3f eigenR_r1_u1;
     cv::cv2eigen(R_r1_u1, eigenR_r1_u1);
     Sophus::SE3f T_r1_u1(eigenR_r1_u1, Eigen::Vector3f::Zero());
@@ -587,8 +587,8 @@ std::ostream& operator<<(std::ostream& output, const Settings& settings) {
     output << " ]" << std::endl;
   }
   std::cout << "bout to start camera 2 stuff\n";
-  if (settings.sensor_ == ORB_SLAM3::CameraType::STEREO ||
-      settings.sensor_ == ORB_SLAM3::CameraType::IMU_STEREO) {
+  if (settings.sensor_ == MORB_SLAM::CameraType::STEREO ||
+      settings.sensor_ == MORB_SLAM::CameraType::IMU_STEREO) {
     output << "\t-Camera 2 parameters (";
     if (settings.cameraType_ == Settings::PinHole ||
         settings.cameraType_ == Settings::Rectified) {
@@ -630,8 +630,8 @@ std::ostream& operator<<(std::ostream& output, const Settings& settings) {
     }
     output << " ]" << std::endl;
 
-    if ((settings.sensor_ == ORB_SLAM3::CameraType::STEREO ||
-         settings.sensor_ == ORB_SLAM3::CameraType::IMU_STEREO) &&
+    if ((settings.sensor_ == MORB_SLAM::CameraType::STEREO ||
+         settings.sensor_ == MORB_SLAM::CameraType::IMU_STEREO) &&
         settings.cameraType_ == Settings::KannalaBrandt) {
       output << "\t-Camera 2 parameters after resize: [ ";
       for (size_t i = 0; i < settings.calibration2_->size(); i++) {
@@ -644,8 +644,8 @@ std::ostream& operator<<(std::ostream& output, const Settings& settings) {
   output << "\t-Sequence FPS: " << settings.fps_ << std::endl;
 
   // Stereo stuff
-  if (settings.sensor_ == ORB_SLAM3::CameraType::STEREO ||
-      settings.sensor_ == ORB_SLAM3::CameraType::IMU_STEREO) {
+  if (settings.sensor_ == MORB_SLAM::CameraType::STEREO ||
+      settings.sensor_ == MORB_SLAM::CameraType::IMU_STEREO) {
     output << "\t-Stereo baseline: " << settings.b_ << std::endl;
     output << "\t-Stereo depth threshold : " << settings.thDepth_ << std::endl;
 
@@ -661,9 +661,9 @@ std::ostream& operator<<(std::ostream& output, const Settings& settings) {
     }
   }
 
-  if (settings.sensor_ == ORB_SLAM3::CameraType::IMU_MONOCULAR ||
-      settings.sensor_ == ORB_SLAM3::CameraType::IMU_STEREO ||
-      settings.sensor_ == ORB_SLAM3::CameraType::IMU_RGBD) {
+  if (settings.sensor_ == MORB_SLAM::CameraType::IMU_MONOCULAR ||
+      settings.sensor_ == MORB_SLAM::CameraType::IMU_STEREO ||
+      settings.sensor_ == MORB_SLAM::CameraType::IMU_RGBD) {
     output << "\t-Gyro noise: " << settings.noiseGyro_ << std::endl;
     output << "\t-Accelerometer noise: " << settings.noiseAcc_ << std::endl;
     output << "\t-Gyro walk: " << settings.gyroWalk_ << std::endl;
@@ -671,8 +671,8 @@ std::ostream& operator<<(std::ostream& output, const Settings& settings) {
     output << "\t-IMU frequency: " << settings.imuFrequency_ << std::endl;
   }
 
-  if (settings.sensor_ == ORB_SLAM3::CameraType::RGBD ||
-      settings.sensor_ == ORB_SLAM3::CameraType::IMU_RGBD) {
+  if (settings.sensor_ == MORB_SLAM::CameraType::RGBD ||
+      settings.sensor_ == MORB_SLAM::CameraType::IMU_RGBD) {
     output << "\t-RGB-D depth map factor: " << settings.depthMapFactor_ << std::endl;
   }
 
@@ -684,4 +684,4 @@ std::ostream& operator<<(std::ostream& output, const Settings& settings) {
 
   return output;
 }
-};  // namespace ORB_SLAM3
+};  // namespace MORB_SLAM

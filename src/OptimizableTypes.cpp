@@ -21,7 +21,7 @@
 
 #include "OptimizableTypes.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 bool EdgeSE3ProjectXYZOnlyPose::read(std::istream& is) {
   for (int i = 0; i < 2; i++) {
     is >> _measurement[i];
@@ -310,4 +310,4 @@ bool EdgeInverseSim3ProjectXYZ::write(std::ostream& os) const {
   return os.good();
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

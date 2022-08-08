@@ -26,7 +26,7 @@
 #include "GeometricCamera.h"
 #include "TwoViewReconstruction.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 class KannalaBrandt8 : public GeometricCamera {
   friend class boost::serialization::access;
 
@@ -130,5 +130,5 @@ class KannalaBrandt8 : public GeometricCamera {
                    const Eigen::Matrix<float, 3, 4>& Tcw2,
                    Eigen::Vector3f& x3D);
 };
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM
 

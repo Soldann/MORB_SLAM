@@ -34,7 +34,7 @@
 #include "Map.h"
 #include "ORBVocabulary.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 class KeyFrame;
 class Frame;
@@ -95,5 +95,5 @@ class KeyFrameDatabase {
   std::mutex mMutex;
 };
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM
 

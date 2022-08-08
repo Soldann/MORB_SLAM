@@ -25,7 +25,7 @@
 
 #include<mutex>
 
-namespace ORB_SLAM3
+namespace MORB_SLAM
 {
 
 class Settings;

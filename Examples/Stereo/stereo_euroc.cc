@@ -89,8 +89,8 @@ int main(int argc, char **argv)
     cout.precision(17);
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
-    ORB_SLAM3::System_ptr SLAM = std::make_shared<ORB_SLAM3::System>(argv[1],argv[2],ORB_SLAM3::CameraType::STEREO);
-    ORB_SLAM3::Viewer viewer(SLAM, argv[2]);
+    MORB_SLAM::System_ptr SLAM = std::make_shared<MORB_SLAM::System>(argv[1],argv[2],MORB_SLAM::CameraType::STEREO);
+    MORB_SLAM::Viewer viewer(SLAM, argv[2]);
 
     cv::Mat imLeft, imRight;
     for (seq = 0; seq<num_seq; seq++)
@@ -129,7 +129,7 @@ int main(int argc, char **argv)
             std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
 
             // Pass the images to the SLAM system
-            auto pos = SLAM->TrackStereo(imLeft,imRight,tframe, vector<ORB_SLAM3::IMU::Point>(), vstrImageLeft[seq][ni]);
+            auto pos = SLAM->TrackStereo(imLeft,imRight,tframe, vector<MORB_SLAM::IMU::Point>(), vstrImageLeft[seq][ni]);
 
             std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
 

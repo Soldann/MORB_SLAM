@@ -23,7 +23,7 @@
 
 #include "Converter.h"
 #include "ImuTypes.h"
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 ImuCamPose::ImuCamPose(KeyFrame* pKF) : its(0) {
   // Load IMU pose
@@ -853,4 +853,4 @@ Eigen::Matrix3d Skew(const Eigen::Vector3d& w) {
   return W;
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

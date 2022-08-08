@@ -30,7 +30,7 @@
 #include "MapPoint.h"
 #include "sophus/sim3.hpp"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 class ORBmatcher {
  public:
@@ -127,5 +127,5 @@ class ORBmatcher {
   bool mbCheckOrientation;
 };
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM
 

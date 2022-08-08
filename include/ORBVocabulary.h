@@ -24,9 +24,9 @@
 #include "DBoW2/FORB.h"
 #include "DBoW2/TemplatedVocabulary.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 typedef DBoW2::TemplatedVocabulary<DBoW2::FORB::TDescriptor, DBoW2::FORB>
     ORBVocabulary;
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

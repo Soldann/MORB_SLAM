@@ -33,7 +33,7 @@
 #include <mutex>
 #include "g2o/types/types_seven_dof_expmap.h"
 
-namespace ORB_SLAM3
+namespace MORB_SLAM
 {
 
 class Tracking;

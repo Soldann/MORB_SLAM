@@ -23,9 +23,9 @@
 
 #include <boost/serialization/export.hpp>
 
-// BOOST_CLASS_EXPORT_IMPLEMENT(ORB_SLAM3::Pinhole)
+// BOOST_CLASS_EXPORT_IMPLEMENT(MORB_SLAM::Pinhole)
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 // BOOST_CLASS_EXPORT_GUID(Pinhole, "Pinhole")
 
 long unsigned int GeometricCamera::nNextId = 0;
@@ -170,4 +170,4 @@ bool Pinhole::IsEqual(const std::shared_ptr<GeometricCamera> &pCam) {
   }
   return is_same_camera;
 }
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

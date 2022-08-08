@@ -34,7 +34,7 @@
 #include "ORBextractor.h"
 #include "ORBmatcher.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 long unsigned int Frame::nNextId = 0;
 bool Frame::mbInitialComputations = true;
@@ -1099,6 +1099,7 @@ bool Frame::imuIsPreintegrated() {
 
 void Frame::setIntegrated() {
   unique_lock<std::mutex> lock(*mpMutexImu);
+  std::cout << "-----------------------------------------------------------" << std::endl;
   mbImuPreintegrated = true;
 }
 
@@ -1364,4 +1365,4 @@ Eigen::Vector3f Frame::UnprojectStereoFishEye(const int &i) {
   return mRwc * mvStereo3Dpoints[i] + mOw;
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

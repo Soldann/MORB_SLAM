@@ -21,7 +21,7 @@
 
 #include "Converter.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 std::vector<cv::Mat> Converter::toDescriptorVector(const cv::Mat &Descriptors) {
   std::vector<cv::Mat> vDesc;
@@ -282,4 +282,4 @@ Sophus::Sim3f Converter::toSophus(const g2o::Sim3 &S) {
       S.translation().cast<float>());
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

@@ -38,7 +38,7 @@
 
 using namespace std;
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 Tracking::Tracking(System* pSys, ORBVocabulary* pVoc, const Atlas_ptr &pAtlas,
                    KeyFrameDatabase* pKFDB, const string& strSettingPath,
@@ -3641,7 +3641,7 @@ void Tracking::UpdateFrameIMU(const float s, const IMU::Bias& b,
                               KeyFrame* pCurrentKeyFrame) {
   std::shared_ptr<Map> pMap = pCurrentKeyFrame->GetMap();
   // unsigned int index = mnFirstFrameId; // UNUSED
-  list<ORB_SLAM3::KeyFrame*>::iterator lRit = mlpReferences.begin();
+  list<MORB_SLAM::KeyFrame*>::iterator lRit = mlpReferences.begin();
   list<bool>::iterator lbL = mlbLost.begin();
   for (auto lit = mlRelativeFramePoses.begin(),
             lend = mlRelativeFramePoses.end();
@@ -3765,4 +3765,4 @@ void Tracking::Release() {
 }
 #endif
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

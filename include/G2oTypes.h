@@ -36,7 +36,7 @@
 #include"Converter.h"
 #include <math.h>
 
-namespace ORB_SLAM3
+namespace MORB_SLAM
 {
 
 class KeyFrame;

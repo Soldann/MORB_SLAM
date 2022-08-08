@@ -40,7 +40,7 @@
 #include "ImprovedTypes.hpp"
 #include "Camera.hpp"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 class Atlas;
 class LocalMapping;
@@ -360,5 +360,5 @@ class Tracking {
   cv::Mat mImRight;
 };
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM
 

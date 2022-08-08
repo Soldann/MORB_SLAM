@@ -25,7 +25,7 @@
 #include "KannalaBrandt8.h"
 #include "Pinhole.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 Atlas::Atlas() { mpCurrentMap = nullptr; }
 
@@ -325,4 +325,4 @@ map<long unsigned int, KeyFrame*> Atlas::GetAtlasKeyframes() {
   return mpIdKFs;
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

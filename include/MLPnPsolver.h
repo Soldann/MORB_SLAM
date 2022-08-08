@@ -57,7 +57,7 @@
 #include "Frame.h"
 #include "MapPoint.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 class MLPnPsolver {
  public:
   
@@ -240,4 +240,4 @@ class MLPnPsolver {
   std::shared_ptr<GeometricCamera> mpCamera;
 };
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

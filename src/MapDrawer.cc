@@ -30,7 +30,7 @@
 #include "KeyFrame.h"
 #include "MapPoint.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 MapDrawer::MapDrawer(const Atlas_ptr &pAtlas, const std::string &strSettingPath): mpAtlas(pAtlas){
     cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
@@ -419,4 +419,4 @@ void MapDrawer::GetCurrentOpenGLCameraMatrix(pangolin::OpenGlMatrix &M,
   MOw.m[13] = Twc(1, 3);
   MOw.m[14] = Twc(2, 3);
 }
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

@@ -39,7 +39,7 @@
 #include "Camera.hpp"
 
 
-namespace ORB_SLAM3
+namespace MORB_SLAM
 {
 
 class Verbose

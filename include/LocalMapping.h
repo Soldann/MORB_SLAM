@@ -31,7 +31,7 @@
 #include "Settings.h"
 #include "Tracking.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 class System;
 class Tracking;
@@ -194,5 +194,5 @@ class LocalMapping {
   ofstream f_lm;
 };
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM
 
