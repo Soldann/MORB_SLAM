@@ -54,45 +54,18 @@ FROM ubuntu:20.04
 ########################################################################
 
 
-# First: get all the dependencies:
-#
-RUN apt-get update
-RUN apt-get install -y cmake git libgtk2.0-dev pkg-config libavcodec-dev \
-libavformat-dev libswscale-dev python-dev python-numpy libtbb2 libtbb-dev \
-libjpeg-dev libpng-dev libtiff-dev libdc1394-22-dev unzip
+# Install minimal prerequisites (Ubuntu 18.04 as reference)
+sudo apt update && sudo apt install -y cmake g++ wget unzip
+# Download and unpack sources
+wget -O opencv.zip https://github.com/opencv/opencv/archive/4.5.zip
+unzip opencv.zip
+# Create build directory
+mkdir -p build && cd build
+# Configure
+cmake  ../opencv-4.5
+# Build
+cmake --build .
 
-RUN apt-get install -y wget
-
-# Just get a simple editor for convienience (you could just cancel this line)
-RUN apt-get install -y vim
-
-
-# Second: get and build OpenCV 4.5
-#
-RUN cd \
-    && wget https://github.com/opencv/opencv/archive/4.5.0.zip \
-    && unzip 4.5.0.zip \
-    && cd opencv-4.5.0 \
-    && mkdir build \
-    && cd build \
-    && cmake .. \
-    && make -j8 \
-    && make install \
-    && cd \
-    && rm 4.5.0.zip
-
-
-# Third: install and build opencv_contrib
-#
-RUN cd \
-    && wget https://github.com/opencv/opencv_contrib/archive/4.5.0.zip \
-    && unzip 4.5.0.zip \
-    && cd opencv-3.2.0/build \
-    && cmake -DOPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-4.5.0/modules/ .. \
-    && make -j8 \
-    && make install \
-    && cd ../.. \
-    && rm 4.5.0.zip
 
 RUN cd \
     && git clone https://github.com/Soldann/MORB_SLAM.git \
