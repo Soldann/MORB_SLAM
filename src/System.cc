@@ -19,13 +19,13 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "System.h"
+#include "MORB_SLAM/System.h"
 
 #include <openssl/md5.h>
 #include <opencv2/opencv.hpp>
 #include <pangolin/pangolin.h>
 
-#include "ImprovedTypes.hpp"
+#include "MORB_SLAM/ImprovedTypes.hpp"
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
@@ -41,9 +41,9 @@
 #include <string>
 #include <iostream>
 
-#include "Converter.h"
+#include "MORB_SLAM/Converter.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 Verbose::eLevel Verbose::th = Verbose::VERBOSITY_NORMAL;
 
@@ -208,7 +208,7 @@ System::System(const std::string& strVocFile, const std::string& strSettingsFile
       this, mpAtlas, mSensor == CameraType::MONOCULAR || mSensor == CameraType::IMU_MONOCULAR,
       mSensor == CameraType::IMU_MONOCULAR || mSensor == CameraType::IMU_STEREO || mSensor == CameraType::IMU_RGBD,
       strSequence);
-  mptLocalMapping = new thread(&ORB_SLAM3::LocalMapping::Run, mpLocalMapper);
+  mptLocalMapping = new thread(&MORB_SLAM::LocalMapping::Run, mpLocalMapper);
   if (settings_)
     mpLocalMapper->mThFarPoints = settings_->thFarPoints();
   else
@@ -225,7 +225,7 @@ System::System(const std::string& strVocFile, const std::string& strSettingsFile
   mpLoopCloser =
       new LoopClosing(mpAtlas, mpKeyFrameDatabase, mpVocabulary,
                       mSensor != CameraType::MONOCULAR, activeLC);  // mSensor!=CameraType::MONOCULAR);
-  mptLoopClosing = new thread(&ORB_SLAM3::LoopClosing::Run, mpLoopCloser);
+  mptLoopClosing = new thread(&MORB_SLAM::LoopClosing::Run, mpLoopCloser);
 
   // Set pointers between threads
   mpTracker->SetLocalMapper(mpLocalMapper);
@@ -555,7 +555,7 @@ void System::SaveTrajectoryTUM(const string& filename) {
 
   // For each frame we have a reference keyframe (lRit), the timestamp (lT) and
   // a flag which is true when tracking failed (lbL).
-  list<ORB_SLAM3::KeyFrame*>::iterator lRit = mpTracker->mlpReferences.begin();
+  list<MORB_SLAM::KeyFrame*>::iterator lRit = mpTracker->mlpReferences.begin();
   list<double>::iterator lT = mpTracker->mlFrameTimes.begin();
   list<bool>::iterator lbL = mpTracker->mlbLost.begin();
   for (list<Sophus::SE3f>::iterator
@@ -674,7 +674,7 @@ void System::SaveTrajectoryEuRoC(const string& filename) {
 
   // For each frame we have a reference keyframe (lRit), the timestamp (lT) and
   // a flag which is true when tracking failed (lbL).
-  list<ORB_SLAM3::KeyFrame*>::iterator lRit = mpTracker->mlpReferences.begin();
+  list<MORB_SLAM::KeyFrame*>::iterator lRit = mpTracker->mlpReferences.begin();
   list<double>::iterator lT = mpTracker->mlFrameTimes.begin();
   list<bool>::iterator lbL = mpTracker->mlbLost.begin();
 
@@ -780,7 +780,7 @@ void System::SaveTrajectoryEuRoC(const string& filename, std::shared_ptr<Map> pM
 
   // For each frame we have a reference keyframe (lRit), the timestamp (lT) and
   // a flag which is true when tracking failed (lbL).
-  list<ORB_SLAM3::KeyFrame*>::iterator lRit = mpTracker->mlpReferences.begin();
+  list<MORB_SLAM::KeyFrame*>::iterator lRit = mpTracker->mlpReferences.begin();
   list<double>::iterator lT = mpTracker->mlFrameTimes.begin();
   list<bool>::iterator lbL = mpTracker->mlbLost.begin();
 
@@ -895,7 +895,7 @@ transformation.
     // For each frame we have a reference keyframe (lRit), the timestamp (lT)
 and a flag
     // which is true when tracking failed (lbL).
-    list<ORB_SLAM3::KeyFrame*>::iterator lRit =
+    list<MORB_SLAM::KeyFrame*>::iterator lRit =
 mpTracker->mlpReferences.begin(); list<double>::iterator lT =
 mpTracker->mlFrameTimes.begin(); list<bool>::iterator lbL =
 mpTracker->mlbLost.begin();
@@ -1166,13 +1166,13 @@ transformation.
     // For each frame we have a reference keyframe (lRit), the timestamp (lT)
 and a flag
     // which is true when tracking failed (lbL).
-    list<ORB_SLAM3::KeyFrame*>::iterator lRit =
+    list<MORB_SLAM::KeyFrame*>::iterator lRit =
 mpTracker->mlpReferences.begin(); list<double>::iterator lT =
 mpTracker->mlFrameTimes.begin(); for(list<cv::Mat>::iterator
 lit=mpTracker->mlRelativeFramePoses.begin(),
 lend=mpTracker->mlRelativeFramePoses.end();lit!=lend;lit++, lRit++, lT++)
     {
-        ORB_SLAM3::KeyFrame* pKF = *lRit;
+        MORB_SLAM::KeyFrame* pKF = *lRit;
 
         cv::Mat Trw = cv::Mat::eye(4,4,CV_32F);
 
@@ -1223,13 +1223,13 @@ void System::SaveTrajectoryKITTI(const string& filename) {
 
   // For each frame we have a reference keyframe (lRit), the timestamp (lT) and
   // a flag which is true when tracking failed (lbL).
-  list<ORB_SLAM3::KeyFrame*>::iterator lRit = mpTracker->mlpReferences.begin();
+  list<MORB_SLAM::KeyFrame*>::iterator lRit = mpTracker->mlpReferences.begin();
   list<double>::iterator lT = mpTracker->mlFrameTimes.begin();
   for (list<Sophus::SE3f>::iterator
            lit = mpTracker->mlRelativeFramePoses.begin(),
            lend = mpTracker->mlRelativeFramePoses.end();
        lit != lend; lit++, lRit++, lT++) {
-    ORB_SLAM3::KeyFrame* pKF = *lRit;
+    MORB_SLAM::KeyFrame* pKF = *lRit;
 
     Sophus::SE3f Trw;
 
@@ -1550,4 +1550,4 @@ string System::CalculateCheckSum(string filename, int type) {
   return checksum;
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

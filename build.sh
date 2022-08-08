@@ -41,7 +41,7 @@ if [ ! -f "ORBvoc.txt" ]; then
 fi
 cd ..
 
-echo "Configuring and building ORB_SLAM3 ..."
+echo "Configuring and building MORB_SLAM ..."
 
 mkdir build 2> /dev/null
 cd build

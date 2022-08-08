@@ -19,22 +19,22 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Frame.h"
+#include "MORB_SLAM/Frame.h"
 
-#include <KannalaBrandt8.h>
-#include <Pinhole.h>
+#include <MORB_SLAM/CameraModels/KannalaBrandt8.h>
+#include <MORB_SLAM/CameraModels/Pinhole.h>
 
 #include <thread>
 
-#include "Converter.h"
-#include "G2oTypes.h"
-#include "GeometricCamera.h"
-#include "KeyFrame.h"
-#include "MapPoint.h"
-#include "ORBextractor.h"
-#include "ORBmatcher.h"
+#include "MORB_SLAM/Converter.h"
+#include "MORB_SLAM/G2oTypes.h"
+#include "MORB_SLAM/CameraModels/GeometricCamera.h"
+#include "MORB_SLAM/KeyFrame.h"
+#include "MORB_SLAM/MapPoint.h"
+#include "MORB_SLAM/ORBextractor.h"
+#include "MORB_SLAM/ORBmatcher.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 long unsigned int Frame::nNextId = 0;
 bool Frame::mbInitialComputations = true;
@@ -1364,4 +1364,4 @@ Eigen::Vector3f Frame::UnprojectStereoFishEye(const int &i) {
   return mRwc * mvStereo3Dpoints[i] + mOw;
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

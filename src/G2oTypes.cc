@@ -19,11 +19,11 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "G2oTypes.h"
+#include "MORB_SLAM/G2oTypes.h"
 
-#include "Converter.h"
-#include "ImuTypes.h"
-namespace ORB_SLAM3 {
+#include "MORB_SLAM/Converter.h"
+#include "MORB_SLAM/ImuTypes.h"
+namespace MORB_SLAM {
 
 ImuCamPose::ImuCamPose(KeyFrame* pKF) : its(0) {
   // Load IMU pose
@@ -853,4 +853,4 @@ Eigen::Matrix3d Skew(const Eigen::Vector3d& w) {
   return W;
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

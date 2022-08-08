@@ -29,10 +29,10 @@
 
 #include <librealsense2/rs.hpp>
 
-#include <System.h>
-#include <Viewer.h>
+#include <MORB_SLAM/System.h>
+#include <MORB_SLAM/Viewer.h>
 #include <condition_variable>
-#include "ImuTypes.h"
+#include "MORB_SLAM/ImuTypes.h"
 
 using namespace std;
 
@@ -65,8 +65,8 @@ int main(int argc, char **argv)
         // bFileName = true; // UNUSED
     }
 
-    ORB_SLAM3::System_ptr SLAM = std::make_shared<ORB_SLAM3::System>(argv[1],argv[2],ORB_SLAM3::CameraType::IMU_MONOCULAR, file_name);
-    ORB_SLAM3::Viewer viewer(SLAM, argv[2]);
+    MORB_SLAM::System_ptr SLAM = std::make_shared<MORB_SLAM::System>(argv[1],argv[2],MORB_SLAM::CameraType::IMU_MONOCULAR, file_name);
+    MORB_SLAM::Viewer viewer(SLAM, argv[2]);
     float imageScale = SLAM->GetImageScale();
 
     struct sigaction sigIntHandler;
@@ -206,7 +206,7 @@ int main(int argc, char **argv)
 
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
-    vector<ORB_SLAM3::IMU::Point> vImuMeas;
+    vector<MORB_SLAM::IMU::Point> vImuMeas;
 
     double timestamp;
     cv::Mat im;
@@ -286,7 +286,7 @@ int main(int argc, char **argv)
 
 
         for(size_t i=0; i<vGyro.size(); ++i){
-            ORB_SLAM3::IMU::Point lastPoint(vAccel[i].x, vAccel[i].y, vAccel[i].z,
+            MORB_SLAM::IMU::Point lastPoint(vAccel[i].x, vAccel[i].y, vAccel[i].z,
                                             vGyro[i].x, vGyro[i].y, vGyro[i].z,
                                             vGyro_times[i]);
             vImuMeas.push_back(lastPoint);

@@ -24,8 +24,8 @@
 
 #include <opencv2/opencv.hpp>
 
-#include <System.h>
-#include <Viewer.h>
+#include <MORB_SLAM/System.h>
+#include <MORB_SLAM/Viewer.h>
 
 using namespace std;
 
@@ -48,8 +48,8 @@ int main(int argc, char **argv)
     int nImages = vstrImageFilenames.size();
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
-    ORB_SLAM3::System_ptr SLAM = std::make_shared<ORB_SLAM3::System>(argv[1],argv[2],ORB_SLAM3::CameraType::MONOCULAR);
-    ORB_SLAM3::Viewer viewer(SLAM, argv[2]);
+    MORB_SLAM::System_ptr SLAM = std::make_shared<MORB_SLAM::System>(argv[1],argv[2],MORB_SLAM::CameraType::MONOCULAR);
+    MORB_SLAM::Viewer viewer(SLAM, argv[2]);
     float imageScale = SLAM->GetImageScale();
 
     // Vector for tracking time statistics
@@ -97,7 +97,7 @@ int main(int argc, char **argv)
         std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
 
         // Pass the image to the SLAM system
-        auto pos = SLAM->TrackMonocular(im,tframe,vector<ORB_SLAM3::IMU::Point>(), vstrImageFilenames[ni]);
+        auto pos = SLAM->TrackMonocular(im,tframe,vector<MORB_SLAM::IMU::Point>(), vstrImageFilenames[ni]);
 
         std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
 

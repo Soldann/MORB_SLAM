@@ -19,13 +19,13 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "KannalaBrandt8.h"
+#include "MORB_SLAM/CameraModels/KannalaBrandt8.h"
 
 #include <boost/serialization/export.hpp>
 
-// BOOST_CLASS_EXPORT_IMPLEMENT(ORB_SLAM3::KannalaBrandt8)
+// BOOST_CLASS_EXPORT_IMPLEMENT(MORB_SLAM::KannalaBrandt8)
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 // BOOST_CLASS_EXPORT_GUID(KannalaBrandt8, "KannalaBrandt8")
 
 cv::Point2f KannalaBrandt8::project(const cv::Point3f &p3D) const {
@@ -446,4 +446,4 @@ bool KannalaBrandt8::IsEqual(const std::shared_ptr<GeometricCamera> &pCam) {
   return is_same_camera;
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

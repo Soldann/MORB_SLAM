@@ -1,6 +1,6 @@
-#include "Camera.hpp"
+#include "MORB_SLAM/Camera.hpp"
 
-namespace ORB_SLAM3{
+namespace MORB_SLAM{
 
 Camera::Camera(CameraType::eSensor type, const std::string &name): ljobs{}, rjobs{}, name{name}, type{type},
     shouldStop{false}, lthread{&Camera::threadExec, this, &ljobs}, rthread{&Camera::threadExec, this, &rjobs} {
@@ -66,4 +66,4 @@ ManagedFuture<bool> Camera::queueRight(const std::function<void(void)> &func){ r
 CameraType::eSensor Camera::getType() const { return type; }
 const std::string &Camera::getName() const { return name; }
 
-} // namespace ORB_SLAM3
+} // namespace MORB_SLAM

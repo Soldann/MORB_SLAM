@@ -19,13 +19,13 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Atlas.h"
+#include "MORB_SLAM/Atlas.h"
 
-#include "GeometricCamera.h"
-#include "KannalaBrandt8.h"
-#include "Pinhole.h"
+#include "MORB_SLAM/CameraModels/GeometricCamera.h"
+#include "MORB_SLAM/CameraModels/KannalaBrandt8.h"
+#include "MORB_SLAM/CameraModels/Pinhole.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 Atlas::Atlas() { mpCurrentMap = nullptr; }
 
@@ -325,4 +325,4 @@ map<long unsigned int, KeyFrame*> Atlas::GetAtlasKeyframes() {
   return mpIdKFs;
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

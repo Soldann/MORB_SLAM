@@ -19,26 +19,26 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Tracking.h"
+#include "MORB_SLAM/Tracking.h"
 
-#include "ImprovedTypes.hpp"
+#include "MORB_SLAM/ImprovedTypes.hpp"
 #include <chrono>
 #include <iostream>
 #include <mutex>
 #include <stdexcept>
 
-#include "Converter.h"
-#include "G2oTypes.h"
-#include "GeometricTools.h"
-#include "KannalaBrandt8.h"
-#include "MLPnPsolver.h"
-#include "ORBmatcher.h"
-#include "Optimizer.h"
-#include "Pinhole.h"
+#include "MORB_SLAM/Converter.h"
+#include "MORB_SLAM/G2oTypes.h"
+#include "MORB_SLAM/GeometricTools.h"
+#include "MORB_SLAM/CameraModels/KannalaBrandt8.h"
+#include "MORB_SLAM/MLPnPsolver.h"
+#include "MORB_SLAM/ORBmatcher.h"
+#include "MORB_SLAM/Optimizer.h"
+#include "MORB_SLAM/CameraModels/Pinhole.h"
 
 using namespace std;
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 Tracking::Tracking(System* pSys, ORBVocabulary* pVoc, const Atlas_ptr &pAtlas,
                    KeyFrameDatabase* pKFDB, const string& strSettingPath,
@@ -3641,7 +3641,7 @@ void Tracking::UpdateFrameIMU(const float s, const IMU::Bias& b,
                               KeyFrame* pCurrentKeyFrame) {
   std::shared_ptr<Map> pMap = pCurrentKeyFrame->GetMap();
   // unsigned int index = mnFirstFrameId; // UNUSED
-  list<ORB_SLAM3::KeyFrame*>::iterator lRit = mlpReferences.begin();
+  list<MORB_SLAM::KeyFrame*>::iterator lRit = mlpReferences.begin();
   list<bool>::iterator lbL = mlbLost.begin();
   for (auto lit = mlRelativeFramePoses.begin(),
             lend = mlRelativeFramePoses.end();
@@ -3765,4 +3765,4 @@ void Tracking::Release() {
 }
 #endif
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

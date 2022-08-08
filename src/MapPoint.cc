@@ -19,13 +19,13 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "MapPoint.h"
+#include "MORB_SLAM/MapPoint.h"
 
 #include <mutex>
 
-#include "ORBmatcher.h"
+#include "MORB_SLAM/ORBmatcher.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 long unsigned int MapPoint::nNextId = 0;
 mutex MapPoint::mGlobalMutex;
@@ -654,4 +654,4 @@ void MapPoint::PostLoad(map<long unsigned int, KeyFrame*>& mpKFid,
   mBackupObservationsId2.clear();
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

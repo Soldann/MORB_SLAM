@@ -19,14 +19,14 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "KeyFrame.h"
+#include "MORB_SLAM/KeyFrame.h"
 
 #include <mutex>
 
-#include "Converter.h"
-#include "ImuTypes.h"
+#include "MORB_SLAM/Converter.h"
+#include "MORB_SLAM/ImuTypes.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 long unsigned int KeyFrame::nNextId = 0;
 
@@ -1157,4 +1157,4 @@ void KeyFrame::SetKeyFrameDatabase(KeyFrameDatabase *pKFDB) {
   mpKeyFrameDB = pKFDB;
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM
