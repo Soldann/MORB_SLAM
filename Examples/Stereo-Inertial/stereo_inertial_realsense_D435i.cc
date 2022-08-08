@@ -416,9 +416,7 @@ int main(int argc, char **argv) {
 #endif
         // Stereo images are already rectified.
         auto pos = SLAM->TrackStereo(im, imRight, timestamp, vImuMeas);
-        std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX: " << pos.translation()[0] << std::endl;
-        std::cout << "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY: " << pos.translation()[1] << std::endl;
-        std::cout << "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ: " << pos.translation()[2] << std::endl;
+        std::cout << "POSE: " << std::endl << pos.inverse().translation() << std::endl;
 #ifdef REGISTER_TIMES
         std::chrono::steady_clock::time_point t_End_Track = std::chrono::steady_clock::now();
         t_track = t_resize + std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t_End_Track - t_Start_Track).count();

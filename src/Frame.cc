@@ -1099,6 +1099,7 @@ bool Frame::imuIsPreintegrated() {
 
 void Frame::setIntegrated() {
   unique_lock<std::mutex> lock(*mpMutexImu);
+  std::cout << "-----------------------------------------------------------" << std::endl;
   mbImuPreintegrated = true;
 }
 
