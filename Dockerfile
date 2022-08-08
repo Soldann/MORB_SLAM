@@ -58,12 +58,12 @@ FROM ubuntu:20.04
 RUN apt update && apt install -y cmake g++ wget unzip && mkdir opencv
 # Download and unpack sources
 WORKDIR "/opencv"
-RUN wget -O opencv.zip https://github.com/opencv/opencv/archive/4.5.zip \
+RUN wget -O opencv.zip https://github.com/opencv/opencv/archive/4.5.4.zip \
     && unzip opencv.zip
 # Create build directory
 RUN mkdir -p build && cd build \
 # Configure
-    && cmake  ../opencv-4.5 \
+    && cmake  ../opencv-4.5.4 \
 # Build
     && cmake --build . \
     && make install
