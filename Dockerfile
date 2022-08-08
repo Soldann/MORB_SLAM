@@ -55,13 +55,13 @@ FROM ubuntu:20.04
 
 
 # Install minimal prerequisites (Ubuntu 18.04 as reference)
-RUN apt update && apt install -y cmake g++ wget unzip \
+RUN apt update && apt install -y cmake g++ wget unzip && mkdir opencv
 # Download and unpack sources
-    && mkdir opencv && cd opencv \ 
-    && wget -O opencv.zip https://github.com/opencv/opencv/archive/4.5.zip \
-    && unzip opencv.zip \
+WORKDIR "/opencv"
+RUN wget -O opencv.zip https://github.com/opencv/opencv/archive/4.5.zip \
+    && unzip opencv.zip
 # Create build directory
-    && mkdir -p build && cd build \
+RUN mkdir -p build && cd build \
 # Configure
     && cmake  ../opencv-4.5 \
 # Build
