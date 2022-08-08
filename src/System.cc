@@ -19,12 +19,13 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "System.h"
+#include "MORB_SLAM/System.h"
 
 #include <openssl/md5.h>
+#include <opencv2/opencv.hpp>
 #include <pangolin/pangolin.h>
 
-#include "ImprovedTypes.hpp"
+#include "MORB_SLAM/ImprovedTypes.hpp"
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
@@ -40,9 +41,9 @@
 #include <string>
 #include <iostream>
 
-#include "Converter.h"
+#include "MORB_SLAM/Converter.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 Verbose::eLevel Verbose::th = Verbose::VERBOSITY_NORMAL;
 
@@ -55,6 +56,7 @@ System::System(const std::string& strVocFile, const std::string& strSettingsFile
       mbResetActiveMap(false),
       mbActivateLocalizationMode(false),
       mbDeactivateLocalizationMode(false) {
+  cameras.push_back(make_shared<Camera>(mSensor)); // for now just hard code the sensor we are using, TODO make multicam
   // Output welcome message
   std::cout << std::endl
        << "ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, "
@@ -206,7 +208,7 @@ System::System(const std::string& strVocFile, const std::string& strSettingsFile
       this, mpAtlas, mSensor == CameraType::MONOCULAR || mSensor == CameraType::IMU_MONOCULAR,
       mSensor == CameraType::IMU_MONOCULAR || mSensor == CameraType::IMU_STEREO || mSensor == CameraType::IMU_RGBD,
       strSequence);
-  mptLocalMapping = new thread(&ORB_SLAM3::LocalMapping::Run, mpLocalMapper);
+  mptLocalMapping = new thread(&MORB_SLAM::LocalMapping::Run, mpLocalMapper);
   if (settings_)
     mpLocalMapper->mThFarPoints = settings_->thFarPoints();
   else
@@ -223,7 +225,7 @@ System::System(const std::string& strVocFile, const std::string& strSettingsFile
   mpLoopCloser =
       new LoopClosing(mpAtlas, mpKeyFrameDatabase, mpVocabulary,
                       mSensor != CameraType::MONOCULAR, activeLC);  // mSensor!=CameraType::MONOCULAR);
-  mptLoopClosing = new thread(&ORB_SLAM3::LoopClosing::Run, mpLoopCloser);
+  mptLoopClosing = new thread(&MORB_SLAM::LoopClosing::Run, mpLoopCloser);
 
   // Set pointers between threads
   mpTracker->SetLocalMapper(mpLocalMapper);
@@ -252,10 +254,10 @@ Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
 
   cv::Mat imLeftToFeed, imRightToFeed;
   if (settings_ && settings_->needToRectify()) {
-    cv::Mat M1l = settings_->M1l();
-    cv::Mat M2l = settings_->M2l();
-    cv::Mat M1r = settings_->M1r();
-    cv::Mat M2r = settings_->M2r();
+    const cv::Mat &M1l = settings_->M1l();
+    const cv::Mat &M2l = settings_->M2l();
+    const cv::Mat &M1r = settings_->M1r();
+    const cv::Mat &M2r = settings_->M2r();
 
     cv::remap(imLeft, imLeftToFeed, M1l, M2l, cv::INTER_LINEAR);
     cv::remap(imRight, imRightToFeed, M1r, M2r, cv::INTER_LINEAR);
@@ -263,8 +265,8 @@ Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
     cv::resize(imLeft, imLeftToFeed, settings_->newImSize());
     cv::resize(imRight, imRightToFeed, settings_->newImSize());
   } else {
-    imLeftToFeed = imLeft.clone();
-    imRightToFeed = imRight.clone();
+    imLeftToFeed = imLeft;
+    imRightToFeed = imRight;
   }
 
   // Check mode change
@@ -307,7 +309,7 @@ Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
 
   // std::cout << "start GrabImageStereo" << std::endl;
   Sophus::SE3f Tcw = mpTracker->GrabImageStereo(imLeftToFeed, imRightToFeed,
-                                                timestamp, filename);
+                                                timestamp, filename, cameras[0]); // for now we know cameras[0] is providing the image
 
   // std::cout << "out grabber" << std::endl;
 
@@ -378,7 +380,7 @@ Sophus::SE3f System::TrackRGBD(const cv::Mat& im, const cv::Mat& depthmap,
       mpTracker->GrabImuData(vImuMeas[i_imu]);
 
   Sophus::SE3f Tcw =
-      mpTracker->GrabImageRGBD(imToFeed, imDepthToFeed, timestamp, filename);
+      mpTracker->GrabImageRGBD(imToFeed, imDepthToFeed, timestamp, filename, cameras[0]); // for now we know cameras[0] is providing the image
 
   unique_lock<mutex> lock2(mMutexState);
   mTrackingState = mpTracker->mState;
@@ -449,7 +451,7 @@ Sophus::SE3f System::TrackMonocular(const cv::Mat& im, const double& timestamp,
       mpTracker->GrabImuData(vImuMeas[i_imu]);
 
   Sophus::SE3f Tcw =
-      mpTracker->GrabImageMonocular(imToFeed, timestamp, filename);
+      mpTracker->GrabImageMonocular(imToFeed, timestamp, filename, cameras[0]); // for now we know cameras[0] is providing the image
 
   unique_lock<mutex> lock2(mMutexState);
   mTrackingState = mpTracker->mState;
@@ -553,7 +555,7 @@ void System::SaveTrajectoryTUM(const string& filename) {
 
   // For each frame we have a reference keyframe (lRit), the timestamp (lT) and
   // a flag which is true when tracking failed (lbL).
-  list<ORB_SLAM3::KeyFrame*>::iterator lRit = mpTracker->mlpReferences.begin();
+  list<MORB_SLAM::KeyFrame*>::iterator lRit = mpTracker->mlpReferences.begin();
   list<double>::iterator lT = mpTracker->mlFrameTimes.begin();
   list<bool>::iterator lbL = mpTracker->mlbLost.begin();
   for (list<Sophus::SE3f>::iterator
@@ -628,12 +630,12 @@ void System::SaveTrajectoryEuRoC(const string& filename) {
   endl; return;
   }*/
 
-  vector<Map*> vpMaps = mpAtlas->GetAllMaps();
+  vector<std::shared_ptr<Map>> vpMaps = mpAtlas->GetAllMaps();
   size_t numMaxKFs = 0;
-  Map* pBiggerMap = nullptr;
+  std::shared_ptr<Map> pBiggerMap = nullptr;
   std::cout << "There are " << std::to_string(vpMaps.size())
             << " maps in the atlas" << std::endl;
-  for (Map* pMap : vpMaps) {
+  for (std::shared_ptr<Map> pMap : vpMaps) {
     std::cout << "  Map " << std::to_string(pMap->GetId()) << " has "
               << std::to_string(pMap->GetAllKeyFrames().size()) << " KFs"
               << std::endl;
@@ -672,7 +674,7 @@ void System::SaveTrajectoryEuRoC(const string& filename) {
 
   // For each frame we have a reference keyframe (lRit), the timestamp (lT) and
   // a flag which is true when tracking failed (lbL).
-  list<ORB_SLAM3::KeyFrame*>::iterator lRit = mpTracker->mlpReferences.begin();
+  list<MORB_SLAM::KeyFrame*>::iterator lRit = mpTracker->mlpReferences.begin();
   list<double>::iterator lT = mpTracker->mlFrameTimes.begin();
   list<bool>::iterator lbL = mpTracker->mlbLost.begin();
 
@@ -742,7 +744,7 @@ void System::SaveTrajectoryEuRoC(const string& filename) {
   cout << endl << "End of saving trajectory to " << filename << " ..." << endl;
 }
 
-void System::SaveTrajectoryEuRoC(const string& filename, Map* pMap) {
+void System::SaveTrajectoryEuRoC(const string& filename, std::shared_ptr<Map> pMap) {
   cout << endl
        << "Saving trajectory of map " << pMap->GetId() << " to " << filename
        << " ..." << endl;
@@ -778,7 +780,7 @@ void System::SaveTrajectoryEuRoC(const string& filename, Map* pMap) {
 
   // For each frame we have a reference keyframe (lRit), the timestamp (lT) and
   // a flag which is true when tracking failed (lbL).
-  list<ORB_SLAM3::KeyFrame*>::iterator lRit = mpTracker->mlpReferences.begin();
+  list<MORB_SLAM::KeyFrame*>::iterator lRit = mpTracker->mlpReferences.begin();
   list<double>::iterator lT = mpTracker->mlFrameTimes.begin();
   list<bool>::iterator lbL = mpTracker->mlbLost.begin();
 
@@ -893,7 +895,7 @@ transformation.
     // For each frame we have a reference keyframe (lRit), the timestamp (lT)
 and a flag
     // which is true when tracking failed (lbL).
-    list<ORB_SLAM3::KeyFrame*>::iterator lRit =
+    list<MORB_SLAM::KeyFrame*>::iterator lRit =
 mpTracker->mlpReferences.begin(); list<double>::iterator lT =
 mpTracker->mlFrameTimes.begin(); list<bool>::iterator lbL =
 mpTracker->mlbLost.begin();
@@ -1044,10 +1046,10 @@ void System::SaveKeyFrameTrajectoryEuRoC(const string& filename) {
   cout << endl
        << "Saving keyframe trajectory to " << filename << " ... Euroc" << endl;
 
-  vector<Map*> vpMaps = mpAtlas->GetAllMaps();
-  Map* pBiggerMap = nullptr;
+  vector<std::shared_ptr<Map>> vpMaps = mpAtlas->GetAllMaps();
+  std::shared_ptr<Map> pBiggerMap = nullptr;
   size_t numMaxKFs = 0;
-  for (Map* pMap : vpMaps) {
+  for (std::shared_ptr<Map> pMap : vpMaps) {
     if (pMap && pMap->GetAllKeyFrames().size() > numMaxKFs) {
       numMaxKFs = pMap->GetAllKeyFrames().size();
       pBiggerMap = pMap;
@@ -1096,7 +1098,7 @@ void System::SaveKeyFrameTrajectoryEuRoC(const string& filename) {
   f.close();
 }
 
-void System::SaveKeyFrameTrajectoryEuRoC(const string& filename, Map* pMap) {
+void System::SaveKeyFrameTrajectoryEuRoC(const string& filename, std::shared_ptr<Map> pMap) {
   cout << endl
        << "Saving keyframe trajectory of map " << pMap->GetId() << " to "
        << filename << " ..." << endl;
@@ -1164,13 +1166,13 @@ transformation.
     // For each frame we have a reference keyframe (lRit), the timestamp (lT)
 and a flag
     // which is true when tracking failed (lbL).
-    list<ORB_SLAM3::KeyFrame*>::iterator lRit =
+    list<MORB_SLAM::KeyFrame*>::iterator lRit =
 mpTracker->mlpReferences.begin(); list<double>::iterator lT =
 mpTracker->mlFrameTimes.begin(); for(list<cv::Mat>::iterator
 lit=mpTracker->mlRelativeFramePoses.begin(),
 lend=mpTracker->mlRelativeFramePoses.end();lit!=lend;lit++, lRit++, lT++)
     {
-        ORB_SLAM3::KeyFrame* pKF = *lRit;
+        MORB_SLAM::KeyFrame* pKF = *lRit;
 
         cv::Mat Trw = cv::Mat::eye(4,4,CV_32F);
 
@@ -1221,13 +1223,13 @@ void System::SaveTrajectoryKITTI(const string& filename) {
 
   // For each frame we have a reference keyframe (lRit), the timestamp (lT) and
   // a flag which is true when tracking failed (lbL).
-  list<ORB_SLAM3::KeyFrame*>::iterator lRit = mpTracker->mlpReferences.begin();
+  list<MORB_SLAM::KeyFrame*>::iterator lRit = mpTracker->mlpReferences.begin();
   list<double>::iterator lT = mpTracker->mlFrameTimes.begin();
   for (list<Sophus::SE3f>::iterator
            lit = mpTracker->mlRelativeFramePoses.begin(),
            lend = mpTracker->mlRelativeFramePoses.end();
        lit != lend; lit++, lRit++, lT++) {
-    ORB_SLAM3::KeyFrame* pKF = *lRit;
+    MORB_SLAM::KeyFrame* pKF = *lRit;
 
     Sophus::SE3f Trw;
 
@@ -1548,4 +1550,4 @@ string System::CalculateCheckSum(string filename, int type) {
   return checksum;
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

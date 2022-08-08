@@ -19,14 +19,14 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "KeyFrame.h"
+#include "MORB_SLAM/KeyFrame.h"
 
 #include <mutex>
 
-#include "Converter.h"
-#include "ImuTypes.h"
+#include "MORB_SLAM/Converter.h"
+#include "MORB_SLAM/ImuTypes.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 long unsigned int KeyFrame::nNextId = 0;
 
@@ -65,10 +65,10 @@ KeyFrame::KeyFrame()
       mb(0),
       mThDepth(0),
       N(0),
-      /*mvKeys(static_cast<vector<cv::KeyPoint>>(NULL)),
-      mvKeysUn(static_cast<vector<cv::KeyPoint>>(NULL)),
-      mvuRight(static_cast<vector<float>>(NULL)),
-      mvDepth(static_cast<vector<float>>(NULL)),*/
+      /*mvKeys(static_cast<vector<cv::KeyPoint>>(nullptr)),
+      mvKeysUn(static_cast<vector<cv::KeyPoint>>(nullptr)),
+      mvuRight(static_cast<vector<float>>(nullptr)),
+      mvDepth(static_cast<vector<float>>(nullptr)),*/
       mnScaleLevels(0),
       mfScaleFactor(0),
       mfLogScaleFactor(0),
@@ -79,11 +79,11 @@ KeyFrame::KeyFrame()
       mnMinY(0),
       mnMaxX(0),
       mnMaxY(0),
-      mPrevKF(static_cast<KeyFrame *>(NULL)),
-      mNextKF(static_cast<KeyFrame *>(NULL)),
+      mPrevKF(nullptr),
+      mNextKF(nullptr),
       mbHasVelocity(false),
       mbFirstConnection(true),
-      mpParent(NULL),
+      mpParent(nullptr),
       mbNotErase(false),
       mbToBeErased(false),
       mbBad(false),
@@ -91,7 +91,7 @@ KeyFrame::KeyFrame()
       NLeft(0),
       NRight(0) {}
 
-KeyFrame::KeyFrame(Frame &F, Map *pMap, KeyFrameDatabase *pKFDB)
+KeyFrame::KeyFrame(Frame &F, std::shared_ptr<Map> pMap, KeyFrameDatabase *pKFDB)
     : bImu(pMap->isImuInitialized()),
       mnFrameId(F.mnId),
       mTimeStamp(F.mTimeStamp),
@@ -143,8 +143,8 @@ KeyFrame::KeyFrame(Frame &F, Map *pMap, KeyFrameDatabase *pKFDB)
       mnMinY(F.mnMinY),
       mnMaxX(F.mnMaxX),
       mnMaxY(F.mnMaxY),
-      mPrevKF(NULL),
-      mNextKF(NULL),
+      mPrevKF(nullptr),
+      mNextKF(nullptr),
       mpImuPreintegrated(F.mpImuPreintegrated),
       mImuCalib(F.mImuCalib),
       mNameFile(F.mNameFile),
@@ -156,7 +156,7 @@ KeyFrame::KeyFrame(Frame &F, Map *pMap, KeyFrameDatabase *pKFDB)
       mpKeyFrameDB(pKFDB),
       mpORBvocabulary(F.mpORBvocabulary),
       mbFirstConnection(true),
-      mpParent(NULL),
+      mpParent(nullptr),
       mbNotErase(false),
       mbToBeErased(false),
       mbBad(false),
@@ -384,15 +384,15 @@ void KeyFrame::AddMapPoint(MapPoint *pMP, const size_t &idx) {
 
 void KeyFrame::EraseMapPointMatch(const int &idx) {
   unique_lock<mutex> lock(mMutexFeatures);
-  mvpMapPoints[idx] = static_cast<MapPoint *>(NULL);
+  mvpMapPoints[idx] = nullptr;
 }
 
 void KeyFrame::EraseMapPointMatch(MapPoint *pMP) {
   tuple<int, int> indexes = pMP->GetIndexInKeyFrame(this);
   int leftIndex = get<0>(indexes), rightIndex = get<1>(indexes);
-  if (leftIndex != -1) mvpMapPoints[leftIndex] = static_cast<MapPoint *>(NULL);
+  if (leftIndex != -1) mvpMapPoints[leftIndex] = nullptr;
   if (rightIndex != -1)
-    mvpMapPoints[rightIndex] = static_cast<MapPoint *>(NULL);
+    mvpMapPoints[rightIndex] = nullptr;
 }
 
 void KeyFrame::ReplaceMapPointMatch(const int &idx, MapPoint *pMP) {
@@ -479,7 +479,7 @@ void KeyFrame::UpdateConnections(bool upParent) {
   // In case no keyframe counter is over threshold add the one with maximum
   // counter
   int nmax = 0;
-  KeyFrame *pKFmax = NULL;
+  KeyFrame *pKFmax = nullptr;
   int th = 15;
 
   vector<pair<int, KeyFrame *>> vPairs;
@@ -846,18 +846,18 @@ IMU::Bias KeyFrame::GetImuBias() {
   return mImuBias;
 }
 
-Map *KeyFrame::GetMap() {
+std::shared_ptr<Map> KeyFrame::GetMap() {
   unique_lock<mutex> lock(mMutexMap);
   return mpMap;
 }
 
-void KeyFrame::UpdateMap(Map *pMap) {
+void KeyFrame::UpdateMap(std::shared_ptr<Map> pMap) {
   unique_lock<mutex> lock(mMutexMap);
   mpMap = pMap;
 }
 
 void KeyFrame::PreSave(set<KeyFrame *> &spKF, set<MapPoint *> &spMP,
-                       set<GeometricCamera *> &spCam) {
+                       set<std::shared_ptr<GeometricCamera>> &spCam) {
   // Save the id of each MapPoint in this KF, there can be null
   // pointer in the vector
   mvBackupMapPointsId.clear();
@@ -932,7 +932,7 @@ void KeyFrame::PreSave(set<KeyFrame *> &spKF, set<MapPoint *> &spMP,
 
 void KeyFrame::PostLoad(map<long unsigned int, KeyFrame *> &mpKFid,
                         map<long unsigned int, MapPoint *> &mpMPid,
-                        map<unsigned int, GeometricCamera *> &mpCamId) {
+                        map<unsigned int, std::shared_ptr<GeometricCamera>> &mpCamId) {
   // Rebuild the empty variables
 
   // Pose
@@ -948,7 +948,7 @@ void KeyFrame::PostLoad(map<long unsigned int, KeyFrame *> &mpKFid,
     if (mvBackupMapPointsId[i] != -1)
       mvpMapPoints[i] = mpMPid[mvBackupMapPointsId[i]];
     else
-      mvpMapPoints[i] = static_cast<MapPoint *>(NULL);
+      mvpMapPoints[i] = nullptr;
   }
 
   // Conected KeyFrames with him weight
@@ -1157,4 +1157,4 @@ void KeyFrame::SetKeyFrameDatabase(KeyFrameDatabase *pKFDB) {
   mpKeyFrameDB = pKFDB;
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

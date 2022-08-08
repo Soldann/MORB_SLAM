@@ -19,18 +19,18 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "MapDrawer.h"
+#include "MORB_SLAM/MapDrawer.h"
 
 #include <pangolin/pangolin.h>
 
 #include <stdexcept>
 #include <mutex>
 
-#include "Atlas.h"
-#include "KeyFrame.h"
-#include "MapPoint.h"
+#include "MORB_SLAM/Atlas.h"
+#include "MORB_SLAM/KeyFrame.h"
+#include "MORB_SLAM/MapPoint.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 MapDrawer::MapDrawer(const Atlas_ptr &pAtlas, const std::string &strSettingPath): mpAtlas(pAtlas){
     cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
@@ -120,7 +120,7 @@ bool MapDrawer::ParseViewerParamFile(cv::FileStorage &fSettings) {
 }
 
 void MapDrawer::DrawMapPoints() {
-  Map *pActiveMap = mpAtlas->GetCurrentMap();
+  std::shared_ptr<Map> pActiveMap = mpAtlas->GetCurrentMap();
   if (!pActiveMap) return;
 
   const vector<MapPoint *> &vpMPs = pActiveMap->GetAllMapPoints();
@@ -162,7 +162,7 @@ void MapDrawer::DrawKeyFrames(const bool bDrawKF, const bool bDrawGraph,
   const float h = w * 0.75;
   const float z = w * 0.6;
 
-  Map *pActiveMap = mpAtlas->GetCurrentMap();
+  std::shared_ptr<Map> pActiveMap = mpAtlas->GetCurrentMap();
   // DEBUG LBA
   std::set<long unsigned int> sOptKFs = pActiveMap->msOptKFs;
   std::set<long unsigned int> sFixedKFs = pActiveMap->msFixedKFs;
@@ -295,10 +295,10 @@ void MapDrawer::DrawKeyFrames(const bool bDrawKF, const bool bDrawGraph,
     glEnd();
   }
 
-  vector<Map *> vpMaps = mpAtlas->GetAllMaps();
+  vector<std::shared_ptr<Map>> vpMaps = mpAtlas->GetAllMaps();
 
   if (bDrawKF) {
-    for (Map *pMap : vpMaps) {
+    for (std::shared_ptr<Map> pMap : vpMaps) {
       if (pMap == pActiveMap) continue;
 
       vector<KeyFrame *> vpKFs = pMap->GetAllKeyFrames();
@@ -419,4 +419,4 @@ void MapDrawer::GetCurrentOpenGLCameraMatrix(pangolin::OpenGlMatrix &M,
   MOw.m[13] = Twc(1, 3);
   MOw.m[14] = Twc(2, 3);
 }
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

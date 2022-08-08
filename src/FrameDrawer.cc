@@ -19,16 +19,16 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "FrameDrawer.h"
+#include "MORB_SLAM/FrameDrawer.h"
 
 #include <mutex>
 #include <opencv2/opencv.hpp>
-#include "ImprovedTypes.hpp"
-#include "MapPoint.h"
-#include "Atlas.h"
-#include "Tracking.h"
+#include "MORB_SLAM/ImprovedTypes.hpp"
+#include "MORB_SLAM/MapPoint.h"
+#include "MORB_SLAM/Atlas.h"
+#include "MORB_SLAM/Tracking.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 FrameDrawer::FrameDrawer(const Atlas_ptr &pAtlas) : both(false), mpAtlas(pAtlas) {
   mState = Tracker::SYSTEM_NOT_READY;
@@ -336,4 +336,4 @@ void FrameDrawer::Update(const Tracking_ptr &pTracker) {
   mState = static_cast<int>(pTracker->mLastProcessedState);
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

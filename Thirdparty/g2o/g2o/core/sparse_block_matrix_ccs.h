@@ -142,7 +142,7 @@ namespace g2o {
        */
       int fillCCS(int* Cp, int* Ci, double* Cx, bool upperTriangle = false) const
       {
-        assert(Cp && Ci && Cx && "Target destination is NULL");
+        assert(Cp && Ci && Cx && "Target destination is nullptr");
         int nz=0;
         for (size_t i=0; i<_blockCols.size(); ++i){
           int cstart=i ? _colBlockIndices[i-1] : 0;
@@ -175,7 +175,7 @@ namespace g2o {
        */
       int fillCCS(double* Cx, bool upperTriangle = false) const
       {
-        assert(Cx && "Target destination is NULL");
+        assert(Cx && "Target destination is nullptr");
         double* CxStart = Cx;
         int cstart = 0;
         for (size_t i=0; i<_blockCols.size(); ++i){

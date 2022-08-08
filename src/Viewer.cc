@@ -19,22 +19,22 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Viewer.h"
+#include "MORB_SLAM/Viewer.h"
 
 #include <pangolin/pangolin.h>
 
-#include "ImprovedTypes.hpp"
+#include "MORB_SLAM/ImprovedTypes.hpp"
 #include <chrono>
 #include <ctime>
 #include <mutex>
 #include <stdexcept>
 #include <iostream>
 #include <string>
-#include "System.h"
-#include "Atlas.h"
-#include "Tracking.h"
+#include "MORB_SLAM/System.h"
+#include "MORB_SLAM/Atlas.h"
+#include "MORB_SLAM/Tracking.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 void Viewer::setBoth(const bool b){
   both = true;
@@ -367,4 +367,4 @@ void Viewer::close(){
   mbClosed = true;
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

@@ -19,11 +19,11 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "GeometricTools.h"
+#include "MORB_SLAM/GeometricTools.h"
 
-#include "KeyFrame.h"
+#include "MORB_SLAM/KeyFrame.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 Eigen::Matrix3f GeometricTools::ComputeF12(KeyFrame *&pKF1, KeyFrame *&pKF2) {
   Sophus::SE3<float> Tc1w = pKF1->GetPose();
@@ -71,4 +71,4 @@ bool GeometricTools::Triangulate(Eigen::Vector3f &x_c1, Eigen::Vector3f &x_c2,
   return true;
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

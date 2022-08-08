@@ -19,18 +19,19 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "LocalMapping.h"
+#include "MORB_SLAM/LocalMapping.h"
 
 #include <chrono>
 #include <mutex>
 
-#include "Converter.h"
-#include "GeometricTools.h"
-#include "LoopClosing.h"
-#include "ORBmatcher.h"
-#include "Optimizer.h"
+#include "MORB_SLAM/Converter.h"
+#include "MORB_SLAM/GeometricTools.h"
+#include "MORB_SLAM/LoopClosing.h"
+#include "MORB_SLAM/ORBmatcher.h"
+#include "MORB_SLAM/Optimizer.h"
 
-namespace ORB_SLAM3 {
+#include <math.h> 
+namespace MORB_SLAM {
 
 LocalMapping::LocalMapping(System* pSys, const Atlas_ptr &pAtlas, const float bMonocular,
                            bool bInertial, const string& _strSeqName)
@@ -448,8 +449,8 @@ void LocalMapping::CreateNewMapPoints() {
 
     KeyFrame* pKF2 = vpNeighKFs[i];
 
-    GeometricCamera *pCamera1 = mpCurrentKeyFrame->mpCamera,
-                    *pCamera2 = pKF2->mpCamera;
+    std::shared_ptr<GeometricCamera> pCamera1 = mpCurrentKeyFrame->mpCamera,
+                    pCamera2 = pKF2->mpCamera;
 
     // Check first that baseline is not too short
     Eigen::Vector3f Ow2 = pKF2->GetCameraCenter();
@@ -999,8 +1000,8 @@ void LocalMapping::KeyFrameCulling() {
                 pKF->mpImuPreintegrated);
             pKF->mNextKF->mPrevKF = pKF->mPrevKF;
             pKF->mPrevKF->mNextKF = pKF->mNextKF;
-            pKF->mNextKF = NULL;
-            pKF->mPrevKF = NULL;
+            pKF->mNextKF = nullptr;
+            pKF->mPrevKF = nullptr;
             pKF->SetBadFlag();
           } else if (!mpCurrentKeyFrame->GetMap()->GetIniertialBA2() &&
                      ((pKF->GetImuPosition() - pKF->mPrevKF->GetImuPosition())
@@ -1010,8 +1011,8 @@ void LocalMapping::KeyFrameCulling() {
                 pKF->mpImuPreintegrated);
             pKF->mNextKF->mPrevKF = pKF->mPrevKF;
             pKF->mPrevKF->mNextKF = pKF->mNextKF;
-            pKF->mNextKF = NULL;
-            pKF->mPrevKF = NULL;
+            pKF->mNextKF = nullptr;
+            pKF->mPrevKF = nullptr;
             pKF->SetBadFlag();
           }
         }
@@ -1043,7 +1044,7 @@ void LocalMapping::RequestReset() {
   cout << "LM: Map reset, Done!!!" << endl;
 }
 
-void LocalMapping::RequestResetActiveMap(Map* pMap) {
+void LocalMapping::RequestResetActiveMap(std::shared_ptr<Map> pMap) {
   {
     unique_lock<mutex> lock(mMutexReset);
     cout << "LM: Active map reset recieved" << endl;
@@ -1167,13 +1168,21 @@ void LocalMapping::InitializeIMU(float priorG, float priorA, bool bFIBA) {
     Eigen::Matrix3f Rwg;
     Eigen::Vector3f dirG;
     dirG.setZero();
+    // std::cout << "Keyframes---------------------------------------------: " << N << std::endl;
     for (vector<KeyFrame*>::iterator itKF = vpKF.begin(); itKF != vpKF.end();
          itKF++) {
-      if (!(*itKF)->mpImuPreintegrated) continue;
-      if (!(*itKF)->mPrevKF) continue;
+
+      // std::cout << "Hello" << std::endl;
+      if (!(*itKF)->mpImuPreintegrated) continue; // || isnan((*itKF)->mpImuPreintegrated->GetUpdatedDeltaVelocity().sum())
+      if (!(*itKF)->mPrevKF) continue; //  || isnan((*itKF)->mPrevKF->GetImuRotation().sum()
+
+      // std::cout << "initDirG------------------------------------------------------: " << dirG << std::endl;
+      // std::cout << "getImuRot------------------------------------------------------: " << (*itKF)->mPrevKF->GetImuRotation() << std::endl;
+      // std::cout << "getUpdDeltaV------------------------------------------------------: " <<(*itKF)->mpImuPreintegrated->GetUpdatedDeltaVelocity() << std::endl;
 
       dirG -= (*itKF)->mPrevKF->GetImuRotation() *
               (*itKF)->mpImuPreintegrated->GetUpdatedDeltaVelocity();
+      // std::cout << "dirGLoop------------------------------------------------------: " << dirG << std::endl;
       Eigen::Vector3f _vel =
           ((*itKF)->GetImuPosition() - (*itKF)->mPrevKF->GetImuPosition()) /
           (*itKF)->mpImuPreintegrated->dT;
@@ -1181,16 +1190,29 @@ void LocalMapping::InitializeIMU(float priorG, float priorA, bool bFIBA) {
       (*itKF)->mPrevKF->SetVelocity(_vel);
     }
 
+    // if(dirG.sum() == 0){ mRwg << 0.99600422382354736,0.059227496385574341,0.066840663552284241,
+    //   0.059227496385574341,0.12209725379943848,-0.99074935913085938,
+    //   -0.066840663552284241,0.99074935913085938,0.11810147762298584;
+    // } else{
+    std::cout << "dirGBeforeNorm------------------------------------------------------: " << dirG << std::endl;
     dirG = dirG / dirG.norm();
+    std::cout << "dirGAfterNorm------------------------------------------------------: " << dirG << std::endl;
     Eigen::Vector3f gI(0.0f, 0.0f, -1.0f);
     Eigen::Vector3f v = gI.cross(dirG);
     const float nv = v.norm();
+    
     const float cosg = gI.dot(dirG);
     const float ang = acos(cosg);
+
+    std::cout << "v------------------------------------------------------: " << v << std::endl;
+    std::cout << "ang------------------------------------------------------: " << ang << std::endl;
+    std::cout << "nv------------------------------------------------------: " << nv << std::endl;
+
     Eigen::Vector3f vzg = v * ang / nv;
     Rwg = Sophus::SO3f::exp(vzg).matrix();
     mRwg = Rwg.cast<double>();
     mTinit = mpCurrentKeyFrame->mTimeStamp - mFirstTs;
+//}
   } else {
     mRwg = Eigen::Matrix3d::Identity();
     mbg = mpCurrentKeyFrame->GetGyroBias().cast<double>();
@@ -1242,11 +1264,11 @@ void LocalMapping::InitializeIMU(float priorG, float priorA, bool bFIBA) {
   if (bFIBA) {
     if (priorA != 0.f)
       Optimizer::FullInertialBA(mpAtlas->GetCurrentMap(), 100, false,
-                                mpCurrentKeyFrame->mnId, NULL, true, priorG,
+                                mpCurrentKeyFrame->mnId, nullptr, true, priorG,
                                 priorA);
     else
       Optimizer::FullInertialBA(mpAtlas->GetCurrentMap(), 100, false,
-                                mpCurrentKeyFrame->mnId, NULL, false);
+                                mpCurrentKeyFrame->mnId, nullptr, false);
   }
 
   // std::chrono::steady_clock::time_point t5 = std::chrono::steady_clock::now(); // UNUSED
@@ -1439,4 +1461,4 @@ double LocalMapping::GetCurrKFTime() {
 
 KeyFrame* LocalMapping::GetCurrKF() { return mpCurrentKeyFrame; }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

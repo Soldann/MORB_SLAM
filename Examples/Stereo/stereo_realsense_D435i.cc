@@ -19,8 +19,8 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <System.h>
-#include <Viewer.h>
+#include <MORB_SLAM/System.h>
+#include <MORB_SLAM/Viewer.h>
 #include <signal.h>
 #include <stdlib.h>
 
@@ -110,7 +110,7 @@ int main(int argc, char** argv) {
   sigemptyset(&sigIntHandler.sa_mask);
   sigIntHandler.sa_flags = 0;
 
-  sigaction(SIGINT, &sigIntHandler, NULL);
+  sigaction(SIGINT, &sigIntHandler, nullptr);
   b_continue_session = true;
 
   // double offset = 0;  // UNUSED // ms
@@ -243,9 +243,9 @@ int main(int argc, char** argv) {
 
   // Create SLAM system. It initializes all system threads and gets ready to
   // process frames.
-  ORB_SLAM3::System_ptr SLAM = std::make_shared<ORB_SLAM3::System>(argv[1], argv[2], ORB_SLAM3::CameraType::STEREO, /*0,*/
+  MORB_SLAM::System_ptr SLAM = std::make_shared<MORB_SLAM::System>(argv[1], argv[2], MORB_SLAM::CameraType::STEREO, /*0,*/
                          file_name);
-  ORB_SLAM3::Viewer viewer(SLAM, argv[2]);
+  MORB_SLAM::Viewer viewer(SLAM, argv[2]);
   float imageScale = SLAM->GetImageScale();
 
   double timestamp;

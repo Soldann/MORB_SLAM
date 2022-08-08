@@ -207,7 +207,7 @@ namespace g2o {
 
   void EstimatePropagator::PriorityQueue::push(AdjacencyMapEntry* entry)
   {
-    assert(entry != NULL);
+    assert(entry != nullptr);
     if (entry->inQueue) {
       assert(entry->queueIt->second == entry);
       erase(entry->queueIt);
@@ -225,7 +225,7 @@ namespace g2o {
     AdjacencyMapEntry* entry = it->second;
     erase(it);
 
-    assert(entry != NULL);
+    assert(entry != nullptr);
     entry->queueIt = end();
     entry->inQueue = false;
     return entry;

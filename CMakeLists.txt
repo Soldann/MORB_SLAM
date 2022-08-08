@@ -24,7 +24,7 @@ endif()
 
 LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
-find_package(OpenCV 4.4)
+find_package(OpenCV 4.2)
    if(NOT OpenCV_FOUND)
       message(FATAL_ERROR "OpenCV > 4.4 not found.")
    endif()
@@ -50,6 +50,7 @@ find_package(realsense2)
 
 add_library(${PROJECT_NAME} SHARED
 src/System.cc
+src/Camera.cpp
 src/Tracking.cc
 src/LocalMapping.cc
 src/LoopClosing.cc
@@ -75,38 +76,37 @@ src/OptimizableTypes.cpp
 src/MLPnPsolver.cpp
 src/GeometricTools.cc
 src/TwoViewReconstruction.cc
-src/Config.cc
 src/Settings.cc
-include/System.h
-include/Tracking.h
-include/LocalMapping.h
-include/LoopClosing.h
-include/ORBextractor.h
-include/ORBmatcher.h
-include/FrameDrawer.h
-include/Converter.h
-include/MapPoint.h
-include/KeyFrame.h
-include/Atlas.h
-include/Map.h
-include/MapDrawer.h
-include/Optimizer.h
-include/Frame.h
-include/KeyFrameDatabase.h
-include/Sim3Solver.h
-include/Viewer.h
-include/ImuTypes.h
-include/G2oTypes.h
-include/CameraModels/GeometricCamera.h
-include/CameraModels/Pinhole.h
-include/CameraModels/KannalaBrandt8.h
-include/OptimizableTypes.h
-include/MLPnPsolver.h
-include/GeometricTools.h
-include/TwoViewReconstruction.h
-include/SerializationUtils.h
-include/Config.h
-include/Settings.h)
+include/MORB_SLAM/System.h
+include/MORB_SLAM/Camera.hpp
+include/MORB_SLAM/Tracking.h
+include/MORB_SLAM/LocalMapping.h
+include/MORB_SLAM/LoopClosing.h
+include/MORB_SLAM/ORBextractor.h
+include/MORB_SLAM/ORBmatcher.h
+include/MORB_SLAM/FrameDrawer.h
+include/MORB_SLAM/Converter.h
+include/MORB_SLAM/MapPoint.h
+include/MORB_SLAM/KeyFrame.h
+include/MORB_SLAM/Atlas.h
+include/MORB_SLAM/Map.h
+include/MORB_SLAM/MapDrawer.h
+include/MORB_SLAM/Optimizer.h
+include/MORB_SLAM/Frame.h
+include/MORB_SLAM/KeyFrameDatabase.h
+include/MORB_SLAM/Sim3Solver.h
+include/MORB_SLAM/Viewer.h
+include/MORB_SLAM/ImuTypes.h
+include/MORB_SLAM/G2oTypes.h
+include/MORB_SLAM/CameraModels/GeometricCamera.h
+include/MORB_SLAM/CameraModels/Pinhole.h
+include/MORB_SLAM/CameraModels/KannalaBrandt8.h
+include/MORB_SLAM/OptimizableTypes.h
+include/MORB_SLAM/MLPnPsolver.h
+include/MORB_SLAM/GeometricTools.h
+include/MORB_SLAM/TwoViewReconstruction.h
+include/MORB_SLAM/SerializationUtils.h
+include/MORB_SLAM/Settings.h)
 
 
 add_subdirectory(Thirdparty/g2o)

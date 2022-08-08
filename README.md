@@ -2,7 +2,7 @@
 
 [![CMake Build](https://github.com/Soldann/MORB_SLAM/actions/workflows/cmake.yml/badge.svg)](https://github.com/Soldann/MORB_SLAM/actions/workflows/cmake.yml)
 
-This fork of [ORB_SLAM3](https://github.com/UZ-SLAMLab/ORB_SLAM3) converts it into a CMake package that can be imported into other projects. Run `morbslam_installer.sh` to install.
+This fork of [MORB_SLAM](https://github.com/UZ-SLAMLab/MORB_SLAM) converts it into a CMake package that can be imported into other projects. Run `morbslam_installer.sh` to install.
 
 In your other projects, import using:
 ```
@@ -17,7 +17,7 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} MORB_SLAM::MORB_SLAM)
 ### V1.0, December 22th, 2021
 **Authors:** Carlos Campos, Richard Elvira, Juan J. Gómez Rodríguez, [José M. M. Montiel](http://webdiis.unizar.es/~josemari/), [Juan D. Tardos](http://webdiis.unizar.es/~jdtardos/).
 
-The [Changelog](https://github.com/UZ-SLAMLab/ORB_SLAM3/blob/master/Changelog.md) describes the features of each version.
+The [Changelog](https://github.com/UZ-SLAMLab/MORB_SLAM/blob/master/Changelog.md) describes the features of each version.
 
 ORB-SLAM3 is the first real-time SLAM library able to perform **Visual, Visual-Inertial and Multi-Map SLAM** with **monocular, stereo and RGB-D** cameras, using **pin-hole and fisheye** lens models. In all sensor configurations, ORB-SLAM3 is as robust as the best systems available in the literature, and significantly more accurate. 
 
@@ -46,7 +46,7 @@ alt="ORB-SLAM3" width="240" height="180" border="10" /></a>
 
 # 1. License
 
-ORB-SLAM3 is released under [GPLv3 license](https://github.com/UZ-SLAMLab/ORB_SLAM3/LICENSE). For a list of all code/library dependencies (and associated licenses), please see [Dependencies.md](https://github.com/UZ-SLAMLab/ORB_SLAM3/blob/master/Dependencies.md).
+ORB-SLAM3 is released under [GPLv3 license](https://github.com/UZ-SLAMLab/MORB_SLAM/LICENSE). For a list of all code/library dependencies (and associated licenses), please see [Dependencies.md](https://github.com/UZ-SLAMLab/MORB_SLAM/blob/master/Dependencies.md).
 
 For a closed-source version of ORB-SLAM3 for commercial purposes, please contact the authors: orbslam (at) unizar (dot) es.
 
@@ -97,12 +97,12 @@ We provide some examples to process input of a monocular, monocular-inertial, st
 
 Clone the repository:
 ```
-git clone https://github.com/UZ-SLAMLab/ORB_SLAM3.git ORB_SLAM3
+git clone https://github.com/UZ-SLAMLab/MORB_SLAM.git MORB_SLAM
 ```
 
 We provide a script `build.sh` to build the *Thirdparty* libraries and *ORB-SLAM3*. Please make sure you have installed all required dependencies (see section 2). Execute:
 ```
-cd ORB_SLAM3
+cd MORB_SLAM
 chmod +x build.sh
 ./build.sh
 ```
@@ -170,14 +170,14 @@ Execute the following script to process sequences and compute the RMS ATE:
 ### Building the nodes for mono, mono-inertial, stereo, stereo-inertial and RGB-D
 Tested with ROS Melodic and ubuntu 18.04.
 
-1. Add the path including *Examples/ROS/ORB_SLAM3* to the ROS_PACKAGE_PATH environment variable. Open .bashrc file:
+1. Add the path including *Examples/ROS/MORB_SLAM* to the ROS_PACKAGE_PATH environment variable. Open .bashrc file:
   ```
   gedit ~/.bashrc
   ```
-and add at the end the following line. Replace PATH by the folder where you cloned ORB_SLAM3:
+and add at the end the following line. Replace PATH by the folder where you cloned MORB_SLAM:
 
   ```
-  export ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:PATH/ORB_SLAM3/Examples/ROS
+  export ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:PATH/MORB_SLAM/Examples/ROS
   ```
   
 2. Execute `build_ros.sh` script:
@@ -188,38 +188,38 @@ and add at the end the following line. Replace PATH by the folder where you clon
   ```
   
 ### Running Monocular Node
-For a monocular input from topic `/camera/image_raw` run node ORB_SLAM3/Mono. You will need to provide the vocabulary file and a settings file. See the monocular examples above.
+For a monocular input from topic `/camera/image_raw` run node MORB_SLAM/Mono. You will need to provide the vocabulary file and a settings file. See the monocular examples above.
 
   ```
-  rosrun ORB_SLAM3 Mono PATH_TO_VOCABULARY PATH_TO_SETTINGS_FILE
+  rosrun MORB_SLAM Mono PATH_TO_VOCABULARY PATH_TO_SETTINGS_FILE
   ```
 
 ### Running Monocular-Inertial Node
-For a monocular input from topic `/camera/image_raw` and an inertial input from topic `/imu`, run node ORB_SLAM3/Mono_Inertial. Setting the optional third argument to true will apply CLAHE equalization to images (Mainly for TUM-VI dataset).
+For a monocular input from topic `/camera/image_raw` and an inertial input from topic `/imu`, run node MORB_SLAM/Mono_Inertial. Setting the optional third argument to true will apply CLAHE equalization to images (Mainly for TUM-VI dataset).
 
   ```
-  rosrun ORB_SLAM3 Mono PATH_TO_VOCABULARY PATH_TO_SETTINGS_FILE [EQUALIZATION]	
+  rosrun MORB_SLAM Mono PATH_TO_VOCABULARY PATH_TO_SETTINGS_FILE [EQUALIZATION]	
   ```
 
 ### Running Stereo Node
-For a stereo input from topic `/camera/left/image_raw` and `/camera/right/image_raw` run node ORB_SLAM3/Stereo. You will need to provide the vocabulary file and a settings file. For Pinhole camera model, if you **provide rectification matrices** (see Examples/Stereo/EuRoC.yaml example), the node will recitify the images online, **otherwise images must be pre-rectified**. For FishEye camera model, rectification is not required since system works with original images:
+For a stereo input from topic `/camera/left/image_raw` and `/camera/right/image_raw` run node MORB_SLAM/Stereo. You will need to provide the vocabulary file and a settings file. For Pinhole camera model, if you **provide rectification matrices** (see Examples/Stereo/EuRoC.yaml example), the node will recitify the images online, **otherwise images must be pre-rectified**. For FishEye camera model, rectification is not required since system works with original images:
 
   ```
-  rosrun ORB_SLAM3 Stereo PATH_TO_VOCABULARY PATH_TO_SETTINGS_FILE ONLINE_RECTIFICATION
+  rosrun MORB_SLAM Stereo PATH_TO_VOCABULARY PATH_TO_SETTINGS_FILE ONLINE_RECTIFICATION
   ```
 
 ### Running Stereo-Inertial Node
-For a stereo input from topics `/camera/left/image_raw` and `/camera/right/image_raw`, and an inertial input from topic `/imu`, run node ORB_SLAM3/Stereo_Inertial. You will need to provide the vocabulary file and a settings file, including rectification matrices if required in a similar way to Stereo case:
+For a stereo input from topics `/camera/left/image_raw` and `/camera/right/image_raw`, and an inertial input from topic `/imu`, run node MORB_SLAM/Stereo_Inertial. You will need to provide the vocabulary file and a settings file, including rectification matrices if required in a similar way to Stereo case:
 
   ```
-  rosrun ORB_SLAM3 Stereo_Inertial PATH_TO_VOCABULARY PATH_TO_SETTINGS_FILE ONLINE_RECTIFICATION [EQUALIZATION]	
+  rosrun MORB_SLAM Stereo_Inertial PATH_TO_VOCABULARY PATH_TO_SETTINGS_FILE ONLINE_RECTIFICATION [EQUALIZATION]	
   ```
   
 ### Running RGB_D Node
-For an RGB-D input from topics `/camera/rgb/image_raw` and `/camera/depth_registered/image_raw`, run node ORB_SLAM3/RGBD. You will need to provide the vocabulary file and a settings file. See the RGB-D example above.
+For an RGB-D input from topics `/camera/rgb/image_raw` and `/camera/depth_registered/image_raw`, run node MORB_SLAM/RGBD. You will need to provide the vocabulary file and a settings file. See the RGB-D example above.
 
   ```
-  rosrun ORB_SLAM3 RGBD PATH_TO_VOCABULARY PATH_TO_SETTINGS_FILE
+  rosrun MORB_SLAM RGBD PATH_TO_VOCABULARY PATH_TO_SETTINGS_FILE
   ```
 
 **Running ROS example:** Download a rosbag (e.g. V1_02_medium.bag) from the EuRoC dataset (http://projects.asl.ethz.ch/datasets/doku.php?id=kmavvisualinertialdatasets). Open 3 tabs on the terminal and run the following command at each tab for a Stereo-Inertial configuration:
@@ -228,7 +228,7 @@ For an RGB-D input from topics `/camera/rgb/image_raw` and `/camera/depth_regist
   ```
   
   ```
-  rosrun ORB_SLAM3 Stereo_Inertial Vocabulary/ORBvoc.txt Examples/Stereo-Inertial/EuRoC.yaml true
+  rosrun MORB_SLAM Stereo_Inertial Vocabulary/ORBvoc.txt Examples/Stereo-Inertial/EuRoC.yaml true
   ```
   
   ```

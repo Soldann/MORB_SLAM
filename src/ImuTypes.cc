@@ -19,14 +19,14 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ImuTypes.h"
+#include "MORB_SLAM/ImuTypes.h"
 
 #include <iostream>
 
-#include "Converter.h"
-#include "GeometricTools.h"
+#include "MORB_SLAM/Converter.h"
+#include "MORB_SLAM/GeometricTools.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 namespace IMU {
 
@@ -406,4 +406,4 @@ Calib::Calib(const Calib &calib) {
 
 }  // namespace IMU
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

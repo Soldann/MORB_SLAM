@@ -19,16 +19,16 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "KeyFrameDatabase.h"
+#include "MORB_SLAM/KeyFrameDatabase.h"
 
 #include <mutex>
 
 #include "DBoW2/BowVector.h"
-#include "KeyFrame.h"
+#include "MORB_SLAM/KeyFrame.h"
 
 using namespace std;
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 KeyFrameDatabase::KeyFrameDatabase(const ORBVocabulary& voc) : mpVoc(&voc) {
   mvInvertedFile.resize(voc.size());
@@ -68,7 +68,7 @@ void KeyFrameDatabase::clear() {
   mvInvertedFile.resize(mpVoc->size());
 }
 
-void KeyFrameDatabase::clearMap(Map* pMap) {
+void KeyFrameDatabase::clearMap(std::shared_ptr<Map> pMap) {
   unique_lock<mutex> lock(mMutex);
 
   // Erase elements in the Inverse File for the entry
@@ -705,7 +705,7 @@ void KeyFrameDatabase::DetectNBestCandidates(KeyFrame* pKF,
 }
 
 vector<KeyFrame*> KeyFrameDatabase::DetectRelocalizationCandidates(Frame* F,
-                                                                   Map* pMap) {
+                                                                   std::shared_ptr<Map> pMap) {
   list<KeyFrame*> lKFsSharingWords;
 
   // Search all keyframes that share a word with current frame
@@ -822,4 +822,4 @@ void KeyFrameDatabase::SetORBVocabulary(ORBVocabulary* pORBVoc) {
   mvInvertedFile.resize(mpVoc->size());
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM
