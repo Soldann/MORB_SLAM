@@ -1528,9 +1528,9 @@ void Tracking::PreintegrateIMU() {
   }
 
  while (true) {
-    unique_lock<mutex> lock(mMutexImuQueue);
     bool bSleep = false;
     {
+      unique_lock<mutex> lock(mMutexImuQueue);
       if (!mlQueueImuData.empty()) {
         IMU::Point* m = &mlQueueImuData.front();
         cout.precision(17);
