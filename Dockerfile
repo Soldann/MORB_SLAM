@@ -70,7 +70,7 @@ RUN mkdir -p build && cd build \
     && cmake --build . \
     && make install
     
-RUN apt install -y libeigen3-dev
+RUN apt install -y libeigen3-dev libgl1-mesa-dev
 
 RUN cd \
     && git clone https://github.com/Soldann/MORB_SLAM.git \
