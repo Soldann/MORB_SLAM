@@ -72,7 +72,7 @@ RUN mkdir -p build && cd build \
     
 
 #python
-RUN apt install libpython2.7-dev ninja-build libeigen3-dev libsuitesparse-dev qtdeclarative5-dev qt5-qmake libqglviewer-dev-qt5 libceres-dev
+RUN apt install -y libpython2.7-dev ninja-build libeigen3-dev libsuitesparse-dev qtdeclarative5-dev qt5-qmake libqglviewer-dev-qt5 libceres-dev
 
 #pangolin
 RUN apt install -y libglew-dev ffmpeg libavcodec-dev libavutil-dev libavformat-dev libswscale-dev \
