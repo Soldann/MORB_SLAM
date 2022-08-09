@@ -53,6 +53,7 @@ FROM ubuntu:20.04
 # But it is somewhat less capable than the ones in the ffmpeg containers.
 ########################################################################
 
+ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ="America/New_York"
 
 # Install minimal prerequisites (Ubuntu 18.04 as reference)
