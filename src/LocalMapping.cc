@@ -1194,9 +1194,9 @@ void LocalMapping::InitializeIMU(float priorG, float priorA, bool bFIBA) {
     //   0.059227496385574341,0.12209725379943848,-0.99074935913085938,
     //   -0.066840663552284241,0.99074935913085938,0.11810147762298584;
     // } else{
-    std::cout << "dirGBeforeNorm------------------------------------------------------: " << dirG << std::endl;
+    // std::cout << "dirGBeforeNorm------------------------------------------------------: " << dirG << std::endl;
     dirG = dirG / dirG.norm();
-    std::cout << "dirGAfterNorm------------------------------------------------------: " << dirG << std::endl;
+    // std::cout << "dirGAfterNorm------------------------------------------------------: " << dirG << std::endl;
     Eigen::Vector3f gI(0.0f, 0.0f, -1.0f);
     Eigen::Vector3f v = gI.cross(dirG);
     const float nv = v.norm();
@@ -1204,9 +1204,9 @@ void LocalMapping::InitializeIMU(float priorG, float priorA, bool bFIBA) {
     const float cosg = gI.dot(dirG);
     const float ang = acos(cosg);
 
-    std::cout << "v------------------------------------------------------: " << v << std::endl;
-    std::cout << "ang------------------------------------------------------: " << ang << std::endl;
-    std::cout << "nv------------------------------------------------------: " << nv << std::endl;
+    // std::cout << "v------------------------------------------------------: " << v << std::endl;
+    // std::cout << "ang------------------------------------------------------: " << ang << std::endl;
+    // std::cout << "nv------------------------------------------------------: " << nv << std::endl;
 
     Eigen::Vector3f vzg = v * ang / nv;
     Rwg = Sophus::SO3f::exp(vzg).matrix();

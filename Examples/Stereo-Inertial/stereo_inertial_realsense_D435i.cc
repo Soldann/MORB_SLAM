@@ -33,7 +33,7 @@
 #include "librealsense2/rsutil.h"
 
 #include <MORB_SLAM/System.h>
-#include <MORB_SLAM/Viewer.h>
+// #include <MORB_SLAM/Viewer.h>
 
 using namespace std;
 
@@ -319,7 +319,7 @@ int main(int argc, char **argv) {
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
     MORB_SLAM::System_ptr SLAM = std::make_shared<MORB_SLAM::System>(argv[1],argv[2],MORB_SLAM::CameraType::IMU_STEREO, file_name);
-    MORB_SLAM::Viewer viewer(SLAM, argv[2]);
+    // MORB_SLAM::Viewer viewer(SLAM, argv[2]);
     float imageScale = SLAM->GetImageScale();
 
     double timestamp;
@@ -336,7 +336,7 @@ int main(int argc, char **argv) {
     double t_track = 0.f;
 #endif
 
-    while (viewer.isOpen())
+    while(true)
     {
         std::vector<rs2_vector> vGyro;
         std::vector<double> vGyro_times;
@@ -422,7 +422,7 @@ int main(int argc, char **argv) {
         t_track = t_resize + std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t_End_Track - t_Start_Track).count();
         SLAM->InsertTrackTime(t_track);
 #endif
-        viewer.update(pos);
+        // viewer.update(pos);
 
 
 
