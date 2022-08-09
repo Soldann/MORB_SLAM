@@ -53,6 +53,7 @@ FROM ubuntu:20.04
 # But it is somewhat less capable than the ones in the ffmpeg containers.
 ########################################################################
 
+ENV TZ="America/New_York"
 
 # Install minimal prerequisites (Ubuntu 18.04 as reference)
 RUN apt update && apt install -y cmake g++ wget unzip git && mkdir opencv
