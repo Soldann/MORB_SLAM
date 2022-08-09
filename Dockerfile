@@ -79,7 +79,7 @@ RUN apt install -y libglew-dev ffmpeg libavcodec-dev libavutil-dev libavformat-d
         libdc1394-22-dev libraw1394-dev \
         libjpeg-dev libpng-dev libtiff5-dev libopenexr-dev \
         doxygen python3-pydot python3-pydot-ng
-RUN sudo apt install -y graphviz 
+RUN apt install -y graphviz 
 
 WORKDIR "/Pangolin"
 RUN git clone https://github.com/stevenlovegrove/Pangolin.git
