@@ -70,9 +70,34 @@ RUN mkdir -p build && cd build \
     && cmake --build . \
     && make install
     
-RUN apt install -y libeigen3-dev libgl1-mesa-dev
 
-RUN cd \
-    && git clone https://github.com/Soldann/MORB_SLAM.git \
+#python
+RUN apt install libpython2.7-dev ninja-build libeigen3-dev libsuitesparse-dev qtdeclarative5-dev qt5-qmake libqglviewer-dev-qt5 libceres-dev
+
+#pangolin
+RUN apt install -y libglew-dev ffmpeg libavcodec-dev libavutil-dev libavformat-dev libswscale-dev \
+        libdc1394-22-dev libraw1394-dev \
+        libjpeg-dev libpng-dev libtiff5-dev libopenexr-dev \
+        doxygen python3-pydot python3-pydot-ng
+RUN sudo apt install -y graphviz 
+
+WORKDIR "/Pangolin"
+RUN git clone https://github.com/stevenlovegrove/Pangolin.git
+#git checkout v0.7
+#git submodule update --init --recursive
+
+RUN cd Pangolin && ./scripts/install_prerequisites.sh -m all \
+    && cmake -B build \
+    && cmake --build build -j12
+
+#cmake --build build -t pypangolin_pip_install
+
+
+# morbslam
+RUN apt install -y libboost-all-dev libssl-dev
+
+WORKDIR "/MORB_SLAM"
+
+RUN git clone https://github.com/Soldann/MORB_SLAM.git \
     && cd MORB_SLAM \
-    && ./morbslam_installer.sh
+    && ./build.sh
