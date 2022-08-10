@@ -59,7 +59,7 @@ Map::Map(int initKFid)
       mbBad(false),
       mbIsInertial(false),
       mbIMU_BA1(false),
-      mbIMU_BA2(false) {
+      mbIMU_BA2(false) { 
   mnId = nNextId++;
   mThumbnail = nullptr;
 }
@@ -453,4 +453,7 @@ void Map::PostLoad(
   mvpBackupMapPoints.clear();
 }
 
+void Map::setLastPose(Eigen::Vector3f pose) {lastPose = pose;}
+
 }  // namespace MORB_SLAM
+

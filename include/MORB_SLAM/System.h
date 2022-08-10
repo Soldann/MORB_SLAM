@@ -26,6 +26,7 @@
 #include <string>
 #include <thread>
 #include <opencv2/core/core.hpp>
+#include <deque>
 
 #include "MORB_SLAM/ImprovedTypes.hpp"
 #include "MORB_SLAM/Tracking.h"
@@ -172,6 +173,9 @@ public:
 
     float GetImageScale();
 
+    void addPoseToQueue(Eigen::Vector3f poseCandidate);
+    std::deque<Eigen::Vector3f> getPoseQueue();
+
 #ifdef REGISTER_TIMES
     void InsertRectTime(double& time);
     void InsertResizeTime(double& time);
@@ -240,6 +244,10 @@ private:
     string mStrVocabularyFilePath;
 
     Settings* settings_;
+
+    std::deque<Eigen::Vector3f> poseValues;
+    const float maxChangeInPose = 2;
+    const int queueSize = 5;
 };
 
 }// namespace ORB_SLAM

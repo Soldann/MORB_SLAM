@@ -318,6 +318,14 @@ Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
   mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
   mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
 
+  addPoseToQueue(Tcw.inverse().translation());
+
+  std::cout << "BEGINNING" << std::endl;
+  for(auto &i: poseValues){
+      std::cout << i << std::endl;
+  }
+  std::cout << "ENDING" << std::endl;
+
   return Tcw;
 }
 
@@ -457,6 +465,7 @@ Sophus::SE3f System::TrackMonocular(const cv::Mat& im, const double& timestamp,
   mTrackingState = mpTracker->mState;
   mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
   mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
+
 
   return Tcw;
 }
@@ -1548,6 +1557,26 @@ string System::CalculateCheckSum(string filename, int type) {
   }
 
   return checksum;
+}
+
+void System::addPoseToQueue(Eigen::Vector3f poseCandidate){
+
+  if(static_cast<int>(poseValues.size()) < queueSize){
+    poseValues.push_back(poseCandidate);
+  } else{
+    float avgNorm = 0;
+    for(auto &i: poseValues){
+      avgNorm += i.norm();
+    }
+    if(abs((avgNorm/queueSize)-poseCandidate.norm()) < maxChangeInPose){
+        poseValues.pop_front();
+        poseValues.push_back(poseCandidate);
+    }
+  }
+}
+
+std::deque<Eigen::Vector3f> System::getPoseQueue(){
+  return poseValues;
 }
 
 }  // namespace MORB_SLAM

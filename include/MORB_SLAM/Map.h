@@ -155,6 +155,8 @@ public:
     std::set<long unsigned int> msOptKFs;
     std::set<long unsigned int> msFixedKFs;
 
+    void setLastPose(Eigen::Vector3f pose);
+
 protected:
 
     long unsigned int mnId;
@@ -199,6 +201,9 @@ protected:
 
     // Mutex
     std::mutex mMutexMap;
+
+    // Last known pose of a Map 
+    Eigen::Vector3f lastPose;
 
 };
 
