@@ -86,7 +86,7 @@ RUN git clone https://github.com/stevenlovegrove/Pangolin.git
 #git checkout v0.7
 #git submodule update --init --recursive
 
-RUN cd Pangolin && ./scripts/install_prerequisites.sh -m all \
+RUN cd Pangolin && ./scripts/install_prerequisites.sh -m apt all \
     && cmake -B build \
     && cmake --build build -j12
 
