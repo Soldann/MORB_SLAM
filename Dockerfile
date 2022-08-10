@@ -86,7 +86,15 @@ RUN git clone https://github.com/stevenlovegrove/Pangolin.git
 #git checkout v0.7
 #git submodule update --init --recursive
 
-RUN cd Pangolin && ./scripts/install_prerequisites.sh -m apt all \
+# install pangolin prerequisites
+RUN apt install -y --no-install-suggests --no-install-recommends \
+    libgl1-mesa-dev libwayland-dev libxkbcommon-dev wayland-protocols libegl1-mesa-dev \
+    libc++-dev libglew-dev libeigen3-dev cmake g++ ninja-build \
+    libjpeg-dev libpng-dev \
+    libavcodec-dev libavutil-dev libavformat-dev libswscale-dev libavdevice-dev \
+    libdc1394-22-dev libraw1394-dev libopenni-dev python3.9-dev python3-distutils
+
+RUN cd Pangolin \
     && cmake -B build \
     && cmake --build build -j12
 
