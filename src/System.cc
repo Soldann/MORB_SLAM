@@ -51,11 +51,13 @@ System::System(const std::string& strVocFile, const std::string& strSettingsFile
                const CameraType::eSensor sensor,
                const std::string& strSequence)
     : mSensor(sensor),
-      mpAtlas(std::make_shared<Atlas>(0)),
       mbReset(false),
       mbResetActiveMap(false),
       mbActivateLocalizationMode(false),
       mbDeactivateLocalizationMode(false) {
+  
+  mpAtlas = std::make_shared<Atlas>(0, poseValues, queueSize);
+
   cameras.push_back(make_shared<Camera>(mSensor)); // for now just hard code the sensor we are using, TODO make multicam
   // Output welcome message
   std::cout << std::endl
@@ -318,11 +320,11 @@ Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
   mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
   mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
 
-  addPoseToQueue(Tcw.inverse().translation());
+  addPoseToQueue(Tcw);
 
   std::cout << "BEGINNING" << std::endl;
   for(auto &i: poseValues){
-      std::cout << i << std::endl;
+      std::cout << i.inverse().translation() << std::endl;
   }
   std::cout << "ENDING" << std::endl;
 
@@ -1559,24 +1561,28 @@ string System::CalculateCheckSum(string filename, int type) {
   return checksum;
 }
 
-void System::addPoseToQueue(Eigen::Vector3f poseCandidate){
+void System::addPoseToQueue(Sophus::SE3f poseCandidate){
 
   if(static_cast<int>(poseValues.size()) < queueSize){
     poseValues.push_back(poseCandidate);
   } else{
     float avgNorm = 0;
     for(auto &i: poseValues){
-      avgNorm += i.norm();
+      avgNorm += i.inverse().translation().norm();
     }
-    if(abs((avgNorm/queueSize)-poseCandidate.norm()) < maxChangeInPose){
+    if(abs((avgNorm/queueSize)-poseCandidate.inverse().translation().norm()) < maxChangeInPose){
         poseValues.pop_front();
         poseValues.push_back(poseCandidate);
     }
   }
 }
 
-std::deque<Eigen::Vector3f> System::getPoseQueue(){
+std::deque<Sophus::SE3f> System::getPoseQueue(){
   return poseValues;
+}
+
+int System::getQueueSize(){
+  return queueSize;
 }
 
 }  // namespace MORB_SLAM

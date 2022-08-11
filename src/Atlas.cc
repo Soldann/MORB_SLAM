@@ -29,7 +29,7 @@ namespace MORB_SLAM {
 
 Atlas::Atlas() { mpCurrentMap = nullptr; }
 
-Atlas::Atlas(int initKFid) : mnLastInitKFidMap(initKFid) {
+Atlas::Atlas(int initKFid, std::deque<Sophus::SE3f> poseValues, int queueSize) : pValues(poseValues), qSize(queueSize), mnLastInitKFidMap(initKFid) {
   mpCurrentMap = nullptr;
   CreateNewMap();
 }
@@ -49,8 +49,10 @@ void Atlas::CreateNewMap() {
   }
   cout << "Creation of new map with last KF id: " << mnLastInitKFidMap << endl;
 
-  mpCurrentMap = std::make_shared<Map>(mnLastInitKFidMap);
+  mpCurrentMap = std::make_shared<Map>(mnLastInitKFidMap, pValues, qSize);
   mpCurrentMap->SetCurrentMap();
+
+
   mspMaps.insert(mpCurrentMap);
 }
 

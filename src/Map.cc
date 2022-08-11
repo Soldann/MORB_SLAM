@@ -22,6 +22,7 @@
 #include "MORB_SLAM/Map.h"
 
 #include <mutex>
+#include <MORB_SLAM/System.h>
 
 namespace MORB_SLAM {
 
@@ -64,6 +65,27 @@ Map::Map(int initKFid)
   mThumbnail = nullptr;
 }
 
+Map::Map(int initKFid,std::deque<Sophus::SE3f> pValues, int qSize)
+    : mpFirstRegionKF(nullptr),
+      mbFail(false),
+      mbImuInitialized(false),
+      mnMapChange(0),
+      mnMapChangeNotified(0),
+      mnInitKFid(initKFid),
+      mnMaxKFid(initKFid),
+      mnBigChangeIdx(0),
+      mIsInUse(false),
+      mHasTumbnail(false),
+      mbBad(false),
+      mbIsInertial(false),
+      mbIMU_BA1(false),
+      mbIMU_BA2(false),
+      poseValues(pValues),
+      queueSize(qSize)
+       { 
+  mnId = nNextId++;
+  mThumbnail = nullptr;
+}
 Map::~Map() {
   // TODO: erase all points from memory
   mspMapPoints.clear();
@@ -81,6 +103,11 @@ Map::~Map() {
 void Map::AddKeyFrame(KeyFrame* pKF) {
   unique_lock<mutex> lock(mMutexMap);
   if (mspKeyFrames.empty()) {
+
+    if(static_cast<int>(poseValues.size()) == queueSize){
+      pKF->SetPose(poseValues.back());
+    }
+
     cout << "First KF:" << pKF->mnId << "; Map init KF:" << mnInitKFid << endl;
     mnInitKFid = pKF->mnId;
     mpKFinitial = pKF;
@@ -452,8 +479,6 @@ void Map::PostLoad(
 
   mvpBackupMapPoints.clear();
 }
-
-void Map::setLastPose(Eigen::Vector3f pose) {lastPose = pose;}
 
 }  // namespace MORB_SLAM
 

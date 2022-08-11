@@ -70,11 +70,14 @@ class Atlas {
     ar& mnLastInitKFidMap;
   }
 
+  std::deque<Sophus::SE3f> pValues;
+  int qSize;
+
  public:
   
 
   Atlas();
-  Atlas(int initKFid);  // When its initialization the first map is created
+  Atlas(int initKFid, std::deque<Sophus::SE3f> poseValues, int queueSize);  // When its initialization the first map is created
   ~Atlas();
 
   void CreateNewMap();
@@ -137,6 +140,8 @@ class Atlas {
   long unsigned int GetNumLivedKF();
 
   long unsigned int GetNumLivedMP();
+
+ 
 
  protected:
   std::set<std::shared_ptr<Map>> mspMaps;

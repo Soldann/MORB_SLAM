@@ -173,8 +173,9 @@ public:
 
     float GetImageScale();
 
-    void addPoseToQueue(Eigen::Vector3f poseCandidate);
-    std::deque<Eigen::Vector3f> getPoseQueue();
+    void addPoseToQueue(Sophus::SE3f poseCandidate);
+    std::deque<Sophus::SE3f> getPoseQueue();
+    int getQueueSize();
 
 #ifdef REGISTER_TIMES
     void InsertRectTime(double& time);
@@ -245,8 +246,8 @@ private:
 
     Settings* settings_;
 
-    std::deque<Eigen::Vector3f> poseValues;
-    const float maxChangeInPose = 2;
+    std::deque<Sophus::SE3f> poseValues;
+    const float maxChangeInPose = 1.5;
     const int queueSize = 5;
 };
 

@@ -71,6 +71,7 @@ public:
     
     Map();
     Map(int initKFid);
+    Map(int initKFid, std::deque<Sophus::SE3f> pValues, int qSize);
     ~Map();
 
     void AddKeyFrame(KeyFrame* pKF);
@@ -155,8 +156,6 @@ public:
     std::set<long unsigned int> msOptKFs;
     std::set<long unsigned int> msFixedKFs;
 
-    void setLastPose(Eigen::Vector3f pose);
-
 protected:
 
     long unsigned int mnId;
@@ -199,11 +198,11 @@ protected:
     bool mbIMU_BA1;
     bool mbIMU_BA2;
 
+    std::deque<Sophus::SE3f> poseValues;
+    int queueSize;
+
     // Mutex
     std::mutex mMutexMap;
-
-    // Last known pose of a Map 
-    Eigen::Vector3f lastPose;
 
 };
 
