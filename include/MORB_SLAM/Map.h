@@ -74,7 +74,6 @@ public:
     ~Map();
 
     void AddKeyFrame(KeyFrame* pKF);
-    void AddKeyFrame(KeyFrame* pKF, std::deque<Sophus::SE3f> &poseValues, int queueSize);
     void AddMapPoint(MapPoint* pMP);
     void EraseMapPoint(MapPoint* pMP);
     void EraseKeyFrame(KeyFrame* pKF);
@@ -156,6 +155,9 @@ public:
     std::set<long unsigned int> msOptKFs;
     std::set<long unsigned int> msFixedKFs;
 
+    void setPoseOffset(Sophus::SE3f pose);
+    Sophus::SE3f getPoseOffset();
+
 protected:
 
     long unsigned int mnId;
@@ -200,6 +202,8 @@ protected:
 
     // Mutex
     std::mutex mMutexMap;
+
+    Sophus::SE3f poseOffset;
 
 };
 

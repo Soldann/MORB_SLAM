@@ -50,6 +50,11 @@ void Atlas::CreateNewMap() {
   cout << "Creation of new map with last KF id: " << mnLastInitKFidMap << endl;
 
   mpCurrentMap = std::make_shared<Map>(mnLastInitKFidMap);
+
+  if(static_cast<int>(poseValues.size()) == queueSize){
+    mpCurrentMap->setPoseOffset(poseValues.back());
+    std::cout << "The map is being saved with a pose offset of: " << mpCurrentMap->getPoseOffset().inverse().translation();
+  }
   mpCurrentMap->SetCurrentMap();
 
 
@@ -74,7 +79,7 @@ unsigned long int Atlas::GetLastInitKFid() {
 
 void Atlas::AddKeyFrame(KeyFrame* pKF) {
   std::shared_ptr<Map> pMapKF = pKF->GetMap();
-  pMapKF->AddKeyFrame(pKF, poseValues, queueSize);
+  pMapKF->AddKeyFrame(pKF);
 }
 
 void Atlas::AddMapPoint(MapPoint* pMP) {
@@ -357,12 +362,20 @@ void Atlas::addPoseToQueue(Sophus::SE3f poseCandidate){
   }
 }
 
-void Atlas::setPoseOffset(Sophus::SE3f pose){
-  poseOffset = pose;
+int Atlas::MapsInAtlas(){
+  return static_cast<int>(GetAllMaps().size());
 }
 
-Sophus::SE3f Atlas::getPoseOffset(){
-  return poseOffset;
+Sophus::SE3f Atlas::addPoseToPose(Sophus::SE3f currentPose, Sophus::SE3f poseOffset){
+
+  std::cout << "The current pose from addposetopose is: " << currentPose.inverse().translation() << std::endl;
+  std::cout << "The poseOffset from addposetopose is: " << poseOffset.inverse().translation() << std::endl;
+  // Eigen::Vector3f newTranslation = currentPose.inverse().translation() + poseOffset.inverse().translation();
+
+  // currentPose.SE3Product(poseOffset);
+  std::cout << "The new translation from addposetopose is: " << (currentPose * poseOffset).inverse().translation();
+  return currentPose * poseOffset;
+
 }
 
 }  // namespace MORB_SLAM

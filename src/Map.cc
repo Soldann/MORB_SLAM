@@ -96,31 +96,6 @@ void Map::AddKeyFrame(KeyFrame* pKF) {
   }
 }
 
-void Map::AddKeyFrame(KeyFrame* pKF, std::deque<Sophus::SE3f> &poseValues, int queueSize) {
-  unique_lock<mutex> lock(mMutexMap);
-  if (mspKeyFrames.empty()) {
-    std::cout << "EMPTYYYYYYYYYYYYYYYYYYYYYYYYYYYYY" << std::endl;
-    std::cout << "Pose Size: " << static_cast<int>(poseValues.size()) << std::endl;
-    std::cout << "Queue Size: " << queueSize << std::endl;
-    if(static_cast<int>(poseValues.size()) == queueSize){
-      std::cout << "REASSIGNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN" << std::endl;
-      pKF->SetPose(poseValues.back());
-      std::cout << "The reassigned pose is: " << pKF->GetPose().inverse().translation();
-    }
-
-    cout << "First KF:" << pKF->mnId << "; Map init KF:" << mnInitKFid << endl;
-    mnInitKFid = pKF->mnId;
-    mpKFinitial = pKF;
-    mpKFlowerID = pKF;
-  }
-  mspKeyFrames.insert(pKF);
-  if (pKF->mnId > mnMaxKFid) {
-    mnMaxKFid = pKF->mnId;
-  }
-  if (pKF->mnId < mpKFlowerID->mnId) {
-    mpKFlowerID = pKF;
-  }
-}
 
 void Map::AddMapPoint(MapPoint* pMP) {
   unique_lock<mutex> lock(mMutexMap);
@@ -478,6 +453,14 @@ void Map::PostLoad(
   }
 
   mvpBackupMapPoints.clear();
+}
+
+void Map::setPoseOffset(Sophus::SE3f pose){
+  poseOffset = pose;
+}
+
+Sophus::SE3f Map::getPoseOffset(){
+  return poseOffset;
 }
 
 }  // namespace MORB_SLAM

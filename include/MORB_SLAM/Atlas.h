@@ -101,6 +101,7 @@ class Atlas {
 
   long unsigned int MapPointsInMap();
   long unsigned KeyFramesInMap();
+  int MapsInAtlas();
 
   // Method for get data in current map
   std::vector<KeyFrame*> GetAllKeyFrames();
@@ -147,11 +148,7 @@ class Atlas {
 
   void addPoseToQueue(Sophus::SE3f poseCandidate);
 
-  void setPoseOffset(Sophus::SE3f pose);
-  Sophus::SE3f getPoseOffset();
-
-
- 
+  Sophus::SE3f addPoseToPose(Sophus::SE3f currentPose, Sophus::SE3f poseOffset);
 
  protected:
   std::set<std::shared_ptr<Map>> mspMaps;
@@ -176,8 +173,6 @@ class Atlas {
   std::deque<Sophus::SE3f> poseValues;
   const float maxChangeInPose = 1.5;
   const int queueSize = 5;
-
-  Sophus::SE3f poseOffset;
 
 };  // class Atlas
 

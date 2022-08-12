@@ -1414,10 +1414,11 @@ Sophus::SE3f Tracking::GrabImageStereo(const cv::Mat& imRectLeft,
   Track();
   // cout << "Tracking end" << endl;
 
-  if(static_cast<int>(mpAtlas->GetCurrentMap(mpSystem)->KeyFramesInMap()) == 0 && static_cast<int>(mpAtlas->getPoseQueue().size()) == mpAtlas->getQueueSize()){
+  if(mpAtlas->MapsInAtlas() > 0 && static_cast<int>(mpAtlas->getPoseQueue().size()) == mpAtlas->getQueueSize()){
     std::cout << "THE SIZE OF THE CURRENT MAP IS 0 FROM TRACKING WITH LOVE" << std::endl;
-    mCurrentFrame.SetPose(mpAtlas->getPoseQueue().back());
+    mCurrentFrame.SetPose(mpAtlas->addPoseToPose(mCurrentFrame.GetPose(),mpAtlas->GetCurrentMap(mpSystem)->getPoseOffset()));
   }
+
   mpAtlas->addPoseToQueue(mCurrentFrame.GetPose());
 
   for(auto &i : mpAtlas->getPoseQueue()){
