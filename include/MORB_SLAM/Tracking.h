@@ -167,6 +167,7 @@ class Tracking {
 
   bool mbWriteStats;
 
+
 #ifdef REGISTER_TIMES
   void LocalMapStats2File();
   void TrackStats2File();

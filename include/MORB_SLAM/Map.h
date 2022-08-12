@@ -71,10 +71,10 @@ public:
     
     Map();
     Map(int initKFid);
-    Map(int initKFid, std::deque<Sophus::SE3f> pValues, int qSize);
     ~Map();
 
     void AddKeyFrame(KeyFrame* pKF);
+    void AddKeyFrame(KeyFrame* pKF, std::deque<Sophus::SE3f> &poseValues, int queueSize);
     void AddMapPoint(MapPoint* pMP);
     void EraseMapPoint(MapPoint* pMP);
     void EraseKeyFrame(KeyFrame* pKF);
@@ -197,9 +197,6 @@ protected:
     bool mbIsInertial;
     bool mbIMU_BA1;
     bool mbIMU_BA2;
-
-    std::deque<Sophus::SE3f> poseValues;
-    int queueSize;
 
     // Mutex
     std::mutex mMutexMap;

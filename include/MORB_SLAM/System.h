@@ -173,10 +173,6 @@ public:
 
     float GetImageScale();
 
-    void addPoseToQueue(Sophus::SE3f poseCandidate);
-    std::deque<Sophus::SE3f> getPoseQueue();
-    int getQueueSize();
-
 #ifdef REGISTER_TIMES
     void InsertRectTime(double& time);
     void InsertResizeTime(double& time);
@@ -245,10 +241,6 @@ private:
     string mStrVocabularyFilePath;
 
     Settings* settings_;
-
-    std::deque<Sophus::SE3f> poseValues;
-    const float maxChangeInPose = 1.5;
-    const int queueSize = 5;
 };
 
 }// namespace ORB_SLAM

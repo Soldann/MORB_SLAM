@@ -77,7 +77,7 @@ class Atlas {
   
 
   Atlas();
-  Atlas(int initKFid, std::deque<Sophus::SE3f> poseValues, int queueSize);  // When its initialization the first map is created
+  Atlas(int initKFid);  // When its initialization the first map is created
   ~Atlas();
 
   void CreateNewMap();
@@ -141,6 +141,16 @@ class Atlas {
 
   long unsigned int GetNumLivedMP();
 
+  std::deque<Sophus::SE3f> &getPoseQueue();
+  int getQueueSize();
+  int getMaxChange();
+
+  void addPoseToQueue(Sophus::SE3f poseCandidate);
+
+  void setPoseOffset(Sophus::SE3f pose);
+  Sophus::SE3f getPoseOffset();
+
+
  
 
  protected:
@@ -162,6 +172,12 @@ class Atlas {
 
   // Mutex
   std::mutex mMutexAtlas;
+
+  std::deque<Sophus::SE3f> poseValues;
+  const float maxChangeInPose = 1.5;
+  const int queueSize = 5;
+
+  Sophus::SE3f poseOffset;
 
 };  // class Atlas
 

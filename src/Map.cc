@@ -65,27 +65,6 @@ Map::Map(int initKFid)
   mThumbnail = nullptr;
 }
 
-Map::Map(int initKFid,std::deque<Sophus::SE3f> pValues, int qSize)
-    : mpFirstRegionKF(nullptr),
-      mbFail(false),
-      mbImuInitialized(false),
-      mnMapChange(0),
-      mnMapChangeNotified(0),
-      mnInitKFid(initKFid),
-      mnMaxKFid(initKFid),
-      mnBigChangeIdx(0),
-      mIsInUse(false),
-      mHasTumbnail(false),
-      mbBad(false),
-      mbIsInertial(false),
-      mbIMU_BA1(false),
-      mbIMU_BA2(false),
-      poseValues(pValues),
-      queueSize(qSize)
-       { 
-  mnId = nNextId++;
-  mThumbnail = nullptr;
-}
 Map::~Map() {
   // TODO: erase all points from memory
   mspMapPoints.clear();
@@ -103,9 +82,30 @@ Map::~Map() {
 void Map::AddKeyFrame(KeyFrame* pKF) {
   unique_lock<mutex> lock(mMutexMap);
   if (mspKeyFrames.empty()) {
+    cout << "First KF:" << pKF->mnId << "; Map init KF:" << mnInitKFid << endl;
+    mnInitKFid = pKF->mnId;
+    mpKFinitial = pKF;
+    mpKFlowerID = pKF;
+  }
+  mspKeyFrames.insert(pKF);
+  if (pKF->mnId > mnMaxKFid) {
+    mnMaxKFid = pKF->mnId;
+  }
+  if (pKF->mnId < mpKFlowerID->mnId) {
+    mpKFlowerID = pKF;
+  }
+}
 
+void Map::AddKeyFrame(KeyFrame* pKF, std::deque<Sophus::SE3f> &poseValues, int queueSize) {
+  unique_lock<mutex> lock(mMutexMap);
+  if (mspKeyFrames.empty()) {
+    std::cout << "EMPTYYYYYYYYYYYYYYYYYYYYYYYYYYYYY" << std::endl;
+    std::cout << "Pose Size: " << static_cast<int>(poseValues.size()) << std::endl;
+    std::cout << "Queue Size: " << queueSize << std::endl;
     if(static_cast<int>(poseValues.size()) == queueSize){
+      std::cout << "REASSIGNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN" << std::endl;
       pKF->SetPose(poseValues.back());
+      std::cout << "The reassigned pose is: " << pKF->GetPose().inverse().translation();
     }
 
     cout << "First KF:" << pKF->mnId << "; Map init KF:" << mnInitKFid << endl;

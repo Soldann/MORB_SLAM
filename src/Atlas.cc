@@ -29,7 +29,7 @@ namespace MORB_SLAM {
 
 Atlas::Atlas() { mpCurrentMap = nullptr; }
 
-Atlas::Atlas(int initKFid, std::deque<Sophus::SE3f> poseValues, int queueSize) : pValues(poseValues), qSize(queueSize), mnLastInitKFidMap(initKFid) {
+Atlas::Atlas(int initKFid) : mnLastInitKFidMap(initKFid) {
   mpCurrentMap = nullptr;
   CreateNewMap();
 }
@@ -49,7 +49,7 @@ void Atlas::CreateNewMap() {
   }
   cout << "Creation of new map with last KF id: " << mnLastInitKFidMap << endl;
 
-  mpCurrentMap = std::make_shared<Map>(mnLastInitKFidMap, pValues, qSize);
+  mpCurrentMap = std::make_shared<Map>(mnLastInitKFidMap);
   mpCurrentMap->SetCurrentMap();
 
 
@@ -74,7 +74,7 @@ unsigned long int Atlas::GetLastInitKFid() {
 
 void Atlas::AddKeyFrame(KeyFrame* pKF) {
   std::shared_ptr<Map> pMapKF = pKF->GetMap();
-  pMapKF->AddKeyFrame(pKF);
+  pMapKF->AddKeyFrame(pKF, poseValues, queueSize);
 }
 
 void Atlas::AddMapPoint(MapPoint* pMP) {
@@ -325,6 +325,44 @@ map<long unsigned int, KeyFrame*> Atlas::GetAtlasKeyframes() {
   }
 
   return mpIdKFs;
+}
+
+std::deque<Sophus::SE3f> &Atlas::getPoseQueue(){
+  return poseValues;
+}
+
+int Atlas::getQueueSize(){
+  return queueSize;
+}
+
+int Atlas::getMaxChange(){
+  return maxChangeInPose;
+}
+
+void Atlas::addPoseToQueue(Sophus::SE3f poseCandidate){
+
+  if(static_cast<int>(getPoseQueue().size()) < getQueueSize()){
+    getPoseQueue().push_back(poseCandidate);
+  } else{
+    float avgNorm = 0;
+    for(auto &i: getPoseQueue()){
+      avgNorm += i.inverse().translation().norm();
+    }
+    if(abs((avgNorm/getQueueSize())-poseCandidate.inverse().translation().norm()) < getMaxChange()){
+        getPoseQueue().pop_front();
+        getPoseQueue().push_back(poseCandidate);
+    } else{
+      std::cout << "INVALID POSE ENTRY with difference of: " << abs((avgNorm/getQueueSize())-poseCandidate.inverse().translation().norm()) << "for pose " << poseCandidate.inverse().translation() << std::endl;
+    }
+  }
+}
+
+void Atlas::setPoseOffset(Sophus::SE3f pose){
+  poseOffset = pose;
+}
+
+Sophus::SE3f Atlas::getPoseOffset(){
+  return poseOffset;
 }
 
 }  // namespace MORB_SLAM

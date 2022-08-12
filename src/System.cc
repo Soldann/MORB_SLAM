@@ -56,7 +56,7 @@ System::System(const std::string& strVocFile, const std::string& strSettingsFile
       mbActivateLocalizationMode(false),
       mbDeactivateLocalizationMode(false) {
   
-  mpAtlas = std::make_shared<Atlas>(0, poseValues, queueSize);
+  mpAtlas = std::make_shared<Atlas>(0);
 
   cameras.push_back(make_shared<Camera>(mSensor)); // for now just hard code the sensor we are using, TODO make multicam
   // Output welcome message
@@ -319,14 +319,6 @@ Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
   mTrackingState = mpTracker->mState;
   mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
   mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
-
-  addPoseToQueue(Tcw);
-
-  std::cout << "BEGINNING" << std::endl;
-  for(auto &i: poseValues){
-      std::cout << i.inverse().translation() << std::endl;
-  }
-  std::cout << "ENDING" << std::endl;
 
   return Tcw;
 }
@@ -1559,30 +1551,6 @@ string System::CalculateCheckSum(string filename, int type) {
   }
 
   return checksum;
-}
-
-void System::addPoseToQueue(Sophus::SE3f poseCandidate){
-
-  if(static_cast<int>(poseValues.size()) < queueSize){
-    poseValues.push_back(poseCandidate);
-  } else{
-    float avgNorm = 0;
-    for(auto &i: poseValues){
-      avgNorm += i.inverse().translation().norm();
-    }
-    if(abs((avgNorm/queueSize)-poseCandidate.inverse().translation().norm()) < maxChangeInPose){
-        poseValues.pop_front();
-        poseValues.push_back(poseCandidate);
-    }
-  }
-}
-
-std::deque<Sophus::SE3f> System::getPoseQueue(){
-  return poseValues;
-}
-
-int System::getQueueSize(){
-  return queueSize;
 }
 
 }  // namespace MORB_SLAM
