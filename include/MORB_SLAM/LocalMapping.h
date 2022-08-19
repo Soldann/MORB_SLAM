@@ -180,7 +180,10 @@ class LocalMapping {
                      bool bFirst = false);
   void ScaleRefinement();
 
+public:
+// DAVID THIS SHOULD BE PROTECTED
   bool bInitializing;
+protected:
 
   Eigen::MatrixXd infoInertial;
   int mNumLM;

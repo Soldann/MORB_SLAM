@@ -158,6 +158,10 @@ public:
     void setPoseOffset(Sophus::SE3f pose);
     Sophus::SE3f getPoseOffset();
 
+    bool ready = false;
+    std::vector<bool> oldVec = {false,false,false};
+    std::vector<bool> newVec = {false,false,false};
+
 protected:
 
     long unsigned int mnId;
@@ -177,7 +181,10 @@ protected:
 
     std::vector<MapPoint*> mvpReferenceMapPoints;
 
+public:
+    // DAVID THIS SHOULD BE PROTECTED
     bool mbImuInitialized;
+public:
 
     int mnMapChange;
     int mnMapChangeNotified;
@@ -192,14 +199,19 @@ protected:
     // View of the map in aerial sight (for the AtlasViewer)
     GLubyte* mThumbnail;
 
+public:
+    // DAVID THIS SHOULD BE PROTECTED
     bool mIsInUse;
+protected:
     bool mHasTumbnail;
     bool mbBad = false;
 
     bool mbIsInertial;
+public:
+    // DAVID THIS SHOULD BE PROTECTED
     bool mbIMU_BA1;
     bool mbIMU_BA2;
-
+protected:
     // Mutex
     std::mutex mMutexMap;
 

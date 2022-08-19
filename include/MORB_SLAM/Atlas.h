@@ -144,11 +144,15 @@ class Atlas {
 
   std::deque<Sophus::SE3f> &getPoseQueue();
   int getQueueSize();
-  int getMaxChange();
+  float getMaxChange();
 
-  void addPoseToQueue(Sophus::SE3f poseCandidate);
+  void addPoseToQueue(Sophus::SE3f poseCandidate, int numMapPoints);
 
   Sophus::SE3f addPoseToPose(Sophus::SE3f currentPose, Sophus::SE3f poseOffset);
+
+  bool checkAxisSwap(Sophus::SE3f &poseCandidate);
+
+  bool checkYDeviation(Sophus::SE3f &poseCandidate);
 
  protected:
   std::set<std::shared_ptr<Map>> mspMaps;
@@ -171,8 +175,8 @@ class Atlas {
   std::mutex mMutexAtlas;
 
   std::deque<Sophus::SE3f> poseValues;
-  const float maxChangeInPose = 1.5;
-  const int queueSize = 5;
+  const float maxChangeInPose;
+  const int queueSize = 2;
 
 };  // class Atlas
 

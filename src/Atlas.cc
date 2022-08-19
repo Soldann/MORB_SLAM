@@ -27,9 +27,9 @@
 
 namespace MORB_SLAM {
 
-Atlas::Atlas() { mpCurrentMap = nullptr; }
+Atlas::Atlas() : maxChangeInPose{0.12} { mpCurrentMap = nullptr; }
 
-Atlas::Atlas(int initKFid) : mnLastInitKFidMap(initKFid) {
+Atlas::Atlas(int initKFid) : mnLastInitKFidMap(initKFid), maxChangeInPose{0.12} {
   mpCurrentMap = nullptr;
   CreateNewMap();
 }
@@ -340,26 +340,44 @@ int Atlas::getQueueSize(){
   return queueSize;
 }
 
-int Atlas::getMaxChange(){
+float Atlas::getMaxChange(){
   return maxChangeInPose;
 }
 
-void Atlas::addPoseToQueue(Sophus::SE3f poseCandidate){
-
+void Atlas::addPoseToQueue(Sophus::SE3f poseCandidate, int numMapPoints){
   if(static_cast<int>(getPoseQueue().size()) < getQueueSize()){
     getPoseQueue().push_back(poseCandidate);
+  } else{if(numMapPoints > 200){
+      getPoseQueue().pop_front();
+      getPoseQueue().push_back(poseCandidate);
   } else{
-    float avgNorm = 0;
-    for(auto &i: getPoseQueue()){
-      avgNorm += i.inverse().translation().norm();
-    }
-    if(abs((avgNorm/getQueueSize())-poseCandidate.inverse().translation().norm()) < getMaxChange()){
-        getPoseQueue().pop_front();
-        getPoseQueue().push_back(poseCandidate);
-    } else{
-      std::cout << "INVALID POSE ENTRY with difference of: " << abs((avgNorm/getQueueSize())-poseCandidate.inverse().translation().norm()) << "for pose " << poseCandidate.inverse().translation() << std::endl;
-    }
+      std::cout << "INVALID" << std::endl;
   }
+  
+  }
+  //   Eigen::Vector3f avg = Eigen::MatrixXf::Zero(3,1);
+  //   for(auto &i: getPoseQueue()){
+  //     avg += i.inverse().translation();
+  //   }
+  //   float score = ((avg/static_cast<float>(getQueueSize()))-poseCandidate.inverse().translation()).norm();
+  //   std::cout << "The score is: " << score << std::endl;
+  //   if( score < getMaxChange()){
+  //       getPoseQueue().pop_front();
+  //       getPoseQueue().push_back(poseCandidate);
+    // }else if((abs(getPoseQueue().back().inverse().translation().norm() - poseCandidate.inverse().translation().norm()) < getMaxChange()) && checkAxisSwap(poseCandidate)){
+    //     std::cout << "SWITCHING AX E's?????" << std::endl;
+    //     getPoseQueue().pop_front();
+    //     getPoseQueue().pop_front();
+    //     getPoseQueue().push_back(poseCandidate);
+    //     getPoseQueue().push_back(poseCandidate);
+    // } else if(checkYDeviation(poseCandidate)){
+    //     getPoseQueue().pop_front();
+    //     getPoseQueue().pop_front();
+    //     getPoseQueue().push_back(poseCandidate);
+        // getPoseQueue().push_back(poseCandidate);
+    // } else{
+    //   std::cout << "INVALID POSE ENTRY with difference of: " << score << "for pose " << poseCandidate.inverse().translation() << std::endl;
+    // }
 }
 
 int Atlas::MapsInAtlas(){
@@ -367,15 +385,24 @@ int Atlas::MapsInAtlas(){
 }
 
 Sophus::SE3f Atlas::addPoseToPose(Sophus::SE3f currentPose, Sophus::SE3f poseOffset){
-
   std::cout << "The current pose from addposetopose is: " << currentPose.inverse().translation() << std::endl;
   std::cout << "The poseOffset from addposetopose is: " << poseOffset.inverse().translation() << std::endl;
-  // Eigen::Vector3f newTranslation = currentPose.inverse().translation() + poseOffset.inverse().translation();
-
-  // currentPose.SE3Product(poseOffset);
-  std::cout << "The new translation from addposetopose is: " << (currentPose * poseOffset).inverse().translation();
+  std::cout << "The new translation from addposetopose is: " << (currentPose * poseOffset).inverse().translation() << std::endl;
   return currentPose * poseOffset;
-
 }
+
+// bool Atlas::checkAxisSwap(Sophus::SE3f &poseCandidate){
+//   Eigen::Vector3f change = poseCandidate.inverse().translation() - getPoseQueue().back().inverse().translation();
+//   std::array<float, 3> arr{{abs(change[0]), abs(change[1]), abs(change[2])}};
+//   std::sort(arr.begin(),arr.end());
+//   if((abs(arr[2] - arr[1]) < 0.2) && arr[2] > 0.5){ return true;}
+//   return false;
+// }
+
+// bool Atlas::checkYDeviation(Sophus::SE3f &poseCandidate){
+//   Eigen::Vector3f change = poseCandidate.inverse().translation() - getPoseQueue().back().inverse().translation();
+//   if((abs(change[0]) < 0.1 && abs(change[1]) < 0.1) && abs(change[2]) < 0.6){return true;}
+//   return false;
+// }
 
 }  // namespace MORB_SLAM

@@ -233,6 +233,11 @@ public:
 
     // Corresponding stereo coordinate and depth for each keypoint.
     std::vector<MapPoint*> mvpMapPoints;
+
+    // size of mvpMapPoints
+    int numMapPoints();
+
+
     // "Monocular" keypoints have a negative value.
     std::vector<float> mvuRight;
     std::vector<float> mvDepth;

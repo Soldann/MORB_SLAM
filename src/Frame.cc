@@ -54,7 +54,8 @@ Frame::Frame()
       mpImuPreintegratedFrame(nullptr),
       mpReferenceKF(nullptr),
       mbIsSet(false),
-      mbImuPreintegrated(false) {
+      mbImuPreintegrated(false),
+      mpMutexImu(std::make_shared<std::mutex>()) {
 #ifdef REGISTER_TIMES
   mTimeStereoMatch = 0;
   mTimeORB_Ext = 0;
@@ -175,6 +176,7 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRigh
       mnDataset{pnNumDataset},
       mbIsSet(false),
       mbImuPreintegrated(false),
+      mpMutexImu(std::make_shared<std::mutex>()),
       camera(cam),
       mpCamera(pCamera),
       mpCamera2(nullptr) {
@@ -261,8 +263,6 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRigh
     mVw.setZero();
   }
 
-  mpMutexImu = std::make_shared<std::mutex>();
-
   // Set no stereo fisheye information
   Nleft = -1;
   Nright = -1;
@@ -304,6 +304,7 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imGray, const cv::Mat &imDept
       mnDataset{pnNumDataset},
       mbIsSet(false),
       mbImuPreintegrated(false),
+      mpMutexImu(std::make_shared<std::mutex>()),
       camera{cam}, 
       mpCamera(pCamera),
       mpCamera2(nullptr) {
@@ -377,8 +378,6 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imGray, const cv::Mat &imDept
     mVw.setZero();
   }
 
-  mpMutexImu = std::make_shared<std::mutex>();
-
   // Set no stereo fisheye information
   Nleft = -1;
   Nright = -1;
@@ -417,6 +416,7 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imGray, const double &timeSta
       mnDataset{pnNumDataset},
       mbIsSet(false),
       mbImuPreintegrated(false),
+      mpMutexImu(std::make_shared<std::mutex>()),
       camera{cam},
       mpCamera(pCamera),
       mpCamera2(nullptr) {
@@ -506,8 +506,6 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imGray, const double &timeSta
   } else {
     mVw.setZero();
   }
-
-  mpMutexImu = std::make_shared<std::mutex>();
 }
 
 void Frame::AssignFeaturesToGrid() {
@@ -1130,6 +1128,7 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRigh
       mNameFile{pNameFile},
       mnDataset{pnNumDataset},
       mbImuPreintegrated(false),
+      mpMutexImu(std::make_shared<std::mutex>()),
       camera{cam},
       mpCamera(pCamera),
       mpCamera2(pCamera2)
@@ -1229,8 +1228,6 @@ Frame::Frame(const Camera_ptr &cam, const cv::Mat &imLeft, const cv::Mat &imRigh
   mvbOutlier = vector<bool>(N, false);
 
   AssignFeaturesToGrid();
-
-  mpMutexImu = std::make_shared<std::mutex>();
 
   UndistortKeyPoints();
 }
@@ -1363,6 +1360,10 @@ bool Frame::isInFrustumChecks(MapPoint *pMP, float viewingCosLimit,
 
 Eigen::Vector3f Frame::UnprojectStereoFishEye(const int &i) {
   return mRwc * mvStereo3Dpoints[i] + mOw;
+}
+
+int Frame::numMapPoints(){
+  return static_cast<int>(mvbOutlier.size());
 }
 
 }  // namespace MORB_SLAM

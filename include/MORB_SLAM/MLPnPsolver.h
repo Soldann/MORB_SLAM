@@ -156,13 +156,14 @@ class MLPnPsolver {
 
   // Auxiliar methods
 
+public:
   /**
    * \brief Compute a rotation matrix from Rodrigues axis angle.
    *
    * \param[in] omega The Rodrigues-parameters of a rotation.
    * \return The 3x3 rotation matrix.
    */
-  Eigen::Matrix3d rodrigues2rot(const Eigen::Vector3d& omega);
+  static Eigen::Matrix3d rodrigues2rot(const Eigen::Vector3d& omega);
 
   /**
    * \brief Compute the Rodrigues-parameters of a rotation matrix.
@@ -170,7 +171,9 @@ class MLPnPsolver {
    * \param[in] R The 3x3 rotation matrix.
    * \return The Rodrigues-parameters.
    */
-  Eigen::Vector3d rot2rodrigues(const Eigen::Matrix3d& R);
+  static Eigen::Vector3d rot2rodrigues(const Eigen::Matrix3d& R);
+
+private:
 
   //----------------------------------------------------
   // Fields of the solver

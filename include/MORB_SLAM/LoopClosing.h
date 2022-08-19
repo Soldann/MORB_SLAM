@@ -215,9 +215,11 @@ protected:
     std::mutex mMutexGBA;
     std::thread* mpThreadGBA;
 
+public:
+    // DAVID THIS SHOULD BE PROTECTED
     // Fix scale in the stereo/RGB-D case
     bool mbFixScale;
-
+private:
 
     int mnFullBAIdx;
 

@@ -1414,17 +1414,50 @@ Sophus::SE3f Tracking::GrabImageStereo(const cv::Mat& imRectLeft,
   Track();
   // cout << "Tracking end" << endl;
 
-  if(mpAtlas->MapsInAtlas() > 0 && static_cast<int>(mpAtlas->getPoseQueue().size()) == mpAtlas->getQueueSize()){
-    std::cout << "THE SIZE OF THE CURRENT MAP IS 0 FROM TRACKING WITH LOVE" << std::endl;
-    mCurrentFrame.SetPose(mpAtlas->addPoseToPose(mCurrentFrame.GetPose(),mpAtlas->GetCurrentMap(mpSystem)->getPoseOffset()));
+  std::cout << "mState is: " << mState << std::endl;
+  std::cout << "mLastProcessed State is: " << mLastProcessedState << std::endl;
+  std::cout << "BAD IMU: " << mpLocalMapper->mbBadImu << std::endl;
+  std::cout << "bInitialize: " << mpLocalMapper->bInitializing << std::endl;
+  std::cout << "fixed scale: " << mpLoopClosing->mbFixScale << std::endl;
+  std::cout << "mbFail: "  << mpAtlas->GetCurrentMap(mpSystem)->mbFail << std::endl;
+  std::cout << "mbImuInitialized: "  << mpAtlas->GetCurrentMap(mpSystem)->mbImuInitialized << std::endl;
+  std::cout << "isInUse: "  << mpAtlas->GetCurrentMap(mpSystem)->mIsInUse << std::endl;
+  std::cout << "mbIMU_BA1: "  << mpAtlas->GetCurrentMap(mpSystem)->mbIMU_BA1 << std::endl;
+  std::cout << "mbIMU_BA2: "  << mpAtlas->GetCurrentMap(mpSystem)->mbIMU_BA2 << std::endl;
+  std::cout << "mbInitWith3KFs: "  << mbInitWith3KFs << std::endl;
+  std::cout << "mbMapUpdated: "  << mbMapUpdated << std::endl;
+  std::cout << "mbReadyToInitializate: "  << mbReadyToInitialize << std::endl;
+  std::cout << "mbSetInit: "  << mbSetInit << std::endl;
+  std::cout << "mInsertKFsLost: "  << mInsertKFsLost << std::endl;
+
+  
+  if(!mpAtlas->GetCurrentMap(mpSystem)->ready){
+    mpAtlas->GetCurrentMap(mpSystem)->newVec = {mpLocalMapper->bInitializing, mpAtlas->GetCurrentMap(mpSystem)->mbImuInitialized, mbMapUpdated};
+    const bool aa = std::all_of(mpAtlas->GetCurrentMap(mpSystem)->oldVec.begin(), mpAtlas->GetCurrentMap(mpSystem)->oldVec.end(), [](const bool v) { return !v; });
+    const bool bb = std::all_of(mpAtlas->GetCurrentMap(mpSystem)->newVec.begin(), mpAtlas->GetCurrentMap(mpSystem)->newVec.end(), [](const bool v) { return v; });
+    if(aa && bb){
+      std::cout << "ITS AXIS SHIFTING TIME " << std::endl;
+      mpAtlas->GetCurrentMap(mpSystem)->ready = true;
+    } else{
+      mpAtlas->GetCurrentMap(mpSystem)->oldVec = mpAtlas->GetCurrentMap(mpSystem)->newVec;
+    }
   }
 
-  mpAtlas->addPoseToQueue(mCurrentFrame.GetPose());
+  if(mpAtlas->GetCurrentMap(mpSystem)->ready){
+    if(mpAtlas->MapsInAtlas() > 0 && static_cast<int>(mpAtlas->getPoseQueue().size()) == mpAtlas->getQueueSize()){
+      Sophus::SE3f newPose = mpAtlas->addPoseToPose(mCurrentFrame.GetPose(),mpAtlas->GetCurrentMap(mpSystem)->getPoseOffset());
+      mpAtlas->addPoseToQueue(newPose, mnMatchesInliers);
+    } else{
+      mpAtlas->addPoseToQueue(mCurrentFrame.GetPose(), mnMatchesInliers);
+    }
+  }
 
   for(auto &i : mpAtlas->getPoseQueue()){
+    std::cout << "TRANSLATION" << std::endl;
     std::cout << i.inverse().translation() << std::endl;
+    std::cout << "ROTATION" << std::endl;
+    std::cout << MLPnPsolver::rot2rodrigues(i.rotationMatrix().cast<double>()) << std::endl;
   }
-
   return mCurrentFrame.GetPose();
 }
 
