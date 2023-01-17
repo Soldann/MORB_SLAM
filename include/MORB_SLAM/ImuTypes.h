@@ -53,9 +53,9 @@ class Point {
       : a(Acc.x, Acc.y, Acc.z), w(Gyro.x, Gyro.y, Gyro.z), t(timestamp) {}
 
  public:
-  Eigen::Vector3f a;
-  Eigen::Vector3f w;
-  double t;
+  Eigen::Vector3f a; //acceleration
+  Eigen::Vector3f w; //angular velocity
+  double t; //timestamp
   
 };
 

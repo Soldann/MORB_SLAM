@@ -1527,27 +1527,27 @@ void Tracking::PreintegrateIMU() {
     return;
   }
 
- while (true) {
+  while (true) {
     unique_lock<mutex> lock(mMutexImuQueue);
     bool bSleep = false;
-    {
-      if (!mlQueueImuData.empty()) {
-        IMU::Point* m = &mlQueueImuData.front();
-        cout.precision(17);
-        if (m->t < mCurrentFrame.mpPrevFrame->mTimeStamp - mImuPer) {
-          mlQueueImuData.pop_front();
-        } else if (m->t < mCurrentFrame.mTimeStamp - mImuPer) {
-          mvImuFromLastFrame.push_back(*m);
-          mlQueueImuData.pop_front();
-        } else {
-          mvImuFromLastFrame.push_back(*m);
-          break;
-        }
+  {
+    if (!mlQueueImuData.empty()) {
+      IMU::Point* m = &mlQueueImuData.front();
+      cout.precision(17);
+      if (m->t < mCurrentFrame.mpPrevFrame->mTimeStamp - mImuPer) {
+        mlQueueImuData.pop_front();
+      } else if (m->t < mCurrentFrame.mTimeStamp - mImuPer) {
+        mvImuFromLastFrame.push_back(*m);
+        mlQueueImuData.pop_front();
       } else {
+        mvImuFromLastFrame.push_back(*m);
         break;
-        bSleep = true;
       }
+    } else {
+      break;
+      bSleep = true;
     }
+  }
     if (bSleep) usleep(500);
   }
 
@@ -1563,7 +1563,7 @@ void Tracking::PreintegrateIMU() {
   for (int i = 0; i < n; i++) {
     float tstep;
     Eigen::Vector3f acc, angVel;
-    if ((i == 0) && (i < (n - 1))) {
+    if ((i == 0) && (i < (n - 1))) { //first measurement and has at least 3 imu data points
       float tab = mvImuFromLastFrame[i + 1].t - mvImuFromLastFrame[i].t;
       float tini =
           mvImuFromLastFrame[i].t - mCurrentFrame.mpPrevFrame->mTimeStamp;
@@ -1577,7 +1577,7 @@ void Tracking::PreintegrateIMU() {
                0.5f;
       tstep =
           mvImuFromLastFrame[i + 1].t - mCurrentFrame.mpPrevFrame->mTimeStamp;
-    } else if (i < (n - 1)) {
+    } else if (i < (n - 1)) { 
       acc = (mvImuFromLastFrame[i].a + mvImuFromLastFrame[i + 1].a) * 0.5f;
       angVel = (mvImuFromLastFrame[i].w + mvImuFromLastFrame[i + 1].w) * 0.5f;
       tstep = mvImuFromLastFrame[i + 1].t - mvImuFromLastFrame[i].t;
@@ -1599,6 +1599,8 @@ void Tracking::PreintegrateIMU() {
       tstep = mCurrentFrame.mTimeStamp - mCurrentFrame.mpPrevFrame->mTimeStamp;
     }
 
+    std::cout << "accel: " << acc(0,0) << " , " << acc(1,0) << " , " << acc(2,0) << std::endl;
+
     if (!mpImuPreintegratedFromLastKF)
       cout << "mpImuPreintegratedFromLastKF does not exist" << endl;
     mpImuPreintegratedFromLastKF->IntegrateNewMeasurement(acc, angVel, tstep);
@@ -1608,7 +1610,6 @@ void Tracking::PreintegrateIMU() {
   mCurrentFrame.mpImuPreintegratedFrame = pImuPreintegratedFromLastFrame;
   mCurrentFrame.mpImuPreintegrated = mpImuPreintegratedFromLastKF;
   mCurrentFrame.mpLastKeyFrame = mpLastKeyFrame;
-
   mCurrentFrame.setIntegrated();
 
   // Verbose::PrintMess("Preintegration is finished!! ",
@@ -2450,7 +2451,7 @@ void Tracking::CreateInitialMapMonocular() {
 
 void Tracking::CreateMapInAtlas() {
   mnLastInitFrameId = mCurrentFrame.mnId;
-  mpAtlas->CreateNewMap();
+  mpAtlas->CreateNewMap();  
   if (CameraType::isInertial(mSensor))
     mpAtlas->SetInertialSensor();
   mbSetInit = false;

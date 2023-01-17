@@ -59,6 +59,7 @@ Frame::Frame()
   mTimeStereoMatch = 0;
   mTimeORB_Ext = 0;
 #endif
+  mpMutexImu = std::make_shared<std::mutex>();
 }
 
 // Copy Constructor

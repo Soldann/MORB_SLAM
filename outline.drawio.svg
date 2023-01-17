@@ -1,0 +1,40 @@
+<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="299px" height="121px" viewBox="-0.5 -0.5 299 121" content="&lt;mxfile&gt;&lt;diagram id=&quot;ISC3r5kJj4zRDTJfTUCM&quot; name=&quot;Page-1&quot;&gt;7ZZNj6JAEIZ/DdeNgPhxFJz9SDQ7GQ97ND1QQmeaLtOUo86v32ppZBDdmMxkT5MQQ71d1VTVU9h4YVIefhixLZaYgfKCQXbwwrkXBNNRwL9WONbCcDSohdzIrJb8VljJN3Bi47aTGVQdR0JUJLddMUWtIaWOJozBfddtg6r71K3IoSesUqH66h+ZUVGrk2Dc6j9B5kXzZH80rVdK0Ti7SqpCZLh/J4UPXpgYRKrvykMCyvau6Usd9/3G6jkxA5ruCYjqgFehdq62isAArqUGQ1KotQGhKtAVrOfDMJIubTo2vaj2slRCsxVvUNPKrQzYTgupsoU44s7mUpFIXxorLtDIN/YXipd8FnjZkEMdDjoeKxvp9jRQsc9jU6B/IS3FoeO4EBU12aBSYlvJ51N+NrAUJpc6RiIsnZNrB9cOh5st9c+geMABSyBzZBcXMHZo3Ww3o71vB8WfOK14PyTNSAg3nPl555Yf3ziE13GOejiXv5/i9WoxW3rhjK/VkfmWNkJL6rHkoumEwuALJKjQsK6xhiuVupCEkrlmU8HGhtmuSX5JZk4uZZbZneNqK1Kp88XJbT5slSdXvpWQwzfq9C4UHAi8Q7xFqenUjijmixuUDL5FXsS5Jmz7rc2XdTeUoOb0hTyxAqa/BzsBsUESJJ7Ps3kX6Og6aEc2vJNs+Algxz2wv2qOwRfED0G89/X8DIiTWxDDL4gfgjj9jxCnPVaQ8ceBMx2PgsrmXKvdrc+/zxPeEncmhXd/5P16DShB8rW71bVqXOijxdYeTeGoezb5g6i7BZ/BOZCLuujJOY1rbWKz/Wip3dsvv/DhLw==&lt;/diagram&gt;&lt;/mxfile&gt;">
+    <defs>
+        <clipPath id="mx-clip-4-30-172-30-0">
+            <rect x="4" y="30" width="172" height="30"/>
+        </clipPath>
+        <clipPath id="mx-clip-4-60-172-30-0">
+            <rect x="4" y="60" width="172" height="30"/>
+        </clipPath>
+        <clipPath id="mx-clip-4-90-172-30-0">
+            <rect x="4" y="90" width="172" height="30"/>
+        </clipPath>
+    </defs>
+    <g>
+        <path d="M 0 30 L 0 0 L 180 0 L 180 30" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="all"/>
+        <path d="M 0 30 L 0 120 L 180 120 L 180 30" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="none"/>
+        <path d="M 0 30 L 180 30" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="none"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" pointer-events="none" text-anchor="middle" font-size="12px">
+            <text x="89.5" y="19.5">
+                stereo_inertial_realsense_D435i
+            </text>
+        </g>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" pointer-events="none" clip-path="url(#mx-clip-4-30-172-30-0)" font-size="12px">
+            <text x="5.5" y="49.5">
+                MORB_SLAM::System init
+            </text>
+        </g>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" pointer-events="none" clip-path="url(#mx-clip-4-60-172-30-0)" font-size="12px">
+            <text x="5.5" y="79.5">
+                Item 2
+            </text>
+        </g>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" pointer-events="none" clip-path="url(#mx-clip-4-90-172-30-0)" font-size="12px">
+            <text x="5.5" y="109.5">
+                Item 3
+            </text>
+        </g>
+        <path d="M 180 45 L 283.63 45" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="none"/>
+        <path d="M 288.88 45 L 281.88 48.5 L 283.63 45 L 281.88 41.5 Z" fill="rgb(0, 0, 0)" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="none"/>
+    </g>
+</svg>

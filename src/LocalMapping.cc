@@ -1135,7 +1135,10 @@ void LocalMapping::InitializeIMU(float priorG, float priorA, bool bFIBA) {
   float minTime = mbMonocular ? 2.0 : 1.0;
   size_t nMinKF = 10;
 
-  if (mpAtlas->KeyFramesInMap() < nMinKF) return;
+  if (mpAtlas->KeyFramesInMap() < nMinKF) {
+    std::cout << "cannot initialize, not enough frames in map" << std::endl;
+    return;
+  }
 
   // Retrieve all keyframe in temporal order
   list<KeyFrame*> lpKF;
@@ -1147,7 +1150,10 @@ void LocalMapping::InitializeIMU(float priorG, float priorA, bool bFIBA) {
   lpKF.push_front(pKF);
   vector<KeyFrame*> vpKF(lpKF.begin(), lpKF.end());
 
-  if (vpKF.size() < nMinKF) return;
+  if (vpKF.size() < nMinKF) {
+    std::cout << "cannot initialize, not enough frames in map vpKF?" << std::endl;
+    return; // condition could be here too
+  }
 
   mFirstTs = vpKF.front()->mTimeStamp;
   if (mpCurrentKeyFrame->mTimeStamp - mFirstTs < minTime) return;
