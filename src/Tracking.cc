@@ -61,7 +61,8 @@ Tracking::Tracking(System* pSys, ORBVocabulary* pVoc, const Atlas_ptr &pAtlas,
       mnFirstFrameId(0),
       mnInitialFrameId(0),
       mbCreatedMap(false),
-      mpCamera2(nullptr) {
+      mpCamera2(nullptr),
+      mLastValidFrame(Frame()) {
   // Load camera parameters from settings file
   if (settings) {
     newParameterLoader(settings);
@@ -1414,7 +1415,13 @@ Sophus::SE3f Tracking::GrabImageStereo(const cv::Mat& imRectLeft,
   Track();
   // cout << "Tracking end" << endl;
 
-  return mCurrentFrame.GetPose();
+  std::cout << "Current state: " << mState << std::endl;
+
+  if (mState != Tracker::LOST && mState != Tracker::RECENTLY_LOST) 
+    mLastValidFrame = mCurrentFrame;
+  
+  return mLastValidFrame.GetPose();
+  
 }
 
 Sophus::SE3f Tracking::GrabImageRGBD(const cv::Mat& imRGB, const cv::Mat& imD,
@@ -1599,7 +1606,8 @@ void Tracking::PreintegrateIMU() {
       tstep = mCurrentFrame.mTimeStamp - mCurrentFrame.mpPrevFrame->mTimeStamp;
     }
 
-    std::cout << "accel: " << acc(0,0) << " , " << acc(1,0) << " , " << acc(2,0) << std::endl;
+    // Temporarily remove to clean up log output
+    // std::cout << "accel mag: " << std::sqrt((std::pow(acc(0,0), 2) + std::pow(acc(1,0), 2) + std::pow(acc(2,0), 2))) << "direction: " << acc(0,0) << " , " << acc(1,0) << " , " << acc(2,0) << std::endl;
 
     if (!mpImuPreintegratedFromLastKF)
       cout << "mpImuPreintegratedFromLastKF does not exist" << endl;
@@ -1790,15 +1798,18 @@ void Tracking::Track() {
             mCurrentFrame.mnId < mnLastRelocFrameId + 2) {
           Verbose::PrintMess("TRACK: Track with respect to the reference KF ",
                              Verbose::VERBOSITY_DEBUG);
+
           bOK = TrackReferenceKeyFrame();
         } else {
           Verbose::PrintMess("TRACK: Track with motion model",
                              Verbose::VERBOSITY_DEBUG);
           bOK = TrackWithMotionModel();
           if (!bOK) bOK = TrackReferenceKeyFrame();
+
         }
 
         if (!bOK) {
+          std::cout << "TrackReferenceKeyFrame failed, is LOST" << std::endl;
           if (mCurrentFrame.mnId <= (mnLastRelocFrameId + mnFramesToResetIMU) &&
               CameraType::isInertial(mSensor)) {
             mState = Tracker::LOST;
@@ -1816,7 +1827,7 @@ void Tracking::Track() {
                              Verbose::VERBOSITY_NORMAL);
 
           bOK = true;
-          if (CameraType::isInertial(mSensor)) {
+          if (CameraType::isInertial(mSensor)) { // tried setting to false, still goes to inf
             if (pCurrentMap->isImuInitialized())
               PredictStateIMU();
             else
@@ -1844,7 +1855,7 @@ void Tracking::Track() {
           Verbose::PrintMess("A new map is started...",
                              Verbose::VERBOSITY_NORMAL);
 
-          if (pCurrentMap->KeyFramesInMap() < 10) {
+          if (pCurrentMap->KeyFramesInMap() < 10) { // Resets maps because they might be garabge KF
             mpSystem->ResetActiveMap();
             Verbose::PrintMess("Reseting current map...",
                                Verbose::VERBOSITY_NORMAL);
@@ -3338,7 +3349,7 @@ bool Tracking::Relocalization() {
 
   // We perform first an ORB matching with each candidate
   // If enough matches are found we setup a PnP solver
-  ORBmatcher matcher(0.75, true);
+  ORBmatcher matcher(0.75, true); 
 
   vector<MLPnPsolver*> vpMLPnPsolvers;
   vpMLPnPsolvers.resize(nKFs);
@@ -3396,6 +3407,8 @@ bool Tracking::Relocalization() {
         vbDiscarded[i] = true;
         nCandidates--;
       }
+
+      if (!bTcw) std::cout << "camera pose not calculated" << std::endl;
 
       // If a Camera Pose is computed, optimize
       if (bTcw) {
