@@ -1052,13 +1052,14 @@ void LocalMapping::RequestResetActiveMap(std::shared_ptr<Map> pMap) {
     mpMapToReset = pMap;
   }
   cout << "LM: Active map reset, waiting..." << endl;
-
+  mbResetRequested = true;
   while (1) {
     {
+      cout << "loop: blocking in LocalMapping.cc" << endl;
       unique_lock<mutex> lock2(mMutexReset);
       if (!mbResetRequestedActiveMap) break;
-    }
-    usleep(3000);
+    } 
+    usleep(100);
   }
   cout << "LM: Active map reset, Done!!!" << endl;
 }
