@@ -262,7 +262,7 @@ int main(int argc, char **argv) {
 
     rs2::pipeline_profile pipe_profile = pipe.start(cfg, imu_callback);
 
-    vector<MORB_SLAM::IMU::Point> vImuMeas;
+    vector<MORB_SLAM::IMU::Point> vImuMeas; //IMU data point contains acceleration, angular velocity, and timestamp of recorded dat
     rs2::stream_profile cam_left = pipe_profile.get_stream(RS2_STREAM_INFRARED, 1);
     rs2::stream_profile cam_right = pipe_profile.get_stream(RS2_STREAM_INFRARED, 2);
 
@@ -345,7 +345,7 @@ int main(int argc, char **argv) {
 
         {
             std::unique_lock<std::mutex> lk(imu_mutex);
-            if(!image_ready)
+            while(!image_ready)
                 cond_image_rec.wait(lk);
 
             // std::chrono::steady_clock::time_point time_Start_Process = std::chrono::steady_clock::now(); // UNUSED
@@ -416,6 +416,7 @@ int main(int argc, char **argv) {
 #endif
         // Stereo images are already rectified.
         auto pos = SLAM->TrackStereo(im, imRight, timestamp, vImuMeas);
+        // Remove temporarily to keep log clean
         std::cout << "POSE: " << std::endl << pos.inverse().translation() << std::endl;
 #ifdef REGISTER_TIMES
         std::chrono::steady_clock::time_point t_End_Track = std::chrono::steady_clock::now();

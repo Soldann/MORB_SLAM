@@ -25,7 +25,7 @@ void Camera::threadExec(std::deque<std::pair<ManagedPromise<bool>, std::function
         {
             std::unique_lock<std::mutex> lock(camMutex);
             if(shouldStop) break;
-            if(jobs->empty()){
+            while(jobs->empty()){
                 camCV.wait(lock);
                 if(shouldStop) break;
                 if(jobs->empty()) continue;
