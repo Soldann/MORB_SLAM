@@ -59,8 +59,7 @@ public:
 public:
     static void PrintMess(std::string str, eLevel lev)
     {
-        if(lev <= th)
-            cout << str << endl;
+        std::cout << "Level: " << lev << " | " << str << endl;
     }
 
     static void SetTh(eLevel _th)

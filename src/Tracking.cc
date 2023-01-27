@@ -1411,17 +1411,23 @@ Sophus::SE3f Tracking::GrabImageStereo(const cv::Mat& imRectLeft,
   vdStereoMatch_ms.push_back(mCurrentFrame.mTimeStereoMatch);
 #endif
 
-  // cout << "Tracking start" << endl;
   Track();
-  // cout << "Tracking end" << endl;
 
   std::cout << "Current state: " << mState << std::endl;
-
-  if (mState != Tracker::LOST && mState != Tracker::RECENTLY_LOST) 
+  
+  if (mState != Tracker::LOST && mState != Tracker::RECENTLY_LOST)
+    //if state isnt lost, its still possible that it is lost if it trails to infinity - note if its in lost state no keyframes will be produced, but if its in OK state, keyframe will show
+    //if mLastFrame.GetPose() from stereo is not close enough to IMU pose, then set to lost
     mLastValidFrame = mCurrentFrame;
-  
+
+  if (!mpLocalMapper->getIsDoneVIBA())
+  {
+    Sophus::SE3f originPose(Eigen::Matrix3f::Identity(), Eigen::Vector3f::Zero());
+    return originPose;  
+  }
+    
+
   return mLastValidFrame.GetPose();
-  
 }
 
 Sophus::SE3f Tracking::GrabImageRGBD(const cv::Mat& imRGB, const cv::Mat& imD,
@@ -1659,7 +1665,7 @@ bool Tracking::PredictStateIMU() {
     const Eigen::Matrix3f Rwb1 = mLastFrame.GetImuRotation();
     const Eigen::Vector3f Vwb1 = mLastFrame.GetVelocity();
     const Eigen::Vector3f Gz(0, 0, -IMU::GRAVITY_VALUE);
-    const float t12 = mCurrentFrame.mpImuPreintegratedFrame->dT;
+    const float t12 = mCurrentFrame.mpImuPreintegratedFrame->dT; 
 
     Eigen::Matrix3f Rwb2 = IMU::NormalizeRotation(
         Rwb1 * mCurrentFrame.mpImuPreintegratedFrame->GetDeltaRotation(
@@ -2315,7 +2321,7 @@ void Tracking::MonocularInitialization() {
           mvIniMatches[i] = -1;
           nmatches--;
         }
-      }
+      } 
 
       // Set Frame Poses
       mInitialFrame.SetPose(Sophus::SE3f());

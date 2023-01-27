@@ -363,8 +363,8 @@ void Optimizer::BundleAdjustment(const vector<KeyFrame*>& vpKFs,
 
 void Optimizer::FullInertialBA(std::shared_ptr<Map> pMap, int its, const bool bFixLocal,
                                const long unsigned int nLoopId,
-                               bool* pbStopFlag, bool bInit, float priorG,
-                               float priorA, Eigen::VectorXd* vSingVal,
+                               bool* pbStopFlag, bool bInit, ImuInitializater::ImuInitType priorG,
+                               ImuInitializater::ImuInitType priorA, Eigen::VectorXd* vSingVal,
                                bool* bHess) {
   long unsigned int maxKFid = pMap->GetMaxKFid();
   const vector<KeyFrame*> vpKFs = pMap->GetAllKeyFrames();
@@ -2980,8 +2980,9 @@ void Optimizer::InertialOptimization(std::shared_ptr<Map> pMap, Eigen::Matrix3d&
                                      double& scale, Eigen::Vector3d& bg,
                                      Eigen::Vector3d& ba, bool bMono,
                                      Eigen::MatrixXd& covInertial,
-                                     bool bFixedVel, bool bGauss, float priorG,
-                                     float priorA) {
+                                     bool bFixedVel, bool bGauss, 
+                                     ImuInitializater::ImuInitType priorG,
+                                     ImuInitializater::ImuInitType priorA) {
   Verbose::PrintMess("inertial optimization", Verbose::VERBOSITY_NORMAL);
   int its = 200;
   long unsigned int maxKFid = pMap->GetMaxKFid();
@@ -3156,8 +3157,8 @@ void Optimizer::InertialOptimization(std::shared_ptr<Map> pMap, Eigen::Matrix3d&
 }
 
 void Optimizer::InertialOptimization(std::shared_ptr<Map> pMap, Eigen::Vector3d& bg,
-                                     Eigen::Vector3d& ba, float priorG,
-                                     float priorA) {
+                                     Eigen::Vector3d& ba, ImuInitializater::ImuInitType priorG,
+                                     ImuInitializater::ImuInitType priorA) {
   int its = 200;  // Check number of iterations
   long unsigned int maxKFid = pMap->GetMaxKFid();
   const vector<KeyFrame*> vpKFs = pMap->GetAllKeyFrames();

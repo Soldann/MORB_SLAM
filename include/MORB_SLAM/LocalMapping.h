@@ -76,6 +76,8 @@ class LocalMapping {
     return mlNewKeyFrames.size();
   }
 
+  bool getIsDoneVIBA() { return isDoneVIBA; }
+
   bool IsInitializing();
   double GetCurrKFTime();
   KeyFrame* GetCurrKF();
@@ -176,8 +178,9 @@ class LocalMapping {
   bool mbAcceptKeyFrames;
   std::mutex mMutexAccept;
 
-  void InitializeIMU(float priorG = 1e2, float priorA = 1e6,
-                     bool bFirst = false);
+  void InitializeIMU(ImuInitializater::ImuInitType priorG = ImuInitializater::ImuInitType::DEFAULT_G, 
+                    ImuInitializater::ImuInitType priorA = ImuInitializater::ImuInitType::DEFAULT_A,
+                    bool bFirst = false);
   void ScaleRefinement();
 
   bool bInitializing;
@@ -189,6 +192,8 @@ class LocalMapping {
   float mTinit;
 
   int countRefinement;
+
+  bool isDoneVIBA;
 
   // DEBUG
   ofstream f_lm;
