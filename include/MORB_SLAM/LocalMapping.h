@@ -76,7 +76,8 @@ class LocalMapping {
     return mlNewKeyFrames.size();
   }
 
-  bool getIsDoneVIBA() { return isDoneVIBA; }
+  inline bool getIsDoneVIBA() { return isDoneVIBA; }
+  inline void setIsDoneVIBA(bool viba) { isDoneVIBA = viba; }
 
   bool IsInitializing();
   double GetCurrKFTime();

@@ -495,7 +495,7 @@ class KeyFrame {
 
   // Mutex
   std::mutex mMutexPose;  // for pose, velocity and biases
-  std::shared_ptr<std::mutex> mMutexConnections; //use shared ptr since it must be initialized to a value in the ctor
+  std::mutex* mMutexConnections; //use ptr since it must be initialized to a value in the ctor
   std::mutex mMutexFeatures;
   std::mutex mMutexMap;
 

@@ -3293,7 +3293,7 @@ void Tracking::UpdateLocalKeyFrames() {
                                         send = spChilds.end();
          sit != send; sit++) {
       KeyFrame* pChildKF = *sit;
-      if (!pChildKF->isBad()) {
+      if (pChildKF && !pChildKF->isBad()) {
         if (pChildKF->mnTrackReferenceForFrame != mCurrentFrame.mnId) {
           mvpLocalKeyFrames.push_back(pChildKF);
           pChildKF->mnTrackReferenceForFrame = mCurrentFrame.mnId;

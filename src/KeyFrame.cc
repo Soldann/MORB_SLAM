@@ -90,7 +90,8 @@ KeyFrame::KeyFrame()
       mHalfBaseline(0),
       NLeft(0),
       NRight(0),
-      mMutexConnections(std::make_shared<std::mutex>()) {}
+      mMutexConnections(new std::mutex()),
+      mMutexPose(std::mutex()) {}
 
 KeyFrame::KeyFrame(Frame &F, std::shared_ptr<Map> pMap, KeyFrameDatabase *pKFDB)
     : bImu(pMap->isImuInitialized()),
@@ -171,7 +172,8 @@ KeyFrame::KeyFrame(Frame &F, std::shared_ptr<Map> pMap, KeyFrameDatabase *pKFDB)
       mvKeysRight(F.mvKeysRight),
       NLeft(F.Nleft),
       NRight(F.Nright),
-      mMutexConnections(std::make_shared<std::mutex>()) {
+      mMutexConnections(new std::mutex()),
+      mMutexPose(std::mutex()) {
   mnId = nNextId++;
 
   mGrid.resize(mnGridCols);
