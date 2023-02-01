@@ -45,6 +45,7 @@ Tracking::Tracking(System* pSys, ORBVocabulary* pVoc, const Atlas_ptr &pAtlas,
                    const CameraType::eSensor sensor, Settings* settings, const string& _nameSeq)
     : mState(Tracker::NO_IMAGES_YET),
       mSensor(sensor),
+      mLastValidFrame(Frame()),
       mTrackedFr(0),
       mbStep(false),
       mbOnlyTracking(false),
@@ -61,8 +62,7 @@ Tracking::Tracking(System* pSys, ORBVocabulary* pVoc, const Atlas_ptr &pAtlas,
       mnFirstFrameId(0),
       mnInitialFrameId(0),
       mbCreatedMap(false),
-      mpCamera2(nullptr),
-      mLastValidFrame(Frame()) {
+      mpCamera2(nullptr) {
   // Load camera parameters from settings file
   if (settings) {
     newParameterLoader(settings);
@@ -1695,7 +1695,6 @@ void Tracking::ResetFrameIMU() {
 }
 
 void Tracking::Track() {
-
   if (mpLocalMapper->mbBadImu) {
     cout << "TRACK: Reset map because local mapper set the bad imu flag "
          << endl;

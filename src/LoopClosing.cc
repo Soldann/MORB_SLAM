@@ -43,6 +43,7 @@ LoopClosing::LoopClosing(const Atlas_ptr &pAtlas, KeyFrameDatabase* pDB,
       nFGBA_exec(0),
       nFGBA_abort(0),
 #endif    
+      hasMergedLocalMap(false),
       mbResetRequested(false),
       mbResetActiveMapRequested(false),
       mbFinishRequested(false),
@@ -1815,7 +1816,7 @@ void LoopClosing::MergeLocal() {
 }
 
 void LoopClosing::MergeLocal2() {
-  // cout << "Merge detected!!!!" << endl;
+  Verbose::PrintMess("Merge detected!!!", Verbose::VERBOSITY_NORMAL);
 
   // int numTemporalKFs = 11; UNUSED due to todo // TODO (set by parameter): Temporal KFs in the
                             // local window if the map is inertial.
@@ -2105,6 +2106,7 @@ void LoopClosing::MergeLocal2() {
 
   // Release Local Mapping.
   mpLocalMapper->Release();
+  hasMergedLocalMap = true;
 
   return;
 }

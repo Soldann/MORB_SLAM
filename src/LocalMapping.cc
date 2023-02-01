@@ -35,7 +35,8 @@ namespace MORB_SLAM {
 
 LocalMapping::LocalMapping(System* pSys, const Atlas_ptr &pAtlas, const float bMonocular,
                            bool bInertial, const string& _strSeqName)
-    : mScale(1.0),
+    : mRwg(Eigen::Matrix3d::Identity()),
+      mScale(1.0),
       mInitSect(0),
       mIdxInit(0),
       mnMatchesInliers(0),
@@ -66,8 +67,7 @@ LocalMapping::LocalMapping(System* pSys, const Atlas_ptr &pAtlas, const float bM
       mNumLM(0),
       mNumKFCulling(0),
       mTinit(0.f),
-      isDoneVIBA(false),
-      mRwg(Eigen::Matrix3d::Identity()) {
+      isDoneVIBA(false) {
 }
 
 void LocalMapping::SetLoopCloser(LoopClosing* pLoopCloser) {
@@ -1173,8 +1173,8 @@ void LocalMapping::InitializeIMU(ImuInitializater::ImuInitType priorG, ImuInitia
         Eigen::Vector3f dirG;
         dirG.setZero();
     // std::cout << "Keyframes---------------------------------------------: " << N << std::endl;
-    for (vector<KeyFrame*>::iterator itKF = vpKF.begin(); itKF != vpKF.end();
-         itKF++) {
+
+    for (vector<KeyFrame*>::iterator itKF = vpKF.begin(); itKF != vpKF.end(); itKF++) {
 
       // std::cout << "Hello" << std::endl;
       if (!(*itKF)->mpImuPreintegrated) continue; // || isnan((*itKF)->mpImuPreintegrated->GetUpdatedDeltaVelocity().sum())
@@ -1192,7 +1192,7 @@ void LocalMapping::InitializeIMU(ImuInitializater::ImuInitType priorG, ImuInitia
                                    (*itKF)->mpImuPreintegrated->dT;
             (*itKF)->SetVelocity(_vel);
             (*itKF)->mPrevKF->SetVelocity(_vel);
-        }
+    }
 
     // if(dirG.sum() == 0){ mRwg << 0.99600422382354736,0.059227496385574341,0.066840663552284241,
         //   0.059227496385574341,0.12209725379943848,-0.99074935913085938,
