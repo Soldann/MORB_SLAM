@@ -73,7 +73,6 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC
       $<INSTALL_INTERFACE:include>
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/MORB_SLAM/CameraModels>
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Thirdparty/DBoW2>
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Thirdparty/Sophus>
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Thirdparty/g2o>
@@ -96,6 +95,6 @@ endif()
 include(GNUInstallDirs)
 
 install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME} DESTINATION "${lib_dest}")
-install(FILES ${INCLUDE_FILES} DESTINATION "${include_dest}/${PROJECT_NAME}")
+install(FILES ${INCLUDE_FILES} DESTINATION "${include_dest}")
 
 install(EXPORT ${PROJECT_NAME} NAMESPACE ${PROJECT_NAME}:: DESTINATION "${lib_dest}")
