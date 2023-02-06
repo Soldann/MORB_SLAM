@@ -68,7 +68,7 @@ function (attach_general target)
 
 endfunction()
 
-add_library(${PROJECT_NAME} SHARED ${CPP_FILES})
+add_library(${PROJECT_NAME} SHARED ${CPP_FILES} ${INCLUDE_FILES})
 target_include_directories(${PROJECT_NAME}
     PUBLIC
       $<INSTALL_INTERFACE:include>
@@ -96,6 +96,6 @@ endif()
 include(GNUInstallDirs)
 
 install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME} DESTINATION "${lib_dest}")
-install(FILES ${header} DESTINATION "${include_dest}/${PROJECT_NAME}")
+install(FILES ${INCLUDE_FILES} DESTINATION "${include_dest}/${PROJECT_NAME}")
 
 install(EXPORT ${PROJECT_NAME} NAMESPACE ${PROJECT_NAME}:: DESTINATION "${lib_dest}")
