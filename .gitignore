@@ -99,3 +99,7 @@ borrar/*
 
 Pangolin/
 .vsls.json
+info/
+atlas/
+janitor.py
+mop.py

@@ -85,6 +85,7 @@ Viewer.ViewpointF: 500.0
 # System.LoadAtlasFromFile: "/home/landson/MORB_SLAM/trial"
 # System.LoadAtlasFromFile: "/home/ryan/MartinRea/MORB_SLAM/loopy"
 # System.LoadAtlasFromFile: "/home/patson/MORB_SLAM/atlases/one"
-# System.SaveAtlasToFile: "/home/patson/MORB_SLAM/atlases/one"
+System.SaveAtlasToFile: "/xavier_ssd/MORB_SLAM/atlases/Oman"
+# System.LoadAtlasFromFile: "/xavier_ssd/MORB_SLAM/atlases/Oman"
 
 

@@ -237,7 +237,6 @@ void Map::ApplyScaledRotation(const Sophus::SE3f& T, const float s,
   Sophus::SE3f Tyw = T;
   Eigen::Matrix3f Ryw = Tyw.rotationMatrix();
   Eigen::Vector3f tyw = Tyw.translation();
-
   for (set<KeyFrame*>::iterator sit = mspKeyFrames.begin();
        sit != mspKeyFrames.end(); sit++) {
     KeyFrame* pKF = *sit;

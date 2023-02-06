@@ -51,6 +51,8 @@ class Point {
         t(timestamp) {}
   Point(const cv::Point3f Acc, const cv::Point3f Gyro, const double &timestamp)
       : a(Acc.x, Acc.y, Acc.z), w(Gyro.x, Gyro.y, Gyro.z), t(timestamp) {}
+  Point(const Eigen::Vector3f Acc, const Eigen::Vector3f  Gyro, const double &timestamp)
+      : a(Acc), w(Gyro), t(timestamp) {}
 
  public:
   Eigen::Vector3f a; //acceleration

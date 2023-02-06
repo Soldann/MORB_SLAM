@@ -158,7 +158,7 @@ public:
 
     // Information from most recent processed frame
     // You can call this right after TrackMonocular (or stereo or RGBD)
-    int GetTrackingState();
+    Tracker::eTrackingState GetTrackingState();
     std::vector<MapPoint*> GetTrackedMapPoints();
     std::vector<cv::KeyPoint> GetTrackedKeyPointsUn();
 
@@ -178,6 +178,11 @@ public:
 #endif
 
     friend Viewer;
+
+    bool getHasMergedLocalMap();
+    void setHasMergedLocalMap(bool merged);
+    void setTrackingState(Tracker::eTrackingState state);
+
 private:
 
     void SaveAtlas(int type);
@@ -227,7 +232,7 @@ private:
     bool mbDeactivateLocalizationMode;
 
     // Tracking state
-    int mTrackingState;
+    Tracker::eTrackingState mTrackingState;
     std::vector<MapPoint*> mTrackedMapPoints;
     std::vector<cv::KeyPoint> mTrackedKeyPointsUn;
     std::mutex mMutexState;
@@ -239,6 +244,9 @@ private:
     string mStrVocabularyFilePath;
 
     Settings* settings_;
+   
+    //write to velocity file 
+    std::ofstream vel_file;
 };
 
 }// namespace ORB_SLAM

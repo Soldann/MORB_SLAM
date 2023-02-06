@@ -24,7 +24,6 @@
 #include <chrono>
 #include <ctime>
 #include <sstream>
-
 #include <condition_variable>
 
 #include <opencv2/opencv.hpp>
@@ -95,7 +94,7 @@ static rs2_option get_sensor_option(const rs2::sensor& sensor)
     return static_cast<rs2_option>(selected_sensor_option);
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv) {   
 
     if (argc < 3 || argc > 4) {
         cerr << endl
@@ -336,6 +335,10 @@ int main(int argc, char **argv) {
     double t_track = 0.f;
 #endif
 
+    std::ofstream file("output_clean.txt");
+    std::ofstream accel_file("accel.txt");
+    std::ofstream gyro_file("gyro.txt");
+
     while (viewer.isOpen())
     {
         std::vector<rs2_vector> vGyro;
@@ -388,6 +391,8 @@ int main(int argc, char **argv) {
 
         for(size_t i=0; i<vGyro.size(); ++i)
         {
+            accel_file << "[" << vAccel[i].x << " , " << vAccel[i].y << " , " << vAccel[i].z << "]" << std::endl;
+            gyro_file << "[" << vGyro[i].x << " , " << vGyro[i].y << " , " << vGyro[i].z << "]" << std::endl;
             MORB_SLAM::IMU::Point lastPoint(vAccel[i].x, vAccel[i].y, vAccel[i].z,
                                   vGyro[i].x, vGyro[i].y, vGyro[i].z,
                                   vGyro_times[i]);
@@ -417,7 +422,11 @@ int main(int argc, char **argv) {
         // Stereo images are already rectified.
         auto pos = SLAM->TrackStereo(im, imRight, timestamp, vImuMeas);
         // Remove temporarily to keep log clean
+
         std::cout << "POSE: " << std::endl << pos.inverse().translation() << std::endl;
+        file << "[" << pos.inverse().translation()(0,0)<< "," <<  pos.inverse().translation()(1,0) << "," << pos.inverse().translation()(2,0) << "]" << std::endl;
+        
+
 #ifdef REGISTER_TIMES
         std::chrono::steady_clock::time_point t_End_Track = std::chrono::steady_clock::now();
         t_track = t_resize + std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t_End_Track - t_Start_Track).count();
@@ -463,7 +472,7 @@ rs2_vector interpolateMeasure(const double target_time,
         value_interp.z = prev_data.z + increment.z * factor;
 
         // zero interpolation
-        value_interp = current_data;
+        // value_interp = current_data;
     }
     else {
         value_interp = prev_data;

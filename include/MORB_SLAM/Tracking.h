@@ -25,6 +25,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/features2d/features2d.hpp>
 #include <unordered_set>
+#include <fstream>
 
 #include "MORB_SLAM/Atlas.h"
 #include "MORB_SLAM/Frame.h"
