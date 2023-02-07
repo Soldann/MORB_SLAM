@@ -93,8 +93,59 @@ if(realsense2_FOUND)
 endif()
 
 include(GNUInstallDirs)
+message(status "---------- ${CMAKE_INSTALL_DATAROOTDIR}")
+set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake/${PROJECT_NAME})
+install(TARGETS ${PROJECT_NAME}
+   EXPORT ${PROJECT_NAME}-targets
+   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+install(DIRECTORY
+${PROJECT_SOURCE_DIR}
+${PROJECT_SOURCE_DIR}/include
+${PROJECT_SOURCE_DIR}/Thirdparty/Sophus
+${EIGEN3_INCLUDE_DIR}
+${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/DBoW2
+${Pangolin_INCLUDE_DIRS}
+ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+install(EXPORT ${PROJECT_NAME}-targets
+  FILE
+      	${PROJECT_NAME}Targets.cmake
+  NAMESPACE
+        ${PROJECT_NAME}::
+  DESTINATION
+        ${INSTALL_CONFIGDIR}
+)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+
+configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/${PROJECT_NAME}Config.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+    INSTALL_DESTINATION ${INSTALL_CONFIGDIR}
+)
+
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+    DESTINATION ${INSTALL_CONFIGDIR}
+)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake
+	DESTINATION ${INSTALL_CONFIGDIR})
+
+message(STATUS "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake to ${INSTALL_CONFIGDIR}")
+
 
 install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME} DESTINATION "${lib_dest}")
 install(FILES ${INCLUDE_FILES} DESTINATION "${include_dest}")
 
 install(EXPORT ${PROJECT_NAME} NAMESPACE ${PROJECT_NAME}:: DESTINATION "${lib_dest}")
+
+message("project name: ${PROJECT_NAME}")
