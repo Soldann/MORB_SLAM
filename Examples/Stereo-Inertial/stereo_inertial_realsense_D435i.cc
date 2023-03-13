@@ -123,13 +123,21 @@ int main(int argc, char **argv) {
     rs2::context ctx;
     rs2::device_list devices = ctx.query_devices();
     rs2::device selected_device;
-    if (devices.size() == 0)
-    {
-        std::cerr << "No device connected, please connect a RealSense device" << std::endl;
+
+    // connect to specified serial number
+    std::string selectedSerial = "021222071397"; //temp hardcode solution -- should use yaml or something
+    bool found = false;
+    for (rs2::device device : devices) {
+        if (device.get_info(RS2_CAMERA_INFO_SERIAL_NUMBER) == selectedSerial) {
+            selected_device = device;
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
+        std::cerr << "camera with serial: " << selectedSerial << " not found, make sure connected properly" << std::endl;
         return 0;
     }
-    else
-        selected_device = devices[0];
 
     std::vector<rs2::sensor> sensors = selected_device.query_sensors();
     int index = 0;
