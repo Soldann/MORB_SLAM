@@ -149,3 +149,12 @@ install(FILES ${INCLUDE_FILES} DESTINATION "${include_dest}")
 install(EXPORT ${PROJECT_NAME} NAMESPACE ${PROJECT_NAME}:: DESTINATION "${lib_dest}")
 
 message("project name: ${PROJECT_NAME}")
+
+# temp for building examples 
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples/Stereo-Inertial)
+add_executable(stereo_inertial_realsense_D435i
+                Examples/Stereo-Inertial/stereo_inertial_realsense_D435i.cc)
+target_link_libraries(stereo_inertial_realsense_D435i ${PROJECT_NAME})
+
+message("added executable")
