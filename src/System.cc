@@ -1565,10 +1565,6 @@ string System::CalculateCheckSum(string filename, int type) {
   return checksum;
 }
 
-void System::setHasMergedLocalMap(bool merged) {
-  mpLoopCloser->hasMergedLocalMap = merged;
-}
-
 void System::setTrackingState(Tracker::eTrackingState state) {
   mpTracker->mState = state;
 }

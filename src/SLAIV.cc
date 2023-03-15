@@ -28,9 +28,8 @@ void SLAIV::SLAPI::sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imR
 }
 
 void SLAIV::SLAPI::sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imRight,
-                            const double& im_timestamp, std::vector<MORB_SLAM::IMU::Point>& imuMeas) {
+                            const double& im_timestamp, std::vector<MORB_SLAM::IMU::Point>& vImuMeas) {
 
-    std::vector<MORB_SLAM::IMU::Point> vImuMeas = {imuMeas};
     Sophus::SE3f pos = SLAM->TrackStereo(imLeft, imRight, im_timestamp, vImuMeas);
 
     if (hasViewer) {
