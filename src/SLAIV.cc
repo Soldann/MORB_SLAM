@@ -24,6 +24,12 @@ SLAIV::SLAPI::SLAPI(std::string vocab_path, std::string settings_path, bool hasV
 void SLAIV::SLAPI::sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imRight,
                             const double& im_timestamp, MORB_SLAM::IMU::Point& imuMeas) {
 
+    sendImageAndImuData(imLeft, imRight, im_timestamp, {imuMeas});
+}
+
+void SLAIV::SLAPI::sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imRight,
+                            const double& im_timestamp, std::vector<MORB_SLAM::IMU::Point>& imuMeas) {
+
     std::vector<MORB_SLAM::IMU::Point> vImuMeas = {imuMeas};
     Sophus::SE3f pos = SLAM->TrackStereo(imLeft, imRight, im_timestamp, vImuMeas);
 
@@ -37,6 +43,12 @@ void SLAIV::SLAPI::sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imR
 bool SLAIV::SLAPI::getHasMergedLocalMap() {
     bool temp = SLAM->getHasMergedLocalMap();
     SLAM->setHasMergedLocalMap(false);
+    return temp;
+}
+
+bool SLAIV::SLAPI::getHasInitializedNewMap() {
+    bool temp = SLAM->getHasInitializedNewMap();
+    SLAM->setHasInitializedNewMap(false);
     return temp;
 }
 

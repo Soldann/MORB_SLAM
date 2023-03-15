@@ -1,12 +1,13 @@
 #pragma once
 #include <string>
+#include <vector>
 
 #include "MORB_SLAM/System.h"
 
 namespace SLAIV {
     class SLAPI { // SLAM to AIV API
 
-        MORB_SLAM::System_ptr SLAM; // SLAM instance, is a shared_ptr
+        // MORB_SLAM::System_ptr SLAM; // SLAM instance, is a shared_ptr
 
         bool hasViewer; //only initialize the viewer shared_ptr if a viewer is required
         shared_ptr<MORB_SLAM::Viewer> viewer;
@@ -14,6 +15,8 @@ namespace SLAIV {
         Sophus::SE3f lastPose;
         
         public:
+            MORB_SLAM::System_ptr SLAM; // SLAM instance, is a shared_ptr
+
             SLAPI(std::string vocab_path, std::string settings_path, bool hasViewer); // initializes the tracking and local mapping threads
             
             /**
@@ -28,6 +31,9 @@ namespace SLAIV {
             */ 
             void sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imRight,
                                  const double& im_timestamp, MORB_SLAM::IMU::Point& imuMeas);
+
+            void sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imRight,
+                                 const double& im_timestamp, std::vector<MORB_SLAM::IMU::Point>& imuMeas);
             
 
             /**
@@ -50,9 +56,10 @@ namespace SLAIV {
             */
             bool getHasMergedLocalMap();
 
+            bool getHasInitializedNewMap();
+
             void setSLAMState(MORB_SLAM::Tracker::eTrackingState state);
 
-            //need event listener for local map merging
 
     };
 }

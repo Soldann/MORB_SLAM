@@ -108,29 +108,7 @@ else:
 
 # sys.exit(0)
 
-def lpf(data, count):
-    data_filtered = []
-    for i in range(count-1): #have points stay same whose index is less than count
-        data_filtered.append(np.array(data[i]))
-
-    for i in range(count-1, len(data)):
-        sum = [0,0,0]
-        window = data[i-(count-1) : i]
-        for point in window:
-            for j in range(3):
-                sum[j] += point[j]
-
-        avg = [0,0,0]
-        for j in range(3):
-            avg[j] = sum[j] / count
-
-        data_filtered.append(np.array(avg))
-    return data_filtered
-
-
 dataSplit = [[]]
-data_filtered = []
-LPF_WINDOW = 3
 
 for d in data:
     if all(p == 0 for p in d):
@@ -141,67 +119,23 @@ for d in data:
 
 dataSplit = [np.array(data, dtype=np.float64) for data in dataSplit]
 
-for data_map in dataSplit:
-    data_map = list(data_map)
-    if (len(data_map) < LPF_WINDOW): continue
 
-    filtered_map = lpf(data_map, LPF_WINDOW)
-    print("filtered: ", len(filtered_map))
-    data_filtered.append(filtered_map)
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 fig = plt.figure(figsize=(4,4))
-ax = fig.add_subplot(111, projection='3d')  
+ax = fig.add_subplot(111, projection='3d')
 ax.scatter(0,0,0, color='r', label='Origin') # plot the origin
 plotted = 0
-
-print(np.shape(dataSplit))
-print(np.shape(data_filtered))
-
-data_filtered = [np.array(data, dtype=np.float64) for data in data_filtered]
-
-POINT_THRESH = 0.0005
-for i,data_ in enumerate(dataSplit):
-    if len(data_) < 20:
-        continue
+for i,data in enumerate(dataSplit):
     # up is 2, right is 0, backward is 1
-    stdX = np.std(data_[:,0])
-    stdY = np.std(data_[:,1])
-    stdZ = np.std(data_[:,2])
-    if max(stdX, stdY, stdZ) >= POINT_THRESH:
-        ax.plot(data_[:,0], data_[:,1], data_[:,2], label=f'Path {i}')
-        ax.scatter(data_[-1,0],data_[-1,1],data_[-1,2], color='g', label=f'End Point {i}: {data_[-1,:]}') # plot the end point
+    stdX = np.std(data[:,0])
+    stdY = np.std(data[:,1])
+    stdZ = np.std(data[:,2])
+    if max(stdX, stdY, stdZ) >= 0.5:
+        ax.plot(data[:,0], data[:,1], data[:,2], label=f'Path {i}')
+        ax.scatter(data[-1,0],data[-1,1],data[-1,2], color='g', label=f'End Point {i}: {data[-1,:]}') # plot the end point
         plotted += 1
-
-# for map_count in range(len(data_filtered)):
-#     data_map = data_filtered[map_count]
-#     for i in range (2, len(data_map)): 
-#         vec1 = data_map[i] - data_map[i-1]
-#         vec1_norm = np.linalg.norm(vec1) # normalized vec1
-#         if (vec1_norm != 0): 
-#             vec1 = vec1 / vec1_norm
-#         vec2 = data_map[i-2] - data_map[i-1]
-#         vec2_norm = np.linalg.norm(vec2)
-#         if (vec2_norm != 0): 
-#             vec2 = vec2 / vec2_norm
-
-#         if (vec1_norm < 0.1 or vec2_norm < 0.1): continue
-
-#         if (vec1_norm != 0 and vec2_norm != 0 and np.abs(np.dot(vec1, vec2)) < 0.5):
-#             print("potential flip: ", vec1, " , ", vec2)
-#             print("between points: ", dataSplit[map_count][i-2], " , ", dataSplit[map_count][i-1], " , ", dataSplit[map_count][i]) # order: oldest to newest
-
-#             # points go in order: yellow, fuchsia, cyan (order: oldest to newest)
-#             for j in range(3):
-#                 color = 'cyan' # j = 0
-#                 if j == 1:
-#                     color = 'fuchsia'
-#                 elif j == 2:
-#                     color="y"
-                # ax.scatter(data_map[i-j][0], data_map[i-j][1], data_map[i-j][2], color=color)
-
-
 ax.set_title(f"{plotted} Map"+('s' if plotted > 1 else ''))
 # ax.legend(loc=(0,0))
 ax.set_xlabel('$X$')

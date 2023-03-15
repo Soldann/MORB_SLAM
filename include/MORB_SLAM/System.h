@@ -181,6 +181,9 @@ public:
 
     bool getHasMergedLocalMap();
     void setHasMergedLocalMap(bool merged);
+    bool getHasInitializedNewMap();
+    void setHasInitializedNewMap(bool init);
+
     void setTrackingState(Tracker::eTrackingState state);
 
 private:
