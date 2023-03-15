@@ -329,7 +329,12 @@ int main(int argc, char **argv) {
     // MORB_SLAM::System_ptr SLAM = std::make_shared<MORB_SLAM::System>(argv[1],argv[2],MORB_SLAM::CameraType::IMU_STEREO, file_name);
     // MORB_SLAM::Viewer viewer(SLAM, argv[2]);
 
-    std::shared_ptr<SLAIV::SLAPI> slapi = std::make_shared<SLAIV::SLAPI>(argv[1],argv[2],true);
+    std::shared_ptr<SLAIV::SLAPI> slapi = std::make_shared<SLAIV::SLAPI>(argv[1],argv[2],true, 
+        [](double& x, double& y, double& theta) {
+            x = 0;
+            y = 0;
+            theta = 0;
+        });
 
     float imageScale = slapi->SLAM->GetImageScale();
 
