@@ -180,7 +180,8 @@ public:
     friend Viewer;
 
     bool getHasMergedLocalMap();
-    void setHasMergedLocalMap(bool merged);
+    bool getIsDoneVIBA();
+
     void setTrackingState(Tracker::eTrackingState state);
 
 private:

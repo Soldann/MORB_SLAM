@@ -79,6 +79,9 @@ class LocalMapping {
   inline bool getIsDoneVIBA() { return isDoneVIBA; }
   inline void setIsDoneVIBA(bool viba) { isDoneVIBA = viba; }
 
+  inline bool getNotifyIsDoneVIBA() { return notifyIsDoneVIBA; }
+  inline void setNotifyIsDoneVIBA(bool viba) { notifyIsDoneVIBA = viba; }
+
   bool IsInitializing();
   double GetCurrKFTime();
   KeyFrame* GetCurrKF();
@@ -195,6 +198,7 @@ class LocalMapping {
   int countRefinement;
 
   bool isDoneVIBA;
+  bool notifyIsDoneVIBA;
 
   // DEBUG
   ofstream f_lm;

@@ -67,7 +67,8 @@ LocalMapping::LocalMapping(System* pSys, const Atlas_ptr &pAtlas, const float bM
       mNumLM(0),
       mNumKFCulling(0),
       mTinit(0.f),
-      isDoneVIBA(false) {
+      isDoneVIBA(false),
+      notifyIsDoneVIBA(false) {
 }
 
 void LocalMapping::SetLoopCloser(LoopClosing* pLoopCloser) {
@@ -215,6 +216,7 @@ void LocalMapping::Run() {
         // Initialize IMU here
         if (!mpCurrentKeyFrame->GetMap()->isImuInitialized() && mbInertial) {
             isDoneVIBA = false;
+            notifyIsDoneVIBA = false;
             if (mbMonocular)
                 InitializeIMU(ImuInitializater::ImuInitType::MONOCULAR_INIT_G, ImuInitializater::ImuInitType::MONOCULAR_INIT_A, true);
             else
@@ -246,6 +248,7 @@ void LocalMapping::Run() {
                 InitializeIMU(ImuInitializater::ImuInitType::VIBA1_G, ImuInitializater::ImuInitType::VIBA1_A, true);
 
                 isDoneVIBA = true;
+                notifyIsDoneVIBA = true;
                 cout << "end VIBA 1" << endl;
               }
             } else if (!mpCurrentKeyFrame->GetMap()->GetIniertialBA2()) {

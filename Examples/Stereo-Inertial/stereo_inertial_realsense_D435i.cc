@@ -33,6 +33,7 @@
 
 #include <MORB_SLAM/System.h>
 #include <MORB_SLAM/Viewer.h>
+#include <MORB_SLAM/SLAIV.hpp>
 
 using namespace std;
 
@@ -125,7 +126,7 @@ int main(int argc, char **argv) {
     rs2::device selected_device;
 
     // connect to specified serial number
-    std::string selectedSerial = "021222071397"; //temp hardcode solution -- should use yaml or something
+    std::string selectedSerial = "213222078651"; //temp hardcode solution -- should use yaml or something
     bool found = false;
     for (rs2::device device : devices) {
         if (device.get_info(RS2_CAMERA_INFO_SERIAL_NUMBER) == selectedSerial) {
@@ -325,9 +326,17 @@ int main(int argc, char **argv) {
 
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
-    MORB_SLAM::System_ptr SLAM = std::make_shared<MORB_SLAM::System>(argv[1],argv[2],MORB_SLAM::CameraType::IMU_STEREO, file_name);
-    MORB_SLAM::Viewer viewer(SLAM, argv[2]);
-    float imageScale = SLAM->GetImageScale();
+    // MORB_SLAM::System_ptr SLAM = std::make_shared<MORB_SLAM::System>(argv[1],argv[2],MORB_SLAM::CameraType::IMU_STEREO, file_name);
+    // MORB_SLAM::Viewer viewer(SLAM, argv[2]);
+
+    std::shared_ptr<SLAIV::SLAPI> slapi = std::make_shared<SLAIV::SLAPI>(argv[1],argv[2],true, 
+        [](double& x, double& y, double& theta) {
+            x = 0;
+            y = 0;
+            theta = 0;
+        });
+
+    float imageScale = slapi->SLAM->GetImageScale();
 
     double timestamp;
     cv::Mat im, imRight;
@@ -344,10 +353,10 @@ int main(int argc, char **argv) {
 #endif
 
     std::ofstream file("output_clean.txt");
-    std::ofstream accel_file("accel.txt");
-    std::ofstream gyro_file("gyro.txt");
+    // std::ofstream accel_file("accel.txt");
+    // std::ofstream gyro_file("gyro.txt");
 
-    while (viewer.isOpen())
+    while (true)
     {
         std::vector<rs2_vector> vGyro;
         std::vector<double> vGyro_times;
@@ -399,8 +408,8 @@ int main(int argc, char **argv) {
 
         for(size_t i=0; i<vGyro.size(); ++i)
         {
-            accel_file << "[" << vAccel[i].x << " , " << vAccel[i].y << " , " << vAccel[i].z << "]" << std::endl;
-            gyro_file << "[" << vGyro[i].x << " , " << vGyro[i].y << " , " << vGyro[i].z << "]" << std::endl;
+            // accel_file << "[" << vAccel[i].x << " , " << vAccel[i].y << " , " << vAccel[i].z << "]" << std::endl;
+            // gyro_file << "[" << vGyro[i].x << " , " << vGyro[i].y << " , " << vGyro[i].z << "]" << std::endl;
             MORB_SLAM::IMU::Point lastPoint(vAccel[i].x, vAccel[i].y, vAccel[i].z,
                                   vGyro[i].x, vGyro[i].y, vGyro[i].z,
                                   vGyro_times[i]);
@@ -420,7 +429,7 @@ int main(int argc, char **argv) {
 #ifdef REGISTER_TIMES
             std::chrono::steady_clock::time_point t_End_Resize = std::chrono::steady_clock::now();
             t_resize = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t_End_Resize - t_Start_Resize).count();
-            SLAM->InsertResizeTime(t_resize);
+            slapi->SLAM->InsertResizeTime(t_resize);
 #endif
         }
 
@@ -428,7 +437,8 @@ int main(int argc, char **argv) {
         std::chrono::steady_clock::time_point t_Start_Track = std::chrono::steady_clock::now();
 #endif
         // Stereo images are already rectified.
-        auto pos = SLAM->TrackStereo(im, imRight, timestamp, vImuMeas);
+        slapi->sendImageAndImuData(im, imRight, timestamp, vImuMeas);
+        auto pos = slapi->getPose();
         // Remove temporarily to keep log clean
 
         std::cout << "POSE: " << std::endl << pos.inverse().translation() << std::endl;
@@ -438,9 +448,9 @@ int main(int argc, char **argv) {
 #ifdef REGISTER_TIMES
         std::chrono::steady_clock::time_point t_End_Track = std::chrono::steady_clock::now();
         t_track = t_resize + std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t_End_Track - t_Start_Track).count();
-        SLAM->InsertTrackTime(t_track);
+        slapi->SLAM->InsertTrackTime(t_track);
 #endif
-        viewer.update(pos);
+        // viewer.update(pos);
 
 
 

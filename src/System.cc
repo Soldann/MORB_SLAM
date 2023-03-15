@@ -215,7 +215,10 @@ System::System(const std::string& strVocFile, const std::string& strSettingsFile
       strSequence);
   
   // Do not axis flip when loading from existing atlas
-  if (isRead) mpLocalMapper->setIsDoneVIBA(true);
+  if (isRead) {
+    mpLocalMapper->setIsDoneVIBA(true);
+    mpLocalMapper->setNotifyIsDoneVIBA(true);
+  }
 
   mptLocalMapping = new thread(&MORB_SLAM::LocalMapping::Run, mpLocalMapper);
   if (settings_)
@@ -1562,16 +1565,16 @@ string System::CalculateCheckSum(string filename, int type) {
   return checksum;
 }
 
-void System::setHasMergedLocalMap(bool merged) {
-  mpLoopCloser->hasMergedLocalMap = merged;
-}
-
 void System::setTrackingState(Tracker::eTrackingState state) {
   mpTracker->mState = state;
 }
 
 bool System::getHasMergedLocalMap() { 
   return mpLoopCloser->hasMergedLocalMap; 
+}
+
+bool System::getIsDoneVIBA() {
+  return mpLocalMapper->getIsDoneVIBA();
 }
 
 }  // namespace MORB_SLAM
