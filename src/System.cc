@@ -1577,12 +1577,8 @@ bool System::getHasMergedLocalMap() {
   return mpLoopCloser->hasMergedLocalMap; 
 }
 
-bool System::getHasInitializedNewMap() {
-  return mpLocalMapper->getNotifyIsDoneVIBA();
-}
-
-void System::setHasInitializedNewMap(bool init) {
-  mpLocalMapper->setNotifyIsDoneVIBA(init);
+bool System::getIsDoneVIBA() {
+  return mpLocalMapper->getIsDoneVIBA();
 }
 
 }  // namespace MORB_SLAM

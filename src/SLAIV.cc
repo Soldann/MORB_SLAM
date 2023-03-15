@@ -7,8 +7,8 @@
 #include "MORB_SLAM/SLAIV.hpp"
 #include "MORB_SLAM/Viewer.h"
 
-SLAIV::SLAPI::SLAPI(std::string vocab_path, std::string settings_path, bool hasViewer) 
-    : hasViewer(hasViewer) {
+SLAIV::SLAPI::SLAPI(std::string vocab_path, std::string settings_path, bool hasViewer, poseCallbackFunc poseCallback) 
+    : hasViewer(hasViewer), poseCallback(poseCallback) {
     //create SLAM and Viewer instance (Viewer if needed)
     SLAM = std::make_shared<MORB_SLAM::System>(vocab_path, settings_path, MORB_SLAM::CameraType::IMU_STEREO);
 
@@ -38,18 +38,16 @@ void SLAIV::SLAPI::sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imR
     }
 
     lastPose = pos;
-}
+    //if map has not been initialized yet or it hasn't merged, must add prev last known pose
+    if (!SLAM->getIsDoneVIBA() || !SLAM->getHasMergedLocalMap()) {
+        double x;
+        double y;
+        double theta;
 
-bool SLAIV::SLAPI::getHasMergedLocalMap() {
-    bool temp = SLAM->getHasMergedLocalMap();
-    SLAM->setHasMergedLocalMap(false);
-    return temp;
-}
-
-bool SLAIV::SLAPI::getHasInitializedNewMap() {
-    bool temp = SLAM->getHasInitializedNewMap();
-    SLAM->setHasInitializedNewMap(false);
-    return temp;
+        poseCallback(x, y, theta);
+        lastPose.translation() += Eigen::Vector3f(x, y, 0);
+        lastPose.setRotationMatrix(lastPose.rotationMatrix() * Eigen::Matrix3f{{cos(theta), -sin(theta), 0}, {sin(theta), cos(theta), 0}, {0, 0, 1}});
+    }
 }
 
 void SLAIV::SLAPI::setSLAMState(MORB_SLAM::Tracker::eTrackingState state) {

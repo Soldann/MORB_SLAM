@@ -12,19 +12,15 @@ namespace SLAIV {
         bool hasViewer; //only initialize the viewer shared_ptr if a viewer is required
         shared_ptr<MORB_SLAM::Viewer> viewer;
 
+        typedef void (*poseCallbackFunc)(double& x, double& y, double& theta);
+        poseCallbackFunc poseCallback;
+
         Sophus::SE3f lastPose;
         
         public:
-            MORB_SLAM::System_ptr SLAM; // SLAM instance, is a shared_ptr
+            MORB_SLAM::System_ptr SLAM; // SLAM instance, is a shared_ptr -- TEMPORARY FOR TESTING
 
-            SLAPI(std::string vocab_path, std::string settings_path, bool hasViewer); // initializes the tracking and local mapping threads
-            
-            /**
-             * Starts localization and mapping, 
-             * @return true if successful
-            */
-            bool start();
-            
+            SLAPI(std::string vocab_path, std::string settings_path, bool hasViewer, poseCallbackFunc poseCallback); // initializes the tracking and local mapping threads
             
             /**
              * to call when sending data (images, imu, ...) to SLAM, sets the lastPose
@@ -48,15 +44,6 @@ namespace SLAIV {
              * @return A Sophus 3x3 floating point matrix of the pose
             */
             inline Sophus::SE3f getPose() { return lastPose; };
-
-
-            /**
-             * Add comment here
-             * @return true if 
-            */
-            bool getHasMergedLocalMap();
-
-            bool getHasInitializedNewMap();
 
             void setSLAMState(MORB_SLAM::Tracker::eTrackingState state);
 
