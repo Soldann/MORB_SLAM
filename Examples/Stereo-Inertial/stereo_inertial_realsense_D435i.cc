@@ -353,12 +353,6 @@ int main(int argc, char **argv) {
 
     while (true)
     {
-        //check for updates
-        if (slapi->getHasInitializedNewMap())
-            file << "done init new map" << std::endl;
-        if (slapi->getHasMergedLocalMap())
-            file << "has merged local map" << std::endl;
-
         std::vector<rs2_vector> vGyro;
         std::vector<double> vGyro_times;
         std::vector<rs2_vector> vAccel;
