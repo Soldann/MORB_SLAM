@@ -37,8 +37,8 @@ void SLAIV::SLAPI::sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imR
     }
 
     lastPose = pos;
-    //if map has not been initialized yet or it hasn't merged, must add prev last known pose
-    if (!SLAM->getIsDoneVIBA() || !SLAM->getHasMergedLocalMap()) {
+    //when a map is first initialized, set the previous last known pose (so the map starts where the previous left off)
+    if (!SLAM->getIsDoneVIBA() /* || !SLAM->getHasMergedLocalMap()*/) {
         double x;
         double y;
         double theta;
@@ -46,6 +46,12 @@ void SLAIV::SLAPI::sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imR
         poseCallback(x, y, theta);
         lastPose.translation() += Eigen::Vector3f(x, y, 0);
         lastPose.setRotationMatrix(lastPose.rotationMatrix() * Eigen::Matrix3f{{cos(theta), -sin(theta), 0}, {sin(theta), cos(theta), 0}, {0, 0, 1}});
+
+        originPose = lastPose;
+    } else {
+        //offset by this map's global origin
+        lastPose.translation() += originPose.translation();
+        lastPose.setRotationMatrix(lastPose.rotationMatrix() * originPose.rotationMatrix());
     }
 }
 

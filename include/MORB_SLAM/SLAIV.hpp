@@ -12,10 +12,11 @@ namespace SLAIV {
         bool hasViewer; //only initialize the viewer shared_ptr if a viewer is required
         shared_ptr<MORB_SLAM::Viewer> viewer;
 
-        typedef void (*poseCallbackFunc)(double& x, double& y, double& theta);
+        typedef std::function<void(double& x, double& y, double& theta)> poseCallbackFunc;
         poseCallbackFunc poseCallback;
 
         Sophus::SE3f lastPose;
+        Sophus::SE3f originPose;
         
         public:
             MORB_SLAM::System_ptr SLAM; // SLAM instance, is a shared_ptr -- TEMPORARY FOR TESTING
