@@ -10,8 +10,8 @@ MESSAGE(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall   -O3")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall   -O3")
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -march=native")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
 
 # Set compiler standard to C++17
 set(CMAKE_CXX_STANDARD 17)
@@ -171,10 +171,10 @@ install(FILES ${INCLUDE_g2o_solvers_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDED
 install(FILES ${INCLUDE_g2o_stuff_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/g2o/g2o/stuff")
 install(FILES ${INCLUDE_g2o_types_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/g2o/g2o/types")
 
-# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples/Stereo-Inertial)
-# add_executable(stereo_inertial_realsense_D435i
-#                 Examples/Stereo-Inertial/stereo_inertial_realsense_D435i.cc)
-# target_link_libraries(stereo_inertial_realsense_D435i ${PROJECT_NAME})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples/Stereo-Inertial)
+add_executable(stereo_inertial_realsense_D435i
+                Examples/Stereo-Inertial/stereo_inertial_realsense_D435i.cc)
+target_link_libraries(stereo_inertial_realsense_D435i ${PROJECT_NAME})
 
-# message("added executable")
-# install(EXPORT ${PROJECT_NAME} NAMESPACE ${PROJECT_NAME}:: DESTINATION "${CMAKE_INSTALL_LIBDIR}/${CMAKE_BUILD_TYPE}")
+message("added executable")
+install(EXPORT ${PROJECT_NAME} NAMESPACE ${PROJECT_NAME}:: DESTINATION "${CMAKE_INSTALL_LIBDIR}/${CMAKE_BUILD_TYPE}")
