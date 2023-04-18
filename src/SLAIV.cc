@@ -45,14 +45,13 @@ void SLAIV::SLAPI::sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imR
         cv::resize(imRight, imRight, cv::Size(width, height));
     }
     
-    Sophus::SE3f pos = SLAM->TrackStereo(imLeft, imRight, im_timestamp, vImuMeas).inverse();
+    Sophus::SE3f pos = SLAM->TrackStereo(imLeft, imRight, im_timestamp, vImuMeas);
 
     if (hasViewer) 
         viewer->update(pos);
 
-    // temporary, figure out coordinate system of slam
+    pos = pos.inverse();
 
-    // lastPose = pos;
     //when a map is first initialized, set the previous last known pose (so the map starts where the previous left off)
     if (!SLAM->getIsDoneVIBA()) {
         double x;
@@ -89,8 +88,6 @@ void SLAIV::SLAPI::sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imR
             slamFile << "origin: " << std::setprecision(15) << originPose.translation()(0) << "," <<  originPose.translation()(1) << "," << originPose.translation()(2) << std::endl;
 
         }
-
-        // lastPose = pos;
         
         lastPose.translation() =  originPose.rotationMatrix() * pos.translation() +  originPose.translation();
         lastPose.setRotationMatrix(pos.rotationMatrix() * originPose.rotationMatrix());
