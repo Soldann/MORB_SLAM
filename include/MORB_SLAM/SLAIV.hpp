@@ -17,11 +17,17 @@ namespace SLAIV {
 
         Sophus::SE3f lastPose;
         Sophus::SE3f originPose;
+
+        double cameraYaw;
+        
+        bool gotFirstPoint;
         
         public:
             MORB_SLAM::System_ptr SLAM; // SLAM instance, is a shared_ptr -- TEMPORARY FOR TESTING
 
             SLAPI(std::string vocab_path, std::string settings_path, bool hasViewer, poseCallbackFunc poseCallback); // initializes the tracking and local mapping threads
+
+            void setCameraExtrin(double c) { cameraYaw = c; std::cout << "got camera yaw: " << cameraYaw << std::endl; }
             
             /**
              * to call when sending data (images, imu, ...) to SLAM, sets the lastPose
