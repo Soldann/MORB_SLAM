@@ -4,6 +4,18 @@
 
 #include "MORB_SLAM/System.h"
 
+// have to create similar struct to Sophus::SE3f because sophus throws assert failures when doing rotation math :(
+struct Pose3D {
+    Eigen::Vector3f translation;
+    Eigen::Matrix3f rotation;
+};
+
+struct Pose {
+    double x;
+    double y;
+    double theta;
+};
+
 namespace SLAIV {
     class SLAPI { // SLAM to AIV API
 
@@ -15,8 +27,8 @@ namespace SLAIV {
         typedef std::function<void(double& x, double& y, double& theta)> poseCallbackFunc;
         poseCallbackFunc poseCallback;
 
-        Sophus::SE3f lastPose;
-        Sophus::SE3f originPose;
+        Pose3D lastPose;
+        Pose3D originPose;
 
         double cameraYaw;
         
@@ -28,14 +40,16 @@ namespace SLAIV {
             SLAPI(std::string vocab_path, std::string settings_path, bool hasViewer, poseCallbackFunc poseCallback); // initializes the tracking and local mapping threads
 
             void setCameraExtrin(double c) { cameraYaw = c; std::cout << "got camera yaw: " << cameraYaw << std::endl; }
+
+            bool isDoneInitingMap() { return SLAM->getIsDoneVIBA(); }
             
             /**
              * to call when sending data (images, imu, ...) to SLAM, sets the lastPose
             */ 
-            void sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imRight,
+            Pose sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imRight,
                                  const double& im_timestamp, MORB_SLAM::IMU::Point& imuMeas);
 
-            void sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imRight,
+            Pose sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imRight,
                                  const double& im_timestamp, std::vector<MORB_SLAM::IMU::Point>& imuMeas);
             
 
@@ -45,13 +59,6 @@ namespace SLAIV {
             */
             inline MORB_SLAM::Tracker::eTrackingState getSLAMState() {return SLAM->GetTrackingState();}
             
-            
-            /** 
-             * Add comment here
-             * @return A Sophus 3x3 floating point matrix of the pose
-            */
-            inline Sophus::SE3f getPose() { return lastPose; };
-
             void setSLAMState(MORB_SLAM::Tracker::eTrackingState state);
 
 

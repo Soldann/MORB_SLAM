@@ -437,12 +437,10 @@ int main(int argc, char **argv) {
         std::chrono::steady_clock::time_point t_Start_Track = std::chrono::steady_clock::now();
 #endif
         // Stereo images are already rectified.
-        slapi->sendImageAndImuData(im, imRight, timestamp, vImuMeas);
-        auto pos = slapi->getPose();
+        auto pos = slapi->sendImageAndImuData(im, imRight, timestamp, vImuMeas);
         // Remove temporarily to keep log clean
 
-        std::cout << "POSE: " << std::endl << pos.inverse().translation() << std::endl;
-        file << "[" << pos.inverse().translation()(0,0)<< "," <<  pos.inverse().translation()(1,0) << "," << pos.inverse().translation()(2,0) << "]" << std::endl;
+        file << "[" << pos.x<< "," <<  pos.y << "," << pos.theta << "]" << std::endl;
         
 
 #ifdef REGISTER_TIMES
