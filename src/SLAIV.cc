@@ -12,7 +12,7 @@
 #include <math.h>
 
 SLAIV::SLAPI::SLAPI(std::string vocab_path, std::string settings_path, bool hasViewer, poseCallbackFunc poseCallback) 
-    : hasViewer(hasViewer), poseCallback(poseCallback), gotFirstPoint{false}, cameraYaw{0} {
+    : hasViewer(hasViewer), poseCallback(poseCallback), gotFirstPoint{false}, initedRot{false}, cameraYaw{0} {
     //create SLAM and Viewer instance (Viewer if needed)
     SLAM = std::make_shared<MORB_SLAM::System>(vocab_path, settings_path, MORB_SLAM::CameraType::IMU_STEREO);
 
@@ -80,8 +80,6 @@ Pose SLAIV::SLAPI::sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imR
 
         std::ofstream slamFileTrans {"slam_pose_trans", std::ofstream::app};
         slamFileTrans << std::setprecision(15) << originPose.translation(0) << "," <<  originPose.translation(1) << "," << theta << std::endl;
-
-        std::cout << "DONE" << std::endl;
 
         return Pose{originPose.translation(0), originPose.translation(1), theta};
 

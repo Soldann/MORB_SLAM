@@ -33,6 +33,7 @@ namespace SLAIV {
         double cameraYaw;
         
         bool gotFirstPoint;
+        bool initedRot;
         
         public:
             MORB_SLAM::System_ptr SLAM; // SLAM instance, is a shared_ptr -- TEMPORARY FOR TESTING
