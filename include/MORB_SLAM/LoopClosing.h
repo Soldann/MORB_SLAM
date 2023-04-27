@@ -54,6 +54,8 @@ public:
 
 public:
 
+    bool loopClosed = false;
+
     LoopClosing(const Atlas_ptr &pAtlas, KeyFrameDatabase* pDB, ORBVocabulary* pVoc,const bool bFixScale, const bool bActiveLC);
 
     void SetTracker(Tracking* pTracker);

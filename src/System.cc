@@ -57,8 +57,6 @@ System::System(const std::string& strVocFile, const std::string& strSettingsFile
       mbActivateLocalizationMode(false),
       mbDeactivateLocalizationMode(false) {
 
-  vel_file.open("velocity.txt");
-
   cameras.push_back(make_shared<Camera>(mSensor)); // for now just hard code the sensor we are using, TODO make multicam
   // Output welcome message
   std::cout << std::endl
@@ -324,7 +322,6 @@ Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
                                                 timestamp, filename, cameras[0]); // for now we know cameras[0] is providing the image
 
   Eigen::Vector3f vel = mpTracker->mCurrentFrame.GetVelocity();
-  vel_file << "[" << vel(0) << " , " << vel(1) << " , " << vel(2) << "]" << std::endl;
 
   // std::cout << "out grabber" << std::endl;
 
@@ -508,8 +505,6 @@ void System::ResetActiveMap() {
 
 System::~System() {
   cout << "Shutdown" << endl;
-
-  vel_file.close();
 
   unique_lock<mutex> lock(mMutexReset);
 

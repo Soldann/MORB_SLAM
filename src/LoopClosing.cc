@@ -187,7 +187,6 @@ void LoopClosing::Run() {
                     .count();
             vdMergeTotal_ms.push_back(timeMergeTotal);
 #endif
-
             Verbose::PrintMess("Merge finished!", Verbose::VERBOSITY_QUIET);
           }
 
@@ -1243,6 +1242,7 @@ void LoopClosing::CorrectLoop() {
 }
 
 void LoopClosing::MergeLocal() {
+  std::cout << "MERGE LOCAL MAP" << std::endl;
   int numTemporalKFs =
       25;  // Temporal KFs in the local window if the map is inertial.
 
@@ -1816,6 +1816,8 @@ void LoopClosing::MergeLocal() {
 }
 
 void LoopClosing::MergeLocal2() {
+  std::cout << "MERGE LOCAL MAP 2" << std::endl;
+  loopClosed = true;
   Verbose::PrintMess("Merge detected!!!", Verbose::VERBOSITY_NORMAL);
 
   // int numTemporalKFs = 11; UNUSED due to todo // TODO (set by parameter): Temporal KFs in the

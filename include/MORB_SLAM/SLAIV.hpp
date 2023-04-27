@@ -31,6 +31,7 @@ namespace SLAIV {
         Pose3D originPose;
 
         double cameraYaw;
+        double lastPoseTheta;
         
         bool gotFirstPoint;
         bool initedRot;
