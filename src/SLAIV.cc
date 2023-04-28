@@ -12,7 +12,7 @@
 #include <math.h>
 
 SLAIV::SLAPI::SLAPI(std::string vocab_path, std::string settings_path, bool hasViewer, poseCallbackFunc poseCallback) 
-    : hasViewer(hasViewer), poseCallback(poseCallback), gotFirstPoint{false}, initedRot{false}, cameraYaw{0}, lastPoseTheta{0} {
+    : hasViewer(hasViewer), poseCallback(poseCallback), gotFirstPoint{false}, initedRot{false}, cameraYaw{0}, mapCount{0}, prevRotOffset{Eigen::Matrix3f::Identity()} {
     //create SLAM and Viewer instance (Viewer if needed)
     SLAM = std::make_shared<MORB_SLAM::System>(vocab_path, settings_path, MORB_SLAM::CameraType::IMU_STEREO);
 
@@ -50,73 +50,93 @@ Pose SLAIV::SLAPI::sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imR
         viewer->update(sophusPose);
 
     sophusPose = sophusPose.inverse();
-    Pose3D pos{sophusPose.translation(), sophusPose.rotationMatrix()};
+    double currTheta = atan2(sophusPose.rotationMatrix()(1,0), sophusPose.rotationMatrix()(0,0));
+    Pose3D pos{sophusPose.translation(), Eigen::Matrix3f{{cos(currTheta), -sin(currTheta), 0},
+                                                    {sin(currTheta), cos(currTheta), 0},
+                                                    {0,0,1}}};
 
     std::ofstream slamFile {"slam_pose", std::ofstream::app};
     slamFile << std::setprecision(15) << pos.translation(0) << "," <<  pos.translation(1) << "," << pos.translation(2) << std::endl;
 
-    //when a map is first initialized, set the previous last known pose (so the map starts where the previous left off)
-    if (!SLAM->getIsDoneVIBA()) {
-        double x;
-        double y;
-        double theta;
+    // when a map is first initialized, set the previous last known pose (so the map starts where the previous left off)
+    // do the same process when SLAM merges the map with a previous map (it does the same thing as initialization, but instead spawns at the point in the map -- not the origin)
+    
+    // that is why we need to keep track of the previous map's last position & rotation AND the starting position & rotation, and transform it so
+    // there is a seamless transition of poses and rotation between maps and after it merges maps
 
-        poseCallback(x, y, theta);
-
-        originPose.translation = Eigen::Vector3f(x, y, 0);
-
-        // rotation i set based on where the robot is before starting initing map
-        if (!initedRot) {
-            originPose.rotation = Eigen::Matrix3f{{cos(theta), -sin(theta), 0},
-                                                    {sin(theta), cos(theta), 0},
-                                                    {0,0,1}};
-        }
-
-        gotFirstPoint = false;
-        initedRot = true;
-
-        std::cout << "last pose theta " << lastPoseTheta << std::endl;
-        std::cout << "pose callback: " << std::setprecision(15) << x << "," << y << "," << theta << std::endl;
-
-        std::ofstream slamFileTrans {"slam_pose_trans", std::ofstream::app};
-        slamFileTrans << "odom: " << std::setprecision(15) << originPose.translation(0) << "," <<  originPose.translation(1) << "," << theta << std::endl;
-
-        return Pose{originPose.translation(0), originPose.translation(1), theta};
-
-    } else {
-        // weird coordinate transforms
-        // initedRot = false;
+    if (!SLAM->getIsDoneVIBA() || SLAM->mpLoopCloser->loopClosed) {
 
         if (SLAM->mpLoopCloser->loopClosed) {
             SLAM->mpLoopCloser->loopClosed = false;
+
+            // for debugging purposes
             std::ofstream slamFileTrans {"slam_pose_trans", std::ofstream::app};
             slamFileTrans << "loop closed here" << std::endl;
         }
 
-        pos.translation = Eigen::Vector3f(pos.translation(0), pos.translation(1), pos.translation(2));
+        double x;
+        double y;
 
-        if (!gotFirstPoint) lastPoseTheta = atan2(lastPose.rotation(1,0), lastPose.rotation(0,0));
+        poseCallback(x, y, originTheta);
 
-        Eigen::Matrix3f cameraYawOffset = Eigen::Matrix3f{{cos(-M_PI/2-cameraYaw+lastPoseTheta), -sin(-M_PI/2-cameraYaw+lastPoseTheta), 0},
-                                                    {sin(-M_PI/2-cameraYaw+lastPoseTheta), cos(-M_PI/2-cameraYaw+lastPoseTheta), 0},
-                                                    {0,0,1}};
+        originPose.translation = Eigen::Vector3f(x, y, 0);
+
+        // rotation i set based on where the robot is before starting initing map
+
+        gotFirstPoint = false;
+        initedRot = true;
+
+        std::cout << "pose callback: " << std::setprecision(15) << x << "," << y << "," << originTheta << std::endl;
+
+        std::ofstream slamFileTrans {"slam_pose_trans", std::ofstream::app};
+        slamFileTrans << "odom: " << std::setprecision(15) << originPose.translation(0) << "," <<  originPose.translation(1) << "," << originTheta << std::endl;
+
+        return Pose{originPose.translation(0), originPose.translation(1), originTheta};
+
+    } else {
+        pos.translation = Eigen::Vector3f{pos.translation(0), pos.translation(1), pos.translation(2)}; // why is this needed!!??1?
+
         //offset by this map's global origin
         if (!gotFirstPoint) {
-            // last pose's orientation
-            originPose.translation -= originPose.rotation * cameraYawOffset * pos.translation;
+            mapCount++; // debugging purposes
+
+            std::cout << "last pose theta: " << atan2(lastPose.rotation(1,0), lastPose.rotation(0,0))
+                    << " origin theta: " << originTheta
+                    << " camera yaw: " << cameraYaw << std::endl;
+
+            double angle = atan2(lastPose.rotation(1,0), lastPose.rotation(0,0)) - originTheta;
+
+            prevRotOffset =  Eigen::Matrix3f{{cos(angle), -sin(angle), 0},
+                                            {sin(angle), cos(angle), 0},
+                                            {0,0,1}};
+
+            originPose.translation -= originPose.rotation * pos.translation;
 
             gotFirstPoint = true;
 
             std::cout << "origin translation: " << originPose.translation << std::endl;
-            std::cout << "origin rotation: " << originPose.rotation << std::endl;
+            std::cout << "origin last pose theta: " << angle << std::endl;
 
             std::ofstream slamFile {"slam_pose", std::ofstream::app};
-            slamFile << "origin: " << std::setprecision(15) << originPose.translation(0) << "," <<  originPose.translation(1) << "," << originPose.translation(2) << std::endl;
+            slamFile << "origin: " << std::setprecision(15) << originPose.translation(0) << "," <<  originPose.translation(1) << "," << angle << std::endl;
 
         }
+
+        std::cout << " curr pose theta: " << atan2(pos.rotation(1,0), pos.rotation(0,0)) << std::endl;
+
+        Eigen::Matrix3f cameraYawOffset = Eigen::Matrix3f{{cos(-M_PI/2-cameraYaw), -sin(-M_PI/2-cameraYaw), 0},
+                                                        {sin(-M_PI/2-cameraYaw), cos(-M_PI/2-cameraYaw), 0},
+                                                        {0,0,1}};
+
+        std::cout << "pos here is: " << pos.translation(0) << " , " << pos.translation(1) << std::endl;
         
-        lastPose.translation =  originPose.rotation * cameraYawOffset * pos.translation +  originPose.translation;
-        lastPose.rotation = originPose.rotation * pos.rotation;
+        // NOTE: the rotation works fine  (it is what we expect, it is close enough to the odometry)
+        // BUT the translation goes to infinity, which needs to be fixed -- see previous commit "multiple map works! "
+        // where the loop closing was not implemented, but the translation & rotation worked for the first map
+
+        lastPose.translation =  originPose.rotation * cameraYawOffset * pos.translation + originPose.translation;
+
+        lastPose.rotation = pos.rotation * originPose.rotation * prevRotOffset;
 
         std::ofstream slamFileTrans {"slam_pose_trans", std::ofstream::app};
         slamFileTrans << std::setprecision(15) << lastPose.translation(0) << "," <<  lastPose.translation(1) << "," << 

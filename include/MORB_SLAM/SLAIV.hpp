@@ -31,10 +31,12 @@ namespace SLAIV {
         Pose3D originPose;
 
         double cameraYaw;
-        double lastPoseTheta;
+        double originTheta;
+        Eigen::Matrix3f prevRotOffset;
         
         bool gotFirstPoint;
         bool initedRot;
+        int mapCount;
         
         public:
             MORB_SLAM::System_ptr SLAM; // SLAM instance, is a shared_ptr -- TEMPORARY FOR TESTING
@@ -43,7 +45,7 @@ namespace SLAIV {
 
             void setCameraExtrin(double c) { cameraYaw = c; std::cout << "got camera yaw: " << cameraYaw << std::endl; }
 
-            bool isDoneInitingMap() { return SLAM->getIsDoneVIBA(); }
+            bool isDoneInitingMap() { return SLAM ? SLAM->getIsDoneVIBA() : false; }
             
             /**
              * to call when sending data (images, imu, ...) to SLAM, sets the lastPose
