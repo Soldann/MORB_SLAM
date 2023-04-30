@@ -12,6 +12,8 @@
 ssh_key
 ssh_key.pub
 
+output.txt
+
 CMakeLists.txt.user
 CMakeLists_modified.txt
 
