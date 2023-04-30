@@ -3057,7 +3057,7 @@ void Optimizer::InertialOptimization(std::shared_ptr<Map> pMap, Eigen::Matrix3d&
   // Gravity and scale
   VertexGDir* VGDir = new VertexGDir(Rwg);
   VGDir->setId(maxKFid * 2 + 4);
-  VGDir->setFixed(false); //WHY : TRY CHANGING TO TRUE TO STOP FLIPPING GRAVITY DIR
+  VGDir->setFixed(false);
   optimizer.addVertex(VGDir);
   VertexScale* VS = new VertexScale(scale);
   VS->setId(maxKFid * 2 + 5);
@@ -3361,7 +3361,7 @@ void Optimizer::InertialOptimization(std::shared_ptr<Map> pMap, Eigen::Matrix3d&
   // Gravity and scale
   VertexGDir* VGDir = new VertexGDir(Rwg);
   VGDir->setId(4 * (maxKFid + 1));
-  VGDir->setFixed(false); //WHY : TRY CHANGING TO TRUE TO STOP FLIPPING GRAVITY DIR
+  VGDir->setFixed(false);
   optimizer.addVertex(VGDir);
   VertexScale* VS = new VertexScale(scale);
   VS->setId(4 * (maxKFid + 1) + 1);
