@@ -7,7 +7,7 @@ list(REMOVE_AT CMAKE_MODULE_PATH -1)
 find_dependency(boost_regex @MIN_BOOST_VERSION@)
 
 if(NOT TARGET MORB_SLAM::MORB_SLAM)
-    include("${MORB_SLAM_CMAKE_DIR}/MORB_SLAMTargets.cmake")
+    include("/usr/local/share/MORB_SLAM/cmake/MORB_SLAM/MORB_SLAMTargets.cmake")
 endif()
 
 set(MORB_SLAM_LIBRARIES MORB_SLAM::MORB_SLAM)

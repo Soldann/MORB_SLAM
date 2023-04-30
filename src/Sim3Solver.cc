@@ -19,17 +19,17 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Sim3Solver.h"
+#include "MORB_SLAM/Sim3Solver.h"
 
 #include <cmath>
 #include <opencv2/core/core.hpp>
 #include <vector>
 
 #include "DUtils/Random.h"
-#include "KeyFrame.h"
-#include "ORBmatcher.h"
+#include "MORB_SLAM/KeyFrame.h"
+#include "MORB_SLAM/ORBmatcher.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 Sim3Solver::Sim3Solver(KeyFrame *pKF1, KeyFrame *pKF2,
                        const vector<MapPoint *> &vpMatched12,
@@ -425,7 +425,7 @@ float Sim3Solver::GetEstimatedScale() { return mBestScale; }
 
 void Sim3Solver::Project(const vector<Eigen::Vector3f> &vP3Dw,
                          vector<Eigen::Vector2f> &vP2D, Eigen::Matrix4f Tcw,
-                         GeometricCamera *pCamera) {
+                         const std::shared_ptr<GeometricCamera> &pCamera) {
   Eigen::Matrix3f Rcw = Tcw.block<3, 3>(0, 0);
   Eigen::Vector3f tcw = Tcw.block<3, 1>(0, 3);
 
@@ -441,7 +441,7 @@ void Sim3Solver::Project(const vector<Eigen::Vector3f> &vP3Dw,
 
 void Sim3Solver::FromCameraToImage(const vector<Eigen::Vector3f> &vP3Dc,
                                    vector<Eigen::Vector2f> &vP2D,
-                                   GeometricCamera *pCamera) {
+                                   const std::shared_ptr<GeometricCamera> &pCamera) {
   vP2D.clear();
   vP2D.reserve(vP3Dc.size());
 
@@ -451,4 +451,4 @@ void Sim3Solver::FromCameraToImage(const vector<Eigen::Vector3f> &vP3Dc,
   }
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

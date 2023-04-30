@@ -24,7 +24,6 @@
 #include <chrono>
 #include <ctime>
 #include <sstream>
-
 #include <condition_variable>
 
 #include <opencv2/opencv.hpp>
@@ -32,8 +31,9 @@
 #include <librealsense2/rs.hpp>
 #include "librealsense2/rsutil.h"
 
-#include <System.h>
-#include <Viewer.h>
+#include <MORB_SLAM/System.h>
+#include <MORB_SLAM/Viewer.h>
+#include <MORB_SLAM/SLAIV.hpp>
 
 using namespace std;
 
@@ -95,7 +95,7 @@ static rs2_option get_sensor_option(const rs2::sensor& sensor)
     return static_cast<rs2_option>(selected_sensor_option);
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv) {   
 
     if (argc < 3 || argc > 4) {
         cerr << endl
@@ -116,7 +116,7 @@ int main(int argc, char **argv) {
     sigemptyset(&sigIntHandler.sa_mask);
     sigIntHandler.sa_flags = 0;
 
-    sigaction(SIGINT, &sigIntHandler, NULL);
+    sigaction(SIGINT, &sigIntHandler, nullptr);
     b_continue_session = true;
 
     double offset = 0; // ms
@@ -124,13 +124,21 @@ int main(int argc, char **argv) {
     rs2::context ctx;
     rs2::device_list devices = ctx.query_devices();
     rs2::device selected_device;
-    if (devices.size() == 0)
-    {
-        std::cerr << "No device connected, please connect a RealSense device" << std::endl;
+
+    // connect to specified serial number
+    std::string selectedSerial = "213222078651"; //temp hardcode solution -- should use yaml or something
+    bool found = false;
+    for (rs2::device device : devices) {
+        if (device.get_info(RS2_CAMERA_INFO_SERIAL_NUMBER) == selectedSerial) {
+            selected_device = device;
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
+        std::cerr << "camera with serial: " << selectedSerial << " not found, make sure connected properly" << std::endl;
         return 0;
     }
-    else
-        selected_device = devices[0];
 
     std::vector<rs2::sensor> sensors = selected_device.query_sensors();
     int index = 0;
@@ -262,7 +270,7 @@ int main(int argc, char **argv) {
 
     rs2::pipeline_profile pipe_profile = pipe.start(cfg, imu_callback);
 
-    vector<ORB_SLAM3::IMU::Point> vImuMeas;
+    vector<MORB_SLAM::IMU::Point> vImuMeas; //IMU data point contains acceleration, angular velocity, and timestamp of recorded dat
     rs2::stream_profile cam_left = pipe_profile.get_stream(RS2_STREAM_INFRARED, 1);
     rs2::stream_profile cam_right = pipe_profile.get_stream(RS2_STREAM_INFRARED, 2);
 
@@ -318,9 +326,17 @@ int main(int argc, char **argv) {
 
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
-    ORB_SLAM3::System_ptr SLAM = std::make_shared<ORB_SLAM3::System>(argv[1],argv[2],ORB_SLAM3::CameraType::IMU_STEREO, file_name);
-    ORB_SLAM3::Viewer viewer(SLAM, argv[2]);
-    float imageScale = SLAM->GetImageScale();
+    // MORB_SLAM::System_ptr SLAM = std::make_shared<MORB_SLAM::System>(argv[1],argv[2],MORB_SLAM::CameraType::IMU_STEREO, file_name);
+    // MORB_SLAM::Viewer viewer(SLAM, argv[2]);
+
+    std::shared_ptr<SLAIV::SLAPI> slapi = std::make_shared<SLAIV::SLAPI>(argv[1],argv[2],true, 
+        [](float& x, float& y, float& theta) {
+            x = 0;
+            y = 0;
+            theta = 0;
+        });
+
+    float imageScale = slapi->SLAM->GetImageScale();
 
     double timestamp;
     cv::Mat im, imRight;
@@ -336,7 +352,11 @@ int main(int argc, char **argv) {
     double t_track = 0.f;
 #endif
 
-    while (viewer.isOpen())
+    std::ofstream file("output_clean.txt");
+    // std::ofstream accel_file("accel.txt");
+    // std::ofstream gyro_file("gyro.txt");
+
+    while (true)
     {
         std::vector<rs2_vector> vGyro;
         std::vector<double> vGyro_times;
@@ -345,7 +365,7 @@ int main(int argc, char **argv) {
 
         {
             std::unique_lock<std::mutex> lk(imu_mutex);
-            if(!image_ready)
+            while(!image_ready)
                 cond_image_rec.wait(lk);
 
             // std::chrono::steady_clock::time_point time_Start_Process = std::chrono::steady_clock::now(); // UNUSED
@@ -388,7 +408,9 @@ int main(int argc, char **argv) {
 
         for(size_t i=0; i<vGyro.size(); ++i)
         {
-            ORB_SLAM3::IMU::Point lastPoint(vAccel[i].x, vAccel[i].y, vAccel[i].z,
+            // accel_file << "[" << vAccel[i].x << " , " << vAccel[i].y << " , " << vAccel[i].z << "]" << std::endl;
+            // gyro_file << "[" << vGyro[i].x << " , " << vGyro[i].y << " , " << vGyro[i].z << "]" << std::endl;
+            MORB_SLAM::IMU::Point lastPoint(vAccel[i].x, vAccel[i].y, vAccel[i].z,
                                   vGyro[i].x, vGyro[i].y, vGyro[i].z,
                                   vGyro_times[i]);
             vImuMeas.push_back(lastPoint);
@@ -407,7 +429,7 @@ int main(int argc, char **argv) {
 #ifdef REGISTER_TIMES
             std::chrono::steady_clock::time_point t_End_Resize = std::chrono::steady_clock::now();
             t_resize = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t_End_Resize - t_Start_Resize).count();
-            SLAM->InsertResizeTime(t_resize);
+            slapi->SLAM->InsertResizeTime(t_resize);
 #endif
         }
 
@@ -415,13 +437,18 @@ int main(int argc, char **argv) {
         std::chrono::steady_clock::time_point t_Start_Track = std::chrono::steady_clock::now();
 #endif
         // Stereo images are already rectified.
-        auto pos = SLAM->TrackStereo(im, imRight, timestamp, vImuMeas);
+        auto pos = slapi->sendImageAndImuData(im, imRight, timestamp, vImuMeas);
+        // Remove temporarily to keep log clean
+
+        file << "[" << pos.x<< "," <<  pos.y << "," << pos.theta << "]" << std::endl;
+        
+
 #ifdef REGISTER_TIMES
         std::chrono::steady_clock::time_point t_End_Track = std::chrono::steady_clock::now();
         t_track = t_resize + std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(t_End_Track - t_Start_Track).count();
-        SLAM->InsertTrackTime(t_track);
+        slapi->SLAM->InsertTrackTime(t_track);
 #endif
-        viewer.update(pos);
+        // viewer.update(pos);
 
 
 
@@ -461,7 +488,7 @@ rs2_vector interpolateMeasure(const double target_time,
         value_interp.z = prev_data.z + increment.z * factor;
 
         // zero interpolation
-        value_interp = current_data;
+        // value_interp = current_data;
     }
     else {
         value_interp = prev_data;

@@ -103,13 +103,13 @@ bool test(Sophus::SE3d const& T_w_targ, Sophus::SE3d const& T_w_init,
       new ceres::AutoDiffCostFunction<TestSE3CostFunctor, Sophus::SE3d::DoF,
                                       Sophus::SE3d::num_parameters>(
           new TestSE3CostFunctor(T_w_targ.inverse()));
-  problem.AddResidualBlock(cost_function1, NULL, T_wr.data());
+  problem.AddResidualBlock(cost_function1, nullptr, T_wr.data());
   ceres::CostFunction* cost_function2 =
       new ceres::AutoDiffCostFunction<TestPointCostFunctor, kNumPointParameters,
                                       Sophus::SE3d::num_parameters,
                                       kNumPointParameters>(
           new TestPointCostFunctor(T_w_targ.inverse(), point_b));
-  problem.AddResidualBlock(cost_function2, NULL, T_wr.data(), point_a.data());
+  problem.AddResidualBlock(cost_function2, nullptr, T_wr.data(), point_a.data());
 
   // Set solver options (precision / method)
   ceres::Solver::Options options;

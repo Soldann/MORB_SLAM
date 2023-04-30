@@ -19,9 +19,9 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "OptimizableTypes.h"
+#include "MORB_SLAM/OptimizableTypes.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 bool EdgeSE3ProjectXYZOnlyPose::read(std::istream& is) {
   for (int i = 0; i < 2; i++) {
     is >> _measurement[i];
@@ -310,4 +310,4 @@ bool EdgeInverseSim3ProjectXYZ::write(std::ostream& os) const {
   return os.good();
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

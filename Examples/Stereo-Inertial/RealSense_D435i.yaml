@@ -42,10 +42,10 @@ IMU.T_b_c1: !!opencv-matrix
 IMU.InsertKFsWhenLost: 0
 
 # IMU noise (Use those from VINS-mono)
-IMU.NoiseGyro: 1e-3 # 2.44e-4 #1e-3 # rad/s^0.5
-IMU.NoiseAcc: 1e-2 # 1.47e-3 #1e-2 # m/s^1.5
-IMU.GyroWalk: 1e-6 # rad/s^1.5
-IMU.AccWalk: 1e-4 # m/s^2.5
+IMU.NoiseGyro:  0.008449 # 1e-3 # rad/s^0.5 # 1e-3 2.44e-4
+IMU.NoiseAcc: 0.01066 # 1e-2 # m/s^1.5 # 1e-2 1.47e-3
+IMU.GyroWalk: 0.000754 # rad/s^1.5  1e-6 
+IMU.AccWalk: 0.00930 # m/s^2.5  1e-4 
 IMU.Frequency: 200.0
 
 #--------------------------------------------------------------------------------------------
@@ -77,14 +77,15 @@ Viewer.PointSize: 2.0
 Viewer.CameraSize: 0.08
 Viewer.CameraLineWidth: 3.0
 Viewer.ViewpointX: 0.0
-Viewer.ViewpointY: -0.7
+Viewer.ViewpointY: -0.7 
 Viewer.ViewpointZ: -3.5
 Viewer.ViewpointF: 500.0
 
 # Save/load Map
-System.LoadAtlasFromFile: "/home/ryan/MartinRea/MORB_SLAM/foxtrot5"
+# System.LoadAtlasFromFile: "/home/landson/MORB_SLAM/trial"
 # System.LoadAtlasFromFile: "/home/ryan/MartinRea/MORB_SLAM/loopy"
-System.SaveAtlasToFile: "/home/ryan/MartinRea/MORB_SLAM/rando"
-
+# System.LoadAtlasFromFile: "/home/patson/MORB_SLAM/atlases/one"
+System.SaveAtlasToFile: "/xavier_ssd/MORB_SLAM/atlases/Oman"
+# System.LoadAtlasFromFile: "/xavier_ssd/MORB_SLAM/atlases/Oman"
 
 

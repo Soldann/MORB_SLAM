@@ -19,16 +19,16 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Map.h"
+#include "MORB_SLAM/Map.h"
 
 #include <mutex>
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 long unsigned int Map::nNextId = 0;
 
 Map::Map()
-    : mpFirstRegionKF(static_cast<KeyFrame*>(NULL)),
+    : mpFirstRegionKF(nullptr),
       mbFail(false),
       mbImuInitialized(false),
       mnMapChange(0),
@@ -42,11 +42,11 @@ Map::Map()
       mbIMU_BA1(false),
       mbIMU_BA2(false) {
   mnId = nNextId++;
-  mThumbnail = static_cast<GLubyte*>(NULL);
+  mThumbnail = nullptr;
 }
 
 Map::Map(int initKFid)
-    : mpFirstRegionKF(static_cast<KeyFrame*>(NULL)),
+    : mpFirstRegionKF(nullptr),
       mbFail(false),
       mbImuInitialized(false),
       mnMapChange(0),
@@ -61,7 +61,7 @@ Map::Map(int initKFid)
       mbIMU_BA1(false),
       mbIMU_BA2(false) {
   mnId = nNextId++;
-  mThumbnail = static_cast<GLubyte*>(NULL);
+  mThumbnail = nullptr;
 }
 
 Map::~Map() {
@@ -72,7 +72,7 @@ Map::~Map() {
   mspKeyFrames.clear();
 
   if (mThumbnail) delete mThumbnail;
-  mThumbnail = static_cast<GLubyte*>(NULL);
+  mThumbnail = nullptr;
 
   mvpReferenceMapPoints.clear();
   mvpKeyFrameOrigins.clear();
@@ -153,11 +153,13 @@ int Map::GetLastBigChangeIdx() {
 
 vector<KeyFrame*> Map::GetAllKeyFrames() {
   unique_lock<mutex> lock(mMutexMap);
+  // std::cout << "Size of mspKeyFrames: " << mspKeyFrames.size() << std::endl;
   return vector<KeyFrame*>(mspKeyFrames.begin(), mspKeyFrames.end());
 }
 
 vector<MapPoint*> Map::GetAllMapPoints() {
   unique_lock<mutex> lock(mMutexMap);
+  // std::cout << "Size of mspMapPoints: " << mspMapPoints.size() << std::endl;
   return vector<MapPoint*>(mspMapPoints.begin(), mspMapPoints.end());
 }
 
@@ -207,7 +209,7 @@ void Map::clear() {
                                 send = mspKeyFrames.end();
        sit != send; sit++) {
     KeyFrame* pKF = *sit;
-    pKF->UpdateMap(static_cast<Map*>(NULL));
+    pKF->UpdateMap(nullptr);
     //        delete *sit;
   }
 
@@ -235,7 +237,6 @@ void Map::ApplyScaledRotation(const Sophus::SE3f& T, const float s,
   Sophus::SE3f Tyw = T;
   Eigen::Matrix3f Ryw = Tyw.rotationMatrix();
   Eigen::Vector3f tyw = Tyw.translation();
-
   for (set<KeyFrame*>::iterator sit = mspKeyFrames.begin();
        sit != mspKeyFrames.end(); sit++) {
     KeyFrame* pKF = *sit;
@@ -319,7 +320,12 @@ void Map::SetLastMapChange(int currentChangeId) {
   mnMapChangeNotified = currentChangeId;
 }
 
-void Map::PreSave(std::set<GeometricCamera*>& spCams) {
+void Map::PreSave(std::set<std::shared_ptr<GeometricCamera>>& spCams, std::shared_ptr<Map> sharedMap) {
+
+  if(this != sharedMap.get()){
+    throw std::runtime_error("The shared map is not equivalent to this");
+  }
+
   int nMPWithoutObs = 0;
 
   std::set<MapPoint*> tmp_mspMapPoints;
@@ -336,7 +342,7 @@ void Map::PreSave(std::set<GeometricCamera*>& spCams) {
     for (map<KeyFrame*, std::tuple<int, int>>::iterator it = mpObs.begin(),
                                                         end = mpObs.end();
          it != end; ++it) {
-      if (it->first->GetMap() != this || it->first->isBad()) {
+      if ((it->first->GetMap() != sharedMap) || it->first->isBad()) {
         pMPi->EraseObservation(it->first);
       }
     }
@@ -386,7 +392,12 @@ void Map::PostLoad(
     KeyFrameDatabase* pKFDB,
     ORBVocabulary*
         pORBVoc /*, map<long unsigned int, KeyFrame*>& mpKeyFrameId*/,
-    map<unsigned int, GeometricCamera*>& mpCams) {
+    map<unsigned int, std::shared_ptr<GeometricCamera>>& mpCams, std::shared_ptr<Map> sharedMap) {
+
+  if(this != sharedMap.get()){
+  throw std::runtime_error("The shared map is not equivalent to this");
+  }
+
   std::copy(mvpBackupMapPoints.begin(), mvpBackupMapPoints.end(),
             std::inserter(mspMapPoints, mspMapPoints.begin()));
   std::copy(mvpBackupKeyFrames.begin(), mvpBackupKeyFrames.end(),
@@ -396,7 +407,7 @@ void Map::PostLoad(
   for (MapPoint* pMPi : mspMapPoints) {
     if (!pMPi || pMPi->isBad()) continue;
 
-    pMPi->UpdateMap(this);
+    pMPi->UpdateMap(sharedMap);
     mpMapPointId[pMPi->mnId] = pMPi;
   }
 
@@ -404,7 +415,7 @@ void Map::PostLoad(
   for (KeyFrame* pKFi : mspKeyFrames) {
     if (!pKFi || pKFi->isBad()) continue;
 
-    pKFi->UpdateMap(this);
+    pKFi->UpdateMap(sharedMap);
     pKFi->SetORBVocabulary(pORBVoc);
     pKFi->SetKeyFrameDatabase(pKFDB);
     mpKeyFrameId[pKFi->mnId] = pKFi;
@@ -441,4 +452,4 @@ void Map::PostLoad(
   mvpBackupMapPoints.clear();
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

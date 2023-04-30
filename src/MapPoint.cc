@@ -19,13 +19,13 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "MapPoint.h"
+#include "MORB_SLAM/MapPoint.h"
 
 #include <mutex>
 
-#include "ORBmatcher.h"
+#include "MORB_SLAM/ORBmatcher.h"
 
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 
 long unsigned int MapPoint::nNextId = 0;
 mutex MapPoint::mGlobalMutex;
@@ -45,11 +45,11 @@ MapPoint::MapPoint()
       mnVisible(1),
       mnFound(1),
       mbBad(false),
-      mpReplaced(static_cast<MapPoint*>(NULL)) {
-  mpReplaced = static_cast<MapPoint*>(NULL);
+      mpReplaced(nullptr) {
+  mpReplaced = nullptr;
 }
 
-MapPoint::MapPoint(const Eigen::Vector3f& Pos, KeyFrame* pRefKF, Map* pMap)
+MapPoint::MapPoint(const Eigen::Vector3f& Pos, KeyFrame* pRefKF, std::shared_ptr<Map> pMap)
     : mnFirstKFid(pRefKF->mnId),
       mnFirstFrame(pRefKF->mnFrameId),
       nObs(0),
@@ -66,7 +66,7 @@ MapPoint::MapPoint(const Eigen::Vector3f& Pos, KeyFrame* pRefKF, Map* pMap)
       mnVisible(1),
       mnFound(1),
       mbBad(false),
-      mpReplaced(static_cast<MapPoint*>(NULL)),
+      mpReplaced(nullptr),
       mfMinDistance(0),
       mfMaxDistance(0),
       mpMap(pMap) {
@@ -84,7 +84,7 @@ MapPoint::MapPoint(const Eigen::Vector3f& Pos, KeyFrame* pRefKF, Map* pMap)
 }
 
 MapPoint::MapPoint(const double invDepth, cv::Point2f uv_init, KeyFrame* pRefKF,
-                   KeyFrame* pHostKF, Map* pMap)
+                   KeyFrame* pHostKF, std::shared_ptr<Map> pMap)
     : mnFirstKFid(pRefKF->mnId),
       mnFirstFrame(pRefKF->mnFrameId),
       nObs(0),
@@ -101,7 +101,7 @@ MapPoint::MapPoint(const double invDepth, cv::Point2f uv_init, KeyFrame* pRefKF,
       mnVisible(1),
       mnFound(1),
       mbBad(false),
-      mpReplaced(static_cast<MapPoint*>(NULL)),
+      mpReplaced(nullptr),
       mfMinDistance(0),
       mfMaxDistance(0),
       mpMap(pMap) {
@@ -119,7 +119,7 @@ MapPoint::MapPoint(const double invDepth, cv::Point2f uv_init, KeyFrame* pRefKF,
   mnId = nNextId++;
 }
 
-MapPoint::MapPoint(const Eigen::Vector3f& Pos, Map* pMap, Frame* pFrame,
+MapPoint::MapPoint(const Eigen::Vector3f& Pos, std::shared_ptr<Map> pMap, Frame* pFrame,
                    const int& idxF)
     : mnFirstKFid(-1),
       mnFirstFrame(pFrame->mnId),
@@ -133,11 +133,11 @@ MapPoint::MapPoint(const Eigen::Vector3f& Pos, Map* pMap, Frame* pFrame,
       mnCorrectedReference(0),
       mnBAGlobalForKF(0),
       mnOriginMapId(pMap->GetId()),
-      mpRefKF(static_cast<KeyFrame*>(NULL)),
+      mpRefKF(nullptr),
       mnVisible(1),
       mnFound(1),
       mbBad(false),
-      mpReplaced(NULL),
+      mpReplaced(nullptr),
       mpMap(pMap) {
   SetWorldPos(Pos);
 
@@ -453,6 +453,8 @@ bool MapPoint::IsInKeyFrame(KeyFrame* pKF) {
 }
 
 void MapPoint::UpdateNormalAndDepth() {
+  if (!mpRefKF) return;
+
   map<KeyFrame*, tuple<int, int>> observations;
   KeyFrame* pRefKF;
   Eigen::Vector3f Pos;
@@ -578,12 +580,12 @@ void MapPoint::PrintObservations() {
   }
 }
 
-Map* MapPoint::GetMap() {
+std::shared_ptr<Map> MapPoint::GetMap() {
   unique_lock<mutex> lock(mMutexMap);
   return mpMap;
 }
 
-void MapPoint::UpdateMap(Map* pMap) {
+void MapPoint::UpdateMap(std::shared_ptr<Map> pMap) {
   unique_lock<mutex> lock(mMutexMap);
   mpMap = pMap;
 }
@@ -628,7 +630,7 @@ void MapPoint::PostLoad(map<long unsigned int, KeyFrame*>& mpKFid,
     cout << "ERROR: MP without KF reference " << mBackupRefKFId
          << "; Num obs: " << nObs << endl;
   }
-  mpReplaced = static_cast<MapPoint*>(NULL);
+  mpReplaced = nullptr;
   if (mBackupReplacedId >= 0) {
     map<long unsigned int, MapPoint*>::iterator it =
         mpMPid.find(mBackupReplacedId);
@@ -654,4 +656,4 @@ void MapPoint::PostLoad(map<long unsigned int, KeyFrame*>& mpKFid,
   mBackupObservationsId2.clear();
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

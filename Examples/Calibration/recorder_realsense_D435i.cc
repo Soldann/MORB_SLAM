@@ -103,7 +103,7 @@ int main(int argc, char **argv) {
     sigemptyset(&sigIntHandler.sa_mask);
     sigIntHandler.sa_flags = 0;
 
-    sigaction(SIGINT, &sigIntHandler, NULL);
+    sigaction(SIGINT, &sigIntHandler, nullptr);
     b_continue_session = true;
 
     double offset = 0; // ms
@@ -229,7 +229,7 @@ int main(int argc, char **argv) {
         {
             {
                 std::unique_lock<std::mutex> lk(imu_mutex);
-                if (!image_ready) // wait until image read from the other thread
+                while (!image_ready) // wait until image read from the other thread
                     cond_image_rec.wait(lk);
             }
             std::lock_guard<std::mutex> lk(imu_mutex);

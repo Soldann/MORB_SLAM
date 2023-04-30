@@ -29,8 +29,8 @@
 
 #include <librealsense2/rs.hpp>
 
-#include <System.h>
-#include <Viewer.h>
+#include <MORB_SLAM/System.h>
+#include <MORB_SLAM/Viewer.h>
 
 using namespace std;
 
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
     sigemptyset(&sigIntHandler.sa_mask);
     sigIntHandler.sa_flags = 0;
 
-    sigaction(SIGINT, &sigIntHandler, NULL);
+    sigaction(SIGINT, &sigIntHandler, nullptr);
     b_continue_session = true;
 
 
@@ -88,8 +88,8 @@ int main(int argc, char **argv)
     cout << "IMU data in the sequence: " << nImu << endl << endl;*/
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
-    ORB_SLAM3::System_ptr SLAM = std::make_shared<ORB_SLAM3::System>(argv[1],argv[2],ORB_SLAM3::CameraType::MONOCULAR);
-    ORB_SLAM3::Viewer viewer(SLAM, argv[2]);
+    MORB_SLAM::System_ptr SLAM = std::make_shared<MORB_SLAM::System>(argv[1],argv[2],MORB_SLAM::CameraType::MONOCULAR);
+    MORB_SLAM::Viewer viewer(SLAM, argv[2]);
     float imageScale = SLAM->GetImageScale();
 
     cv::Mat imCV;

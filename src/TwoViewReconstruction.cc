@@ -19,16 +19,16 @@
  * ORB-SLAM3. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "TwoViewReconstruction.h"
+#include "MORB_SLAM/TwoViewReconstruction.h"
 
 #include <thread>
 
-#include "Converter.h"
+#include "MORB_SLAM/Converter.h"
 #include "DUtils/Random.h"
-#include "GeometricTools.h"
+#include "MORB_SLAM/GeometricTools.h"
 
 using namespace std;
-namespace ORB_SLAM3 {
+namespace MORB_SLAM {
 TwoViewReconstruction::TwoViewReconstruction(const Eigen::Matrix3f &k,
                                              float sigma, int iterations) {
   mK = k;
@@ -904,4 +904,4 @@ void TwoViewReconstruction::DecomposeE(const Eigen::Matrix3f &E,
   if (R2.determinant() < 0) R2 = -R2;
 }
 
-}  // namespace ORB_SLAM3
+}  // namespace MORB_SLAM

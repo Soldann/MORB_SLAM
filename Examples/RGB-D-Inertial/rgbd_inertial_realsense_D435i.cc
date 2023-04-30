@@ -33,8 +33,8 @@
 #include "librealsense2/rsutil.h"
 
 
-#include <System.h>
-#include <Viewer.h>
+#include <MORB_SLAM/System.h>
+#include <MORB_SLAM/Viewer.h>
 
 using namespace std;
 
@@ -120,7 +120,7 @@ int main(int argc, char **argv) {
     sigemptyset(&sigIntHandler.sa_mask);
     sigIntHandler.sa_flags = 0;
 
-    sigaction(SIGINT, &sigIntHandler, NULL);
+    sigaction(SIGINT, &sigIntHandler, nullptr);
     b_continue_session = true;
 
     double offset = 0; // ms
@@ -291,7 +291,7 @@ int main(int argc, char **argv) {
     pipe_profile = pipe.start(cfg, imu_callback);
 
 
-    vector<ORB_SLAM3::IMU::Point> vImuMeas;
+    vector<MORB_SLAM::IMU::Point> vImuMeas;
     rs2::stream_profile cam_stream = pipe_profile.get_stream(RS2_STREAM_COLOR);
 
     rs2::stream_profile imu_stream = pipe_profile.get_stream(RS2_STREAM_GYRO);
@@ -319,8 +319,8 @@ int main(int argc, char **argv) {
 
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
-    ORB_SLAM3::System_ptr SLAM = std::make_shared<ORB_SLAM3::System>(argv[1],argv[2],ORB_SLAM3::CameraType::IMU_RGBD, file_name);
-    ORB_SLAM3::Viewer viewer(SLAM, argv[2]);
+    MORB_SLAM::System_ptr SLAM = std::make_shared<MORB_SLAM::System>(argv[1],argv[2],MORB_SLAM::CameraType::IMU_RGBD, file_name);
+    MORB_SLAM::Viewer viewer(SLAM, argv[2]);
     float imageScale = SLAM->GetImageScale();
 
     double timestamp;
@@ -346,7 +346,7 @@ int main(int argc, char **argv) {
         rs2::frameset fs;
         {
             std::unique_lock<std::mutex> lk(imu_mutex);
-            if(!image_ready)
+            while(!image_ready)
                 cond_image_rec.wait(lk);
 
             // std::chrono::steady_clock::time_point time_Start_Process = std::chrono::steady_clock::now(); // UNUSED
@@ -404,7 +404,7 @@ int main(int argc, char **argv) {
 
         for(size_t i=0; i<vGyro.size(); ++i)
         {
-            ORB_SLAM3::IMU::Point lastPoint(vAccel[i].x, vAccel[i].y, vAccel[i].z,
+            MORB_SLAM::IMU::Point lastPoint(vAccel[i].x, vAccel[i].y, vAccel[i].z,
                                             vGyro[i].x, vGyro[i].y, vGyro[i].z,
                                             vGyro_times[i]);
             vImuMeas.push_back(lastPoint);
