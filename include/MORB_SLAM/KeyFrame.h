@@ -495,7 +495,7 @@ class KeyFrame {
 
   // Mutex
   std::mutex mMutexPose;  // for pose, velocity and biases
-  std::mutex* mMutexConnections; //use ptr since it must be initialized to a value in the ctor
+  std::mutex mMutexConnections;
   std::mutex mMutexFeatures;
   std::mutex mMutexMap;
 

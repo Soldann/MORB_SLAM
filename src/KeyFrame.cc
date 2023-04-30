@@ -89,9 +89,7 @@ KeyFrame::KeyFrame()
       mbBad(false),
       mHalfBaseline(0),
       NLeft(0),
-      NRight(0),
-      mMutexConnections(new std::mutex()),
-      mMutexPose(std::mutex()) {}
+      NRight(0) {}
 
 KeyFrame::KeyFrame(Frame &F, std::shared_ptr<Map> pMap, KeyFrameDatabase *pKFDB)
     : bImu(pMap->isImuInitialized()),
@@ -171,9 +169,7 @@ KeyFrame::KeyFrame(Frame &F, std::shared_ptr<Map> pMap, KeyFrameDatabase *pKFDB)
       mvRightToLeftMatch(F.mvRightToLeftMatch),
       mvKeysRight(F.mvKeysRight),
       NLeft(F.Nleft),
-      NRight(F.Nright),
-      mMutexConnections(new std::mutex()),
-      mMutexPose(std::mutex()) {
+      NRight(F.Nright) {
   mnId = nNextId++;
 
   mGrid.resize(mnGridCols);
@@ -285,7 +281,7 @@ bool KeyFrame::isVelocitySet() {
 
 void KeyFrame::AddConnection(KeyFrame *pKF, const int &weight) {
   {
-    unique_lock<mutex> lock(*mMutexConnections);
+    unique_lock<mutex> lock(mMutexConnections);
     if (!mConnectedKeyFrameWeights.count(pKF))
       mConnectedKeyFrameWeights[pKF] = weight;
     else if (mConnectedKeyFrameWeights[pKF] != weight)
@@ -298,7 +294,7 @@ void KeyFrame::AddConnection(KeyFrame *pKF, const int &weight) {
 }
 
 void KeyFrame::UpdateBestCovisibles() {
-  unique_lock<mutex> lock(*mMutexConnections);
+  unique_lock<mutex> lock(mMutexConnections);
   vector<pair<int, KeyFrame *>> vPairs;
   vPairs.reserve(mConnectedKeyFrameWeights.size());
   for (map<KeyFrame *, int>::iterator mit = mConnectedKeyFrameWeights.begin(),
@@ -321,7 +317,7 @@ void KeyFrame::UpdateBestCovisibles() {
 }
 
 set<KeyFrame *> KeyFrame::GetConnectedKeyFrames() {
-  unique_lock<mutex> lock(*mMutexConnections);
+  unique_lock<mutex> lock(mMutexConnections);
   set<KeyFrame *> s;
   for (map<KeyFrame *, int>::iterator mit = mConnectedKeyFrameWeights.begin();
        mit != mConnectedKeyFrameWeights.end(); mit++)
@@ -330,12 +326,12 @@ set<KeyFrame *> KeyFrame::GetConnectedKeyFrames() {
 }
 
 vector<KeyFrame *> KeyFrame::GetVectorCovisibleKeyFrames() {
-  unique_lock<mutex> lock(*mMutexConnections);
+  unique_lock<mutex> lock(mMutexConnections);
   return mvpOrderedConnectedKeyFrames;
 }
 
 vector<KeyFrame *> KeyFrame::GetBestCovisibilityKeyFrames(const int &N) {
-  unique_lock<mutex> lock(*mMutexConnections);
+  unique_lock<mutex> lock(mMutexConnections);
   if ((int)mvpOrderedConnectedKeyFrames.size() < N)
     return mvpOrderedConnectedKeyFrames;
   else
@@ -344,7 +340,7 @@ vector<KeyFrame *> KeyFrame::GetBestCovisibilityKeyFrames(const int &N) {
 }
 
 vector<KeyFrame *> KeyFrame::GetCovisiblesByWeight(const int &w) {
-  unique_lock<mutex> lock(*mMutexConnections);
+  unique_lock<mutex> lock(mMutexConnections);
 
   if (mvpOrderedConnectedKeyFrames.empty()) {
     return vector<KeyFrame *>();
@@ -364,7 +360,7 @@ vector<KeyFrame *> KeyFrame::GetCovisiblesByWeight(const int &w) {
 }
 
 int KeyFrame::GetWeight(KeyFrame *pKF) {
-  unique_lock<mutex> lock(*mMutexConnections);
+  unique_lock<mutex> lock(mMutexConnections);
   if (mConnectedKeyFrameWeights.count(pKF))
     return mConnectedKeyFrameWeights[pKF];
   else
@@ -519,7 +515,7 @@ void KeyFrame::UpdateConnections(bool upParent) {
   }
 
   {
-    unique_lock<mutex> lockCon(*mMutexConnections);
+    unique_lock<mutex> lockCon(mMutexConnections);
 
     mConnectedKeyFrameWeights = KFcounter;
     mvpOrderedConnectedKeyFrames = vector<KeyFrame *>(lKFs.begin(), lKFs.end());
@@ -534,17 +530,17 @@ void KeyFrame::UpdateConnections(bool upParent) {
 }
 
 void KeyFrame::AddChild(KeyFrame *pKF) {
-  unique_lock<mutex> lockCon(*mMutexConnections);
+  unique_lock<mutex> lockCon(mMutexConnections);
   mspChildrens.insert(pKF);
 }
 
 void KeyFrame::EraseChild(KeyFrame *pKF) {
-  unique_lock<mutex> lockCon(*mMutexConnections);
+  unique_lock<mutex> lockCon(mMutexConnections);
   mspChildrens.erase(pKF);
 }
 
 void KeyFrame::ChangeParent(KeyFrame *pKF) {
-  unique_lock<mutex> lockCon(*mMutexConnections);
+  unique_lock<mutex> lockCon(mMutexConnections);
   if (pKF == this) {
     cout << "ERROR: Change parent KF, the parent and child are the same KF"
          << endl;
@@ -556,55 +552,55 @@ void KeyFrame::ChangeParent(KeyFrame *pKF) {
 }
 
 set<KeyFrame *> KeyFrame::GetChilds() {
-  unique_lock<mutex> lockCon(*mMutexConnections);
+  unique_lock<mutex> lockCon(mMutexConnections);
   return mspChildrens;
 }
 
 KeyFrame *KeyFrame::GetParent() {
-  unique_lock<mutex> lockCon(*mMutexConnections);
+  unique_lock<mutex> lockCon(mMutexConnections);
   return mpParent;
 }
 
 bool KeyFrame::hasChild(KeyFrame *pKF) {
-  unique_lock<mutex> lockCon(*mMutexConnections);
+  unique_lock<mutex> lockCon(mMutexConnections);
   return mspChildrens.count(pKF);
 }
 
 void KeyFrame::SetFirstConnection(bool bFirst) {
-  unique_lock<mutex> lockCon(*mMutexConnections);
+  unique_lock<mutex> lockCon(mMutexConnections);
   mbFirstConnection = bFirst;
 }
 
 void KeyFrame::AddLoopEdge(KeyFrame *pKF) {
-  unique_lock<mutex> lockCon(*mMutexConnections);
+  unique_lock<mutex> lockCon(mMutexConnections);
   mbNotErase = true;
   mspLoopEdges.insert(pKF);
 }
 
 set<KeyFrame *> KeyFrame::GetLoopEdges() {
-  unique_lock<mutex> lockCon(*mMutexConnections);
+  unique_lock<mutex> lockCon(mMutexConnections);
   return mspLoopEdges;
 }
 
 void KeyFrame::AddMergeEdge(KeyFrame *pKF) {
-  unique_lock<mutex> lockCon(*mMutexConnections);
+  unique_lock<mutex> lockCon(mMutexConnections);
   mbNotErase = true;
   mspMergeEdges.insert(pKF);
 }
 
 set<KeyFrame *> KeyFrame::GetMergeEdges() {
-  unique_lock<mutex> lockCon(*mMutexConnections);
+  unique_lock<mutex> lockCon(mMutexConnections);
   return mspMergeEdges;
 }
 
 void KeyFrame::SetNotErase() {
-  unique_lock<mutex> lock(*mMutexConnections);
+  unique_lock<mutex> lock(mMutexConnections);
   mbNotErase = true;
 }
 
 void KeyFrame::SetErase() {
   {
-    unique_lock<mutex> lock(*mMutexConnections);
+    unique_lock<mutex> lock(mMutexConnections);
     if (mspLoopEdges.empty()) {
       mbNotErase = false;
     }
@@ -617,7 +613,7 @@ void KeyFrame::SetErase() {
 
 void KeyFrame::SetBadFlag() {
   {
-    unique_lock<mutex> lock(*mMutexConnections);
+    unique_lock<mutex> lock(mMutexConnections);
     if (mnId == mpMap->GetInitKFid()) {
       return;
     } else if (mbNotErase) {
@@ -639,7 +635,7 @@ void KeyFrame::SetBadFlag() {
   }
 
   {
-    unique_lock<mutex> lock(*mMutexConnections);
+    unique_lock<mutex> lock(mMutexConnections);
     unique_lock<mutex> lock1(mMutexFeatures);
 
     mConnectedKeyFrameWeights.clear();
@@ -713,14 +709,14 @@ void KeyFrame::SetBadFlag() {
 }
 
 bool KeyFrame::isBad() {
-  unique_lock<mutex> lock(*mMutexConnections);
+  unique_lock<mutex> lock(mMutexConnections);
   return mbBad;
 }
 
 void KeyFrame::EraseConnection(KeyFrame *pKF) {
   bool bUpdate = false;
   {
-    unique_lock<mutex> lock(*mMutexConnections);
+    unique_lock<mutex> lock(mMutexConnections);
     if (mConnectedKeyFrameWeights.count(pKF)) {
       mConnectedKeyFrameWeights.erase(pKF);
       bUpdate = true;
