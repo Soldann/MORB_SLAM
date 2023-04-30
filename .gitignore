@@ -103,10 +103,5 @@ Pangolin/
 .vsls.json
 info/
 atlas/
-janitor.py
-mop.py
 
 CMakeFiles/
-
-!Examples/Stereo-Inertial/janitor.py
-!Examples/Stereo-Inertial/mop.py
