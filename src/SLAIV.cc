@@ -131,7 +131,7 @@ Pose SLAIV::SLAPI::sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imR
         std::cout << "pos here is: " << pos.translation(0) << " , " << pos.translation(1) << std::endl;
         
         // NOTE: the rotation works fine  (it is what we expect, it is close enough to the odometry)
-        // BUT the translation goes to infinity, which needs to be fixed -- see previous commit "multiple map works! "
+        // BUT the translation goes to infinity, which needs to be fixed -- see previous commit "multiple map works! " 5b8758074ef47e8db3911e2a7cb91ee7e37f1736
         // where the loop closing was not implemented, but the translation & rotation worked for the first map
 
         lastPose.translation =  originPose.rotation * cameraYawOffset * pos.translation + originPose.translation;
