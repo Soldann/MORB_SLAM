@@ -229,7 +229,7 @@ int main(int argc, char **argv) {
         {
             {
                 std::unique_lock<std::mutex> lk(imu_mutex);
-                if (!image_ready) // wait until image read from the other thread
+                while (!image_ready) // wait until image read from the other thread
                     cond_image_rec.wait(lk);
             }
             std::lock_guard<std::mutex> lk(imu_mutex);

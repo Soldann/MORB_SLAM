@@ -56,6 +56,7 @@ System::System(const std::string& strVocFile, const std::string& strSettingsFile
       mbResetActiveMap(false),
       mbActivateLocalizationMode(false),
       mbDeactivateLocalizationMode(false) {
+
   cameras.push_back(make_shared<Camera>(mSensor)); // for now just hard code the sensor we are using, TODO make multicam
   // Output welcome message
   std::cout << std::endl
@@ -125,6 +126,7 @@ System::System(const std::string& strVocFile, const std::string& strSettingsFile
 
   // bool loadedAtlas = false; // UNUSED
 
+  bool isRead = false;
   if (mStrLoadAtlasFromFile.empty()) {
     // Load ORB Vocabulary
     cout << endl
@@ -166,9 +168,10 @@ System::System(const std::string& strVocFile, const std::string& strSettingsFile
 
     // Load the file with an earlier session
     // clock_t start = clock();
+
     cout << "Initialization of Atlas from file: " << mStrLoadAtlasFromFile
          << endl;
-    bool isRead = LoadAtlas(FileType::BINARY_FILE);
+    isRead = LoadAtlas(FileType::BINARY_FILE);
 
     if (!isRead) {
       cout << "Error to load the file, please try with other session file or "
@@ -208,6 +211,13 @@ System::System(const std::string& strVocFile, const std::string& strSettingsFile
       this, mpAtlas, mSensor == CameraType::MONOCULAR || mSensor == CameraType::IMU_MONOCULAR,
       mSensor == CameraType::IMU_MONOCULAR || mSensor == CameraType::IMU_STEREO || mSensor == CameraType::IMU_RGBD,
       strSequence);
+  
+  // Do not axis flip when loading from existing atlas
+  if (isRead) {
+    mpLocalMapper->setIsDoneVIBA(true);
+    mpLocalMapper->setNotifyIsDoneVIBA(true);
+  }
+
   mptLocalMapping = new thread(&MORB_SLAM::LocalMapping::Run, mpLocalMapper);
   if (settings_)
     mpLocalMapper->mThFarPoints = settings_->thFarPoints();
@@ -310,6 +320,8 @@ Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
   // std::cout << "start GrabImageStereo" << std::endl;
   Sophus::SE3f Tcw = mpTracker->GrabImageStereo(imLeftToFeed, imRightToFeed,
                                                 timestamp, filename, cameras[0]); // for now we know cameras[0] is providing the image
+
+  // Eigen::Vector3f vel = mpTracker->mCurrentFrame.GetVelocity();
 
   // std::cout << "out grabber" << std::endl;
 
@@ -493,6 +505,7 @@ void System::ResetActiveMap() {
 
 System::~System() {
   cout << "Shutdown" << endl;
+
   unique_lock<mutex> lock(mMutexReset);
 
   mpLocalMapper->RequestFinish();
@@ -1320,7 +1333,7 @@ void System::SaveDebugData(const int& initIdx) {
   f.close();
 }
 
-int System::GetTrackingState() {
+Tracker::eTrackingState System::GetTrackingState() {
   unique_lock<mutex> lock(mMutexState);
   return mTrackingState;
 }
@@ -1393,14 +1406,11 @@ void System::SaveAtlas(int type) {
     // Save the current session
     mpAtlas->PreSave();
     std::cout << "presaved\n";
-    string pathSaveFileName = "./";
-    pathSaveFileName = pathSaveFileName.append(mStrSaveAtlasToFile);
-    std::cout << "string append\n";
+    string pathSaveFileName = mStrSaveAtlasToFile;  
     auto time = std::chrono::system_clock::now();
     std::time_t time_time = std::chrono::system_clock::to_time_t(time);
     std::string str_time = std::ctime(&time_time);
-    pathSaveFileName =
-        "stereoFiles" + str_time + ".osa";  // pathSaveFileName.append(".osa");
+    pathSaveFileName = pathSaveFileName.append(".osa");
 
     std::cout << "About to Calculate \n";
 
@@ -1432,7 +1442,7 @@ void System::SaveAtlas(int type) {
       std::cerr << errno << std::endl;
       std::cout << "remove's output is: " << rval << std::endl;
       std::ofstream ofs(pathSaveFileName, std::ios::binary);
-      std::cout << "bout to boost\n";
+      std::cout << "big boostin' time\n";
       boost::archive::binary_oarchive oa(ofs);
       std::cout << "streaming\n";
       oa << strVocabularyName;
@@ -1442,7 +1452,7 @@ void System::SaveAtlas(int type) {
       oa << *mpAtlas;
       cout << "End to write save binary file" << endl;
     } else {
-      std::cout << "no file to be saved I guess\n";
+      std::cout << "no file to be saved I guess lul\n";
     }
   }
 }
@@ -1548,6 +1558,18 @@ string System::CalculateCheckSum(string filename, int type) {
   }
 
   return checksum;
+}
+
+void System::setTrackingState(Tracker::eTrackingState state) {
+  mpTracker->mState = state;
+}
+
+bool System::getHasMergedLocalMap() { 
+  return mpLoopCloser->hasMergedLocalMap; 
+}
+
+bool System::getIsDoneVIBA() {
+  return mpLocalMapper->getIsDoneVIBA();
 }
 
 }  // namespace MORB_SLAM

@@ -453,6 +453,8 @@ bool MapPoint::IsInKeyFrame(KeyFrame* pKF) {
 }
 
 void MapPoint::UpdateNormalAndDepth() {
+  if (!mpRefKF) return;
+
   map<KeyFrame*, tuple<int, int>> observations;
   KeyFrame* pRefKF;
   Eigen::Vector3f Pos;

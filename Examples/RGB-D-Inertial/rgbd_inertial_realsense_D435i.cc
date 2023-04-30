@@ -346,7 +346,7 @@ int main(int argc, char **argv) {
         rs2::frameset fs;
         {
             std::unique_lock<std::mutex> lk(imu_mutex);
-            if(!image_ready)
+            while(!image_ready)
                 cond_image_rec.wait(lk);
 
             // std::chrono::steady_clock::time_point time_Start_Process = std::chrono::steady_clock::now(); // UNUSED

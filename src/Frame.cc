@@ -59,6 +59,7 @@ Frame::Frame()
   mTimeStereoMatch = 0;
   mTimeORB_Ext = 0;
 #endif
+  mpMutexImu = std::make_shared<std::mutex>();
 }
 
 // Copy Constructor
@@ -1098,6 +1099,9 @@ bool Frame::imuIsPreintegrated() {
 }
 
 void Frame::setIntegrated() {
+  while (!mpMutexImu)
+    mpMutexImu = std::make_shared<std::mutex>();
+
   unique_lock<std::mutex> lock(*mpMutexImu);
   std::cout << "-----------------------------------------------------------" << std::endl;
   mbImuPreintegrated = true;

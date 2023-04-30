@@ -59,8 +59,7 @@ public:
 public:
     static void PrintMess(std::string str, eLevel lev)
     {
-        if(lev <= th)
-            cout << str << endl;
+        std::cout << "Level: " << lev << " | " << str << endl;
     }
 
     static void SetTh(eLevel _th)
@@ -159,7 +158,7 @@ public:
 
     // Information from most recent processed frame
     // You can call this right after TrackMonocular (or stereo or RGBD)
-    int GetTrackingState();
+    Tracker::eTrackingState GetTrackingState();
     std::vector<MapPoint*> GetTrackedMapPoints();
     std::vector<cv::KeyPoint> GetTrackedKeyPointsUn();
 
@@ -179,6 +178,16 @@ public:
 #endif
 
     friend Viewer;
+
+    bool getHasMergedLocalMap();
+    bool getIsDoneVIBA();
+
+    void setTrackingState(Tracker::eTrackingState state);
+
+    // Loop Closer. It searches loops with every new keyframe. If there is a loop it performs
+    // a pose graph optimization and full bundle adjustment (in a new thread) afterwards.
+    LoopClosing* mpLoopCloser;
+
 private:
 
     void SaveAtlas(int type);
@@ -208,10 +217,6 @@ private:
     // Local Mapper. It manages the local map and performs local bundle adjustment.
     LocalMapping* mpLocalMapper;
 
-    // Loop Closer. It searches loops with every new keyframe. If there is a loop it performs
-    // a pose graph optimization and full bundle adjustment (in a new thread) afterwards.
-    LoopClosing* mpLoopCloser;
-
     // System threads: Local Mapping, Loop Closing, Viewer.
     // The Tracking thread "lives" in the main execution thread that creates the System object.
     std::thread* mptLocalMapping;
@@ -228,7 +233,7 @@ private:
     bool mbDeactivateLocalizationMode;
 
     // Tracking state
-    int mTrackingState;
+    Tracker::eTrackingState mTrackingState;
     std::vector<MapPoint*> mTrackedMapPoints;
     std::vector<cv::KeyPoint> mTrackedKeyPointsUn;
     std::mutex mMutexState;

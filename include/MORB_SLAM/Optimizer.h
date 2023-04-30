@@ -23,6 +23,7 @@
 
 #include <math.h>
 
+#include "MORB_SLAM/ImprovedTypes.hpp"
 #include "MORB_SLAM/Frame.h"
 #include "MORB_SLAM/KeyFrame.h"
 #include "MORB_SLAM/LoopClosing.h"
@@ -56,7 +57,8 @@ class Optimizer {
   void static FullInertialBA(std::shared_ptr<Map> pMap, int its, const bool bFixLocal = false,
                              const unsigned long nLoopKF = 0,
                              bool *pbStopFlag = nullptr, bool bInit = false,
-                             float priorG = 1e2, float priorA = 1e6,
+                             ImuInitializater::ImuInitType priorG = ImuInitializater::ImuInitType::DEFAULT_G, 
+                             ImuInitializater::ImuInitType priorA = ImuInitializater::ImuInitType::DEFAULT_A,
                              Eigen::VectorXd *vSingVal = nullptr,
                              bool *bHess = nullptr);
 
@@ -127,10 +129,12 @@ class Optimizer {
                                    Eigen::Vector3d &ba, bool bMono,
                                    Eigen::MatrixXd &covInertial,
                                    bool bFixedVel = false, bool bGauss = false,
-                                   float priorG = 1e2, float priorA = 1e6);
+                                   ImuInitializater::ImuInitType priorG = ImuInitializater::ImuInitType::DEFAULT_G, 
+                                   ImuInitializater::ImuInitType priorA = ImuInitializater::ImuInitType::DEFAULT_A);
   void static InertialOptimization(std::shared_ptr<Map> pMap, Eigen::Vector3d &bg,
-                                   Eigen::Vector3d &ba, float priorG = 1e2,
-                                   float priorA = 1e6);
+                                   Eigen::Vector3d &ba,
+                                   ImuInitializater::ImuInitType priorG = ImuInitializater::ImuInitType::DEFAULT_G,
+                                   ImuInitializater::ImuInitType priorA = ImuInitializater::ImuInitType::DEFAULT_A);
   void static InertialOptimization(std::shared_ptr<Map> pMap, Eigen::Matrix3d &Rwg,
                                    double &scale);
 

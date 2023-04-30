@@ -9,8 +9,12 @@
 
 .vscode/
 
+bin/*
+
 ssh_key
 ssh_key.pub
+
+output.txt
 
 CMakeLists.txt.user
 CMakeLists_modified.txt
@@ -96,3 +100,10 @@ my_settings.txt
 borrar/*
 
 */ExecMean.txt
+
+Pangolin/
+.vsls.json
+info/
+atlas/
+
+CMakeFiles/

@@ -48,4 +48,19 @@ template<typename KEY, typename VALUE> using umap = std::unordered_map<KEY,VALUE
     inline bool isInertial(eSensor sensor) { return sensor == IMU_MONOCULAR || sensor == IMU_STEREO || sensor == IMU_RGBD; }
     inline bool hasMulticam(eSensor sensor) { return sensor == STEREO || sensor == RGBD || sensor == IMU_STEREO || sensor == IMU_RGBD; }
   }
+
+  namespace ImuInitializater{
+    enum ImuInitType{ //enum values are used for math stuff -- DO NOT CHANGE
+      MONOCULAR_INIT_A=10000000000,
+      STEREO_INIT_A=100000,
+      VIBA1_A=100000, // VIBA = visual-inertial bundle adjustment
+      VIBA2_A=0,
+      DEFAULT_A=100,
+      MONOCULAR_INIT_G=100,
+      STEREO_INIT_G=100,
+      VIBA1_G=1,
+      VIBA2_G=0,
+      DEFAULT_G=1000000,
+    };
+  }
 }
