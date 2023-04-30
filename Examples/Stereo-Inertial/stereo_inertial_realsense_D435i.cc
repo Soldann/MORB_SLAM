@@ -330,7 +330,7 @@ int main(int argc, char **argv) {
     // MORB_SLAM::Viewer viewer(SLAM, argv[2]);
 
     std::shared_ptr<SLAIV::SLAPI> slapi = std::make_shared<SLAIV::SLAPI>(argv[1],argv[2],true, 
-        [](double& x, double& y, double& theta) {
+        [](float& x, float& y, float& theta) {
             x = 0;
             y = 0;
             theta = 0;

@@ -321,7 +321,7 @@ Sophus::SE3f System::TrackStereo(const cv::Mat& imLeft, const cv::Mat& imRight,
   Sophus::SE3f Tcw = mpTracker->GrabImageStereo(imLeftToFeed, imRightToFeed,
                                                 timestamp, filename, cameras[0]); // for now we know cameras[0] is providing the image
 
-  Eigen::Vector3f vel = mpTracker->mCurrentFrame.GetVelocity();
+  // Eigen::Vector3f vel = mpTracker->mCurrentFrame.GetVelocity();
 
   // std::cout << "out grabber" << std::endl;
 

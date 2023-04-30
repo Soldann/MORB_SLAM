@@ -12,7 +12,7 @@
 #include <math.h>
 
 SLAIV::SLAPI::SLAPI(std::string vocab_path, std::string settings_path, bool hasViewer, poseCallbackFunc poseCallback) 
-    : hasViewer(hasViewer), poseCallback(poseCallback), gotFirstPoint{false}, initedRot{false}, cameraYaw{0}, mapCount{0}, prevRotOffset{Eigen::Matrix3f::Identity()} {
+    : hasViewer(hasViewer), poseCallback(poseCallback), cameraYaw{0}, prevRotOffset{Eigen::Matrix3f::Identity()}, gotFirstPoint{false}, initedRot{false}, mapCount{0} {
     //create SLAM and Viewer instance (Viewer if needed)
     SLAM = std::make_shared<MORB_SLAM::System>(vocab_path, settings_path, MORB_SLAM::CameraType::IMU_STEREO);
 
@@ -25,13 +25,13 @@ SLAIV::SLAPI::SLAPI(std::string vocab_path, std::string settings_path, bool hasV
 
 // returns the calculated pose, once image/imu data is sent to SLAM instance
 Pose SLAIV::SLAPI::sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imRight,
-                            const double& im_timestamp, MORB_SLAM::IMU::Point& imuMeas) {
+                            const float& im_timestamp, MORB_SLAM::IMU::Point& imuMeas) {
 
     return sendImageAndImuData(imLeft, imRight, im_timestamp, {imuMeas});
 }
 
 Pose SLAIV::SLAPI::sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imRight,
-                            const double& im_timestamp, std::vector<MORB_SLAM::IMU::Point>& vImuMeas) {
+                            const float& im_timestamp, std::vector<MORB_SLAM::IMU::Point>& vImuMeas) {
 
     float imageScale = SLAM->GetImageScale();
 
@@ -50,7 +50,7 @@ Pose SLAIV::SLAPI::sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imR
         viewer->update(sophusPose);
 
     sophusPose = sophusPose.inverse();
-    double currTheta = atan2(sophusPose.rotationMatrix()(1,0), sophusPose.rotationMatrix()(0,0));
+    float currTheta = atan2(sophusPose.rotationMatrix()(1,0), sophusPose.rotationMatrix()(0,0));
     Pose3D pos{sophusPose.translation(), Eigen::Matrix3f{{cos(currTheta), -sin(currTheta), 0},
                                                     {sin(currTheta), cos(currTheta), 0},
                                                     {0,0,1}}};
@@ -74,8 +74,8 @@ Pose SLAIV::SLAPI::sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imR
             slamFileTrans << "loop closed here" << std::endl;
         }
 
-        double x;
-        double y;
+        float x;
+        float y;
 
         poseCallback(x, y, originTheta);
 
@@ -104,7 +104,7 @@ Pose SLAIV::SLAPI::sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imR
                     << " origin theta: " << originTheta
                     << " camera yaw: " << cameraYaw << std::endl;
 
-            double angle = atan2(lastPose.rotation(1,0), lastPose.rotation(0,0)) - originTheta;
+            float angle = atan2(lastPose.rotation(1,0), lastPose.rotation(0,0)) - originTheta;
 
             prevRotOffset =  Eigen::Matrix3f{{cos(angle), -sin(angle), 0},
                                             {sin(angle), cos(angle), 0},
@@ -124,8 +124,8 @@ Pose SLAIV::SLAPI::sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imR
 
         std::cout << " curr pose theta: " << atan2(pos.rotation(1,0), pos.rotation(0,0)) << std::endl;
 
-        Eigen::Matrix3f cameraYawOffset = Eigen::Matrix3f{{cos(-M_PI/2-cameraYaw), -sin(-M_PI/2-cameraYaw), 0},
-                                                        {sin(-M_PI/2-cameraYaw), cos(-M_PI/2-cameraYaw), 0},
+        Eigen::Matrix3f cameraYawOffset = Eigen::Matrix3f{{cos(-((float)M_PI)/2-cameraYaw), -sin(-((float)M_PI)/2-cameraYaw), 0},
+                                                        {sin(-((float)M_PI)/2-cameraYaw), cos(-((float)M_PI)/2-cameraYaw), 0},
                                                         {0,0,1}};
 
         std::cout << "pos here is: " << pos.translation(0) << " , " << pos.translation(1) << std::endl;

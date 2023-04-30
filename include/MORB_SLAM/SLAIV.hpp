@@ -11,9 +11,9 @@ struct Pose3D {
 };
 
 struct Pose {
-    double x;
-    double y;
-    double theta;
+    float x;
+    float y;
+    float theta;
 };
 
 namespace SLAIV {
@@ -24,14 +24,14 @@ namespace SLAIV {
         bool hasViewer; //only initialize the viewer shared_ptr if a viewer is required
         shared_ptr<MORB_SLAM::Viewer> viewer;
 
-        typedef std::function<void(double& x, double& y, double& theta)> poseCallbackFunc;
+        typedef std::function<void(float& x, float& y, float& theta)> poseCallbackFunc;
         poseCallbackFunc poseCallback;
 
         Pose3D lastPose;
         Pose3D originPose;
 
-        double cameraYaw;
-        double originTheta;
+        float cameraYaw;
+        float originTheta;
         Eigen::Matrix3f prevRotOffset;
         
         bool gotFirstPoint;
@@ -43,7 +43,7 @@ namespace SLAIV {
 
             SLAPI(std::string vocab_path, std::string settings_path, bool hasViewer, poseCallbackFunc poseCallback); // initializes the tracking and local mapping threads
 
-            void setCameraExtrin(double c) { cameraYaw = c; std::cout << "got camera yaw: " << cameraYaw << std::endl; }
+            void setCameraExtrin(float c) { cameraYaw = c; std::cout << "got camera yaw: " << cameraYaw << std::endl; }
 
             bool isDoneInitingMap() { return SLAM ? SLAM->getIsDoneVIBA() : false; }
             
@@ -51,10 +51,10 @@ namespace SLAIV {
              * to call when sending data (images, imu, ...) to SLAM, sets the lastPose
             */ 
             Pose sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imRight,
-                                 const double& im_timestamp, MORB_SLAM::IMU::Point& imuMeas);
+                                 const float& im_timestamp, MORB_SLAM::IMU::Point& imuMeas);
 
             Pose sendImageAndImuData(const cv::Mat& imLeft, const cv::Mat& imRight,
-                                 const double& im_timestamp, std::vector<MORB_SLAM::IMU::Point>& imuMeas);
+                                 const float& im_timestamp, std::vector<MORB_SLAM::IMU::Point>& imuMeas);
             
 
             /**

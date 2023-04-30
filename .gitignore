@@ -9,6 +9,8 @@
 
 .vscode/
 
+bin/*
+
 ssh_key
 ssh_key.pub
 
