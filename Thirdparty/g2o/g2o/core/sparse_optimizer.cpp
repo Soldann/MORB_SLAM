@@ -41,7 +41,7 @@
 #include "../stuff/timeutil.h"
 #include "../stuff/macros.h"
 #include "../stuff/misc.h"
-#include "../../config.h"
+#include "g2o/config.h"
 
 namespace g2o{
   using namespace std;

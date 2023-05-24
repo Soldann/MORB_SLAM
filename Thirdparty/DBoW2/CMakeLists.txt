@@ -1,54 +1,63 @@
-cmake_minimum_required(VERSION 3.16)
-project(DBoW2)
+# create library
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release)
-endif()
+set(TARGET_NAME DBoW2)
 
-# Set compiler standard to C++17
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7) # required for eigen
-    message(FATAL_ERROR "Insufficient gcc version must be at least 7")
-  endif()
-endif()
+find_package( OpenCV REQUIRED )
+find_package(Boost REQUIRED COMPONENTS serialization regex)
+find_package(Boost REQUIRED)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall  -O3")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall  -O3 ")
-
-set(HDRS_DBOW2
-  DBoW2/BowVector.h
-  DBoW2/FORB.h 
-  DBoW2/FClass.h       
-  DBoW2/FeatureVector.h
-  DBoW2/ScoringObject.h   
-  DBoW2/TemplatedVocabulary.h)
-set(SRCS_DBOW2
-  DBoW2/BowVector.cpp
-  DBoW2/FORB.cpp      
-  DBoW2/FeatureVector.cpp
-  DBoW2/ScoringObject.cpp)
-
-set(HDRS_DUTILS
-  DUtils/Random.h
-  DUtils/Timestamp.h)
-set(SRCS_DUTILS
-  DUtils/Random.cpp
-  DUtils/Timestamp.cpp)
+file(GLOB_RECURSE CPP_FILES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/*.c ${CMAKE_CURRENT_SOURCE_DIR}/*.cc)
+file(GLOB_RECURSE headers_dbow2 CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/DBoW2/*.h ${CMAKE_CURRENT_SOURCE_DIR}/DBoW2/*.hpp)
+file(GLOB_RECURSE headers_dutils CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/DUtils/*.h ${CMAKE_CURRENT_SOURCE_DIR}/DUtils/*.hpp)
 
 
-find_package(OpenCV 4 QUIET)
-if(NOT OpenCV_FOUND)
-   find_package(OpenCV 3.0 QUIET)
-   if(NOT OpenCV_FOUND)
-      message(FATAL_ERROR "OpenCV > 3.0 not found.")
-   endif()
-endif()
+add_library(${TARGET_NAME} SHARED ${CPP_FILES})
+add_library(${PROJECT_NAME}::${TARGET_NAME} ALIAS ${TARGET_NAME})
+target_include_directories(${TARGET_NAME} PUBLIC
+                       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> # for headers when building
+		       $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/Thirdparty/${TARGET_NAME}> # for client in install mode
+                       )
 
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+target_link_libraries( ${TARGET_NAME} PUBLIC ${OpenCV_LIBS} )
+target_link_libraries( ${TARGET_NAME} PUBLIC Boost::serialization Boost::regex )
 
-include_directories(${OpenCV_INCLUDE_DIRS})
-add_library(DBoW2 SHARED ${SRCS_DBOW2} ${SRCS_DUTILS})
-target_link_libraries(DBoW2 ${OpenCV_LIBS})
 
+
+#################################################
+#                 boiler plate                  #
+#################################################
+
+
+# https://cmake.org/cmake/help/latest/guide/importing-exporting/index.html#creating-a-package-version-file
+# https://cmake.org/cmake/help/latest/manual/cmake-packages.7.html#creating-packages
+# https://mail.kde.org/pipermail/kde-buildsystem/2008-April/004544.html
+set_property(TARGET ${TARGET_NAME} PROPERTY VERSION 3.16) # x.x.x used for symlinks
+set_property(TARGET ${TARGET_NAME} PROPERTY SOVERSION 1) # ABI/API compatibility at so level must be integer
+set_property(TARGET ${TARGET_NAME} PROPERTY "INTERFACE_${TARGET_NAME}_MAJOR_VERSION" 1)
+set_property(TARGET ${TARGET_NAME} APPEND PROPERTY COMPATIBLE_INTERFACE_STRING "${TARGET_NAME}_MAJOR_VERSION")
+
+
+
+set(EXPORT_TARGET_NAME "${TARGET_NAME}Targets")
+set(EXPORT_TARGET_FILE_NAME "${PROJECT_NAME}${EXPORT_TARGET_NAME}.cmake")
+
+
+# install the target and create export-set
+install(TARGETS ${TARGET_NAME}
+        EXPORT ${EXPORT_TARGET_NAME}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+# install header file
+install(FILES ${headers_dbow2} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/Thirdparty/${TARGET_NAME}/DBoW2)
+install(FILES ${headers_dutils} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/Thirdparty/${TARGET_NAME}/DUtils)
+
+# generate and install export file
+install(EXPORT ${EXPORT_TARGET_NAME}
+        FILE ${EXPORT_TARGET_FILE_NAME}
+        NAMESPACE ${PROJECT_NAME}::
+        DESTINATION ${CMAKE_PROJECT_CONFIG_INSTALL_DIR}
+)

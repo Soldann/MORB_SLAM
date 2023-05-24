@@ -1,0 +1,48 @@
+@PACKAGE_INIT@
+
+
+include(CMakeFindDependencyMacro)
+
+#include("${CMAKE_CURRENT_LIST_DIR}/MORB_SLAMMORB_SLAMTargets.cmake")
+#check_required_components(MORB_SLAM)
+
+set(_MORB_SLAM_supported_components MORB_SLAM DBoW2 g2o sophus )
+
+foreach(_comp ${MORB_SLAM_FIND_COMPONENTS})
+  if (NOT _comp IN_LIST _MORB_SLAM_supported_components)
+    set(MORB_SLAM_FOUND False)
+    set(MORB_SLAM_NOT_FOUND_MESSAGE "Unsupported component: ${_comp}")
+  endif()
+endforeach()
+
+
+
+if(DBoW2 IN_LIST MORB_SLAM_FIND_COMPONENTS)
+    find_dependency(OpenCV REQUIRED)
+    find_dependency(Boost REQUIRED)
+    include("${CMAKE_CURRENT_LIST_DIR}/MORB_SLAMDBoW2Targets.cmake")
+endif()
+if(g2o IN_LIST MORB_SLAM_FIND_COMPONENTS)
+    find_dependency(OpenCV REQUIRED)
+    find_dependency(Eigen3 REQUIRED)
+    include("${CMAKE_CURRENT_LIST_DIR}/MORB_SLAMg2oTargets.cmake")
+endif()
+if(sophus IN_LIST MORB_SLAM_FIND_COMPONENTS)
+    find_dependency(Eigen3 REQUIRED)
+    find_dependency(Boost REQUIRED)
+    include("${CMAKE_CURRENT_LIST_DIR}/MORB_SLAMsophusTargets.cmake")
+endif()
+if(MORB_SLAM IN_LIST MORB_SLAM_FIND_COMPONENTS)
+    set(THREADS_PREFER_PTHREAD_FLAG ON)
+    find_dependency(Threads REQUIRED)
+    find_dependency(Eigen3 REQUIRED)
+    #find_dependency(realsense2) # realsense only needed for example
+    find_dependency(Pangolin REQUIRED)
+    find_dependency(OpenCV REQUIRED)
+    find_dependency(Boost REQUIRED COMPONENTS serialization regex)
+    find_dependency(Boost REQUIRED)
+    include("${CMAKE_CURRENT_LIST_DIR}/MORB_SLAMDBoW2Targets.cmake")
+    include("${CMAKE_CURRENT_LIST_DIR}/MORB_SLAMg2oTargets.cmake")
+    include("${CMAKE_CURRENT_LIST_DIR}/MORB_SLAMsophusTargets.cmake")
+    include("${CMAKE_CURRENT_LIST_DIR}/MORB_SLAMMORB_SLAMTargets.cmake")
+endif()

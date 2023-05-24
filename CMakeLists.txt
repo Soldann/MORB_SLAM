@@ -1,180 +1,184 @@
-cmake_minimum_required(VERSION 3.0)
-cmake_policy(SET CMP0048 NEW)
-project(MORB_SLAM VERSION 1.0 LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.24.0)
 
-# IF(NOT CMAKE_BUILD_TYPE)
-#   SET(CMAKE_BUILD_TYPE Release)
-# ENDIF()
+set(MORB_VERSION_MAJOR 0 CACHE STRING "major version" FORCE) 
+set(MORB_VERSION_MINOR 0 CACHE STRING "major version" FORCE) 
+set(MORB_VERSION_PATCH 1 CACHE STRING "major version" FORCE) 
+set(MORB_VERSION_SHORT ${MORB_VERSION_MAJOR}.${MORB_VERSION_MINOR} CACHE STRING "short-version" FORCE)
+set(MORB_VERSION ${MORB_VERSION_SHORT}.${MORB_VERSION_PATCH} CACHE STRING "version" FORCE)
 
-MESSAGE(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall   -O3")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall   -O3")
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+project(MORB_SLAM 
+    VERSION ${MORB_VERSION}
+    DESCRIPTION "A library for visual simultanious localization and mapping (vSLAM) for autonomous vehicles"
+    HOMEPAGE_URL "https://github.com/DavidPetkovsek/MORB_SLAM"
+    LANGUAGES CXX
+)
 
+
+include(GNUInstallDirs)
 # Set compiler standard to C++17
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+if( NOT CMAKE_BUILD_TYPE )
+    set(CMAKE_BUILD_TYPE Release)
+ENDIF()
+
+# https://eigen.tuxfamily.org/dox/group__TopicStructHavingEigenMembers.html
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7) # required for eigen
-    message(FATAL_ERROR "Insufficient gcc version must be at least 7")
-  endif()
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7) # required for eigen
+        message(FATAL_ERROR "Insufficient gcc version must be at least 7, required for eigen")
+    endif()
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5) # required for eigen
+        message(FATAL_ERROR "Insufficient clang version must be at least 5, required for eigen")
+    endif()
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19.12) # required for eigen
+        message(FATAL_ERROR "Insufficient msvc version must be at least 19.12, required for eigen")
+    endif()
 endif()
 
-set(include_dest "include/MORB_SLAM")
-set(main_lib_dest "lib/MORB_SLAM")
-set(lib_dest "${main_lib_dest}/${CMAKE_BUILD_TYPE}")
 
-file(GLOB_RECURSE CPP_FILES CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}/src/*.cc)
-file(GLOB_RECURSE CPP_CAMERA_MODELS_FILES CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/src/CameraModels/*.cpp)
-list(APPEND CPP_FILES ${CPP_CAMERA_MODELS_FILES})
-
-file(GLOB INCLUDE_FILES CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}/*.hpp ${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}/*.h)
-file(GLOB INCLUDE_CAMERA_MODELS_FILES CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}/CameraModels/*.h)
-
-file(GLOB_RECURSE INCLUDE_Sophus_FILES CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/Thirdparty/Sophus/sophus/*.hpp)
-file(GLOB_RECURSE INCLUDE_DBoW2_FILES CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/DBoW2/*.h)
-file(GLOB_RECURSE INCLUDE_DUtils_FILES CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/DUtils/*.h)
-
-file(GLOB_RECURSE INCLUDE_g2o_config_FILES CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/config.h)
-file(GLOB_RECURSE INCLUDE_g2o_core_FILES CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/g2o/core/*.h ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/g2o/core/*.hpp)
-file(GLOB_RECURSE INCLUDE_g2o_solvers_FILES CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/g2o/solvers/*.h ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/g2o/solvers/*.hpp)
-file(GLOB_RECURSE INCLUDE_g2o_stuff_FILES CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/g2o/stuff/*.h ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/g2o/stuff/*.hpp)
-file(GLOB_RECURSE INCLUDE_g2o_types_FILES CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/g2o/types/*.h ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/g2o/types/*.hpp)
-
-
+set(CMAKE_PROJECT_CONFIG_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
 
-find_package(OpenCV 4.2 HINTS "/usr/local/" )
-   if(NOT OpenCV_FOUND)
-      message(FATAL_ERROR "OpenCV > 4.4 not found.")
-   endif()
-
-MESSAGE(STATUS "OPENCV VERSION: \n ${OpenCV_VERSION}")
-
-find_package(Eigen3 3.1.0 REQUIRED)
-find_package(Pangolin REQUIRED)
-find_package(realsense2)
-
-function(set_fpic target)
-    # https://stackoverflow.com/questions/38296756/what-is-the-idiomatic-way-in-cmake-to-add-the-fpic-compiler-option
-    set_property(TARGET ${target} PROPERTY POSITION_INDEPENDENT_CODE ON) # add_definitions(-fPIC)
-endfunction()
-
-function (attach_general target)
-        # If RealSense SDK is found the library is added and its examples compiled
-        if(realsense2_FOUND)
-            include_directories(${PROJECT_NAME}
-                ${realsense_INCLUDE_DIR}
-            )
-            target_link_libraries(${PROJECT_NAME}
-                ${realsense2_LIBRARY}
-            )
-        endif()
+include("${PROJECT_SOURCE_DIR}/cmake/FuncLib.cmake")
 
 
-        target_link_libraries(${target}
-                ${OpenCV_LIBS}
-                ${EIGEN3_LIBS}
-                ${Pangolin_LIBRARIES}
-                ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
-                ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
-                -lboost_serialization
-                -lcrypto
-        )
-        target_link_libraries(${target} tbb)
+######################################################################
+#                                                                    #
+#           Subdirectories, Components, and targets                  #
+#                                                                    #
+######################################################################
 
-endfunction()
-include(GNUInstallDirs)
-
-add_library(${PROJECT_NAME} SHARED ${CPP_FILES})
-target_include_directories(${PROJECT_NAME}
-    PUBLIC
-      $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-      $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/DBoW2>
-      $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/Sophus>
-      $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/g2o>
-
-      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Thirdparty/DBoW2>
-      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Thirdparty/Sophus>
-      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Thirdparty/g2o>
-)
 
 add_subdirectory(Thirdparty/g2o)
 add_subdirectory(Thirdparty/DBoW2)
+add_subdirectory(Thirdparty/Sophus)
 
-attach_general(${PROJECT_NAME})
+set(TARGET_NAME ${PROJECT_NAME})
 
-set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake/${PROJECT_NAME})
-install(TARGETS ${PROJECT_NAME}
-   EXPORT ${PROJECT_NAME}-targets
-   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+find_package(Threads REQUIRED)
+find_package(Eigen3 REQUIRED)
+find_package(realsense2) # realsense only needed for example
+find_package(Pangolin REQUIRED)
+find_package(OpenCV REQUIRED)
+find_package(Boost REQUIRED COMPONENTS serialization regex)
+find_package(Boost REQUIRED)
+
+file(GLOB CPP_FILES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
+file(GLOB CPP_CAMERA_MODELS_FILES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/CameraModels/*.cpp)
+list(APPEND CPP_FILES ${CPP_CAMERA_MODELS_FILES})
+
+file(GLOB headers CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/*.hpp ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/*.h)
+file(GLOB camera_model_headers CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/CameraModels/*.h ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/CameraModels/*.hpp)
+
+
+add_library(${TARGET_NAME} SHARED ${CPP_FILES})
+add_library(${PROJECT_NAME}::${TARGET_NAME} ALIAS ${TARGET_NAME})
+target_include_directories(${TARGET_NAME} PUBLIC
+                       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> # for headers when building
+                       $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}> # for client in install mode
+                       )
+target_link_libraries( ${TARGET_NAME} PUBLIC ${PROJECT_NAME}::DBoW2 )
+target_link_libraries( ${TARGET_NAME} PUBLIC ${PROJECT_NAME}::g2o )
+target_link_libraries( ${TARGET_NAME} PUBLIC ${PROJECT_NAME}::sophus )
+target_link_libraries( ${TARGET_NAME} PUBLIC Threads::Threads )
+target_link_libraries( ${TARGET_NAME} PUBLIC Eigen3::Eigen )
+target_link_libraries( ${TARGET_NAME} PUBLIC Boost::serialization Boost::regex )
+target_link_libraries( ${TARGET_NAME} PUBLIC ${OpenCV_LIBS} )
+target_link_libraries( ${TARGET_NAME} PUBLIC ${Pangolin_LIBRARIES} )
+
+
+# https://cmake.org/cmake/help/latest/guide/importing-exporting/index.html#creating-a-package-version-file
+# https://cmake.org/cmake/help/latest/manual/cmake-packages.7.html#creating-packages
+# https://mail.kde.org/pipermail/kde-buildsystem/2008-April/004544.html
+set_property(TARGET ${TARGET_NAME} PROPERTY VERSION ${MORB_VERSION}) # x.x.x used for symlinks
+set_property(TARGET ${TARGET_NAME} PROPERTY SOVERSION ${MORB_VERSION_MAJOR}) # ABI/API compatibility at so level must be integer
+set_property(TARGET ${TARGET_NAME} PROPERTY "INTERFACE_${TARGET_NAME}_MAJOR_VERSION" ${MORB_VERSION_MAJOR})
+set_property(TARGET ${TARGET_NAME} APPEND PROPERTY COMPATIBLE_INTERFACE_STRING "${TARGET_NAME}_MAJOR_VERSION")
+
+
+
+set(EXPORT_TARGET_NAME "${TARGET_NAME}Targets")
+set(EXPORT_TARGET_FILE_NAME "${PROJECT_NAME}${EXPORT_TARGET_NAME}.cmake")
+
+
+# install the target and create export-set
+install(TARGETS ${TARGET_NAME}
+        EXPORT ${EXPORT_TARGET_NAME}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-install(EXPORT ${PROJECT_NAME}-targets
-  FILE
-      	${PROJECT_NAME}Targets.cmake
-  NAMESPACE
-        ${PROJECT_NAME}::
-  DESTINATION
-        ${INSTALL_CONFIGDIR}
+# install header files
+install(FILES ${headers} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
+install(FILES ${camera_model_headers} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/CameraModels)
+
+
+# generate and install export file
+install(EXPORT ${EXPORT_TARGET_NAME}
+        FILE ${EXPORT_TARGET_FILE_NAME}
+        NAMESPACE ${PROJECT_NAME}::
+        DESTINATION ${CMAKE_PROJECT_CONFIG_INSTALL_DIR}
 )
+
+# Example stereo inertial realsense
+if(realsense2_FOUND)
+  set(TARGET_NAME stereo_inertial_realsense_D435i)
+  add_executable(${TARGET_NAME} Examples/Stereo-Inertial/stereo_inertial_realsense_D435i.cc)
+  target_link_libraries( ${TARGET_NAME} PUBLIC ${realsense2_LIBRARY})
+  target_link_libraries( ${TARGET_NAME} PUBLIC ${PROJECT_NAME}::${PROJECT_NAME} )
+  target_link_libraries( ${TARGET_NAME} PUBLIC ${PROJECT_NAME}::DBoW2 )
+  target_link_libraries( ${TARGET_NAME} PUBLIC ${PROJECT_NAME}::g2o )
+  target_link_libraries( ${TARGET_NAME} PUBLIC ${PROJECT_NAME}::sophus )
+  target_link_libraries( ${TARGET_NAME} PUBLIC Threads::Threads )
+  target_link_libraries( ${TARGET_NAME} PUBLIC Eigen3::Eigen )
+  target_link_libraries( ${TARGET_NAME} PUBLIC Boost::serialization Boost::regex )
+  target_link_libraries( ${TARGET_NAME} PUBLIC ${OpenCV_LIBS} )
+  target_link_libraries( ${TARGET_NAME} PUBLIC ${Pangolin_LIBRARIES} )
+  target_link_libraries(stereo_inertial_realsense_D435i PRIVATE ${PROJECT_NAME})
+endif()
+
+
+######################################################################
+#                                                                    #
+#                CMAKE INSTALL, CONFIG, AND PACKAGING                #
+#                                                                    #
+######################################################################
+
+
+set(CONFIG_FILE_NAME_WITHOUT_EXT "${PROJECT_NAME}Config")
+set(CMAKE_CONFIG_FILE_BASENAME "${CMAKE_CURRENT_BINARY_DIR}/${CONFIG_FILE_NAME_WITHOUT_EXT}")
+set(CMAKE_CONFIG_VERSION_FILE_NAME "${CMAKE_CONFIG_FILE_BASENAME}-version.cmake")
+set(CMAKE_CONFIG_FILE_NAME "${CMAKE_CONFIG_FILE_BASENAME}.cmake")
 
 include(CMakePackageConfigHelpers)
+
+
+# generate the version file for the config file
 write_basic_package_version_file(
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-    VERSION ${PROJECT_VERSION}
-    COMPATIBILITY AnyNewerVersion
+  "${CMAKE_CONFIG_VERSION_FILE_NAME}"
+  COMPATIBILITY SameMajorVersion
 )
 
-configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/${PROJECT_NAME}Config.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-    INSTALL_DESTINATION ${INSTALL_CONFIGDIR}
+# create config file
+configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake.in
+  "${CMAKE_CONFIG_FILE_NAME}"
+  INSTALL_DESTINATION ${CMAKE_PROJECT_CONFIG_INSTALL_DIR}
+  NO_CHECK_REQUIRED_COMPONENTS_MACRO
 )
 
+# install config files
 install(FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-    DESTINATION ${INSTALL_CONFIGDIR}
+        "${CMAKE_CONFIG_FILE_NAME}"
+        "${CMAKE_CONFIG_VERSION_FILE_NAME}"
+        DESTINATION ${CMAKE_PROJECT_CONFIG_INSTALL_DIR}
 )
 
-
-install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME} DESTINATION "${CMAKE_INSTALL_LIBDIR}/${CMAKE_BUILD_TYPE}")
-install(FILES ${INCLUDE_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/MORB_SLAM")
-install(FILES ${INCLUDE_CAMERA_MODELS_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/MORB_SLAM/CameraModels")
-
-install(FILES ${INCLUDE_Sophus_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/Sophus/sophus")
-install(FILES ${INCLUDE_DBoW2_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/DBoW2/DBoW2")
-install(FILES ${INCLUDE_DUtils_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/DBoW2/DUtils")
-
-install(FILES ${INCLUDE_g2o_config_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/g2o")
-install(FILES ${INCLUDE_g2o_core_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/g2o/g2o/core")
-install(FILES ${INCLUDE_g2o_solvers_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/g2o/g2o/solvers")
-install(FILES ${INCLUDE_g2o_stuff_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/g2o/g2o/stuff")
-install(FILES ${INCLUDE_g2o_types_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/g2o/g2o/types")
-
-install(FILES ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so DESTINATION "${CMAKE_INSTALL_LIBDIR}")
-install(FILES ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so DESTINATION "${CMAKE_INSTALL_LIBDIR}")
-
-install(FILES ${INCLUDE_Sophus_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/Sophus/sophus")
-install(FILES ${INCLUDE_DBoW2_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/DBoW2/DBoW2")
-install(FILES ${INCLUDE_DUtils_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/DBoW2/DUtils")
-
-install(FILES ${INCLUDE_g2o_config_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/g2o")
-install(FILES ${INCLUDE_g2o_core_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/g2o/g2o/core")
-install(FILES ${INCLUDE_g2o_solvers_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/g2o/g2o/solvers")
-install(FILES ${INCLUDE_g2o_stuff_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/g2o/g2o/stuff")
-install(FILES ${INCLUDE_g2o_types_FILES} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/g2o/g2o/types")
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples/Stereo-Inertial)
-add_executable(stereo_inertial_realsense_D435i
-                Examples/Stereo-Inertial/stereo_inertial_realsense_D435i.cc)
-target_link_libraries(stereo_inertial_realsense_D435i ${PROJECT_NAME})
-
-message("added executable")
-install(EXPORT ${PROJECT_NAME} NAMESPACE ${PROJECT_NAME}:: DESTINATION "${CMAKE_INSTALL_LIBDIR}/${CMAKE_BUILD_TYPE}")
+include("${PROJECT_SOURCE_DIR}/cmake/Packing.cmake")
