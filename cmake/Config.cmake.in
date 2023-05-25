@@ -37,7 +37,6 @@ if(MORB_SLAM IN_LIST MORB_SLAM_FIND_COMPONENTS)
     find_dependency(Threads REQUIRED)
     find_dependency(Eigen3 REQUIRED)
     #find_dependency(realsense2) # realsense only needed for example
-    find_dependency(Pangolin REQUIRED)
     find_dependency(OpenCV REQUIRED)
     find_dependency(Boost REQUIRED COMPONENTS serialization regex)
     find_dependency(Boost REQUIRED)

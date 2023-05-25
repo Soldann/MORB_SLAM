@@ -90,7 +90,7 @@ target_link_libraries( ${TARGET_NAME} PUBLIC Threads::Threads )
 target_link_libraries( ${TARGET_NAME} PUBLIC Eigen3::Eigen )
 target_link_libraries( ${TARGET_NAME} PUBLIC Boost::serialization Boost::regex )
 target_link_libraries( ${TARGET_NAME} PUBLIC ${OpenCV_LIBS} )
-target_link_libraries( ${TARGET_NAME} PUBLIC ${Pangolin_LIBRARIES} )
+target_link_libraries( ${TARGET_NAME} PRIVATE ${Pangolin_LIBRARIES} )
 
 
 # https://cmake.org/cmake/help/latest/guide/importing-exporting/index.html#creating-a-package-version-file

@@ -23,7 +23,6 @@
 #include "MORB_SLAM/KeyFrame.h"
 
 #include <set>
-#include <pangolin/pangolin.h>
 #include <mutex>
 #include <memory>
 #include <boost/serialization/base_object.hpp>
@@ -185,9 +184,6 @@ protected:
     // Index related to a big change in the map (loop closure, global BA)
     int mnBigChangeIdx;
 
-
-    // View of the map in aerial sight (for the AtlasViewer)
-    GLubyte* mThumbnail;
 
     bool mIsInUse;
     bool mHasTumbnail;

@@ -187,6 +187,64 @@ void Viewer::update(const Sophus::SE3f &pose){
   }
 }
 
+static void DrawCurrentCamera(pangolin::OpenGlMatrix &Twc, float mCameraSize, float mCameraLineWidth) {
+  const float &w = mCameraSize;
+  const float h = w * 0.75;
+  const float z = w * 0.6;
+
+  glPushMatrix();
+
+#ifdef HAVE_GLES
+  glMultMatrixf(Twc.m);
+#else
+  glMultMatrixd(Twc.m);
+#endif
+
+  glLineWidth(mCameraLineWidth);
+  glColor3f(0.0f, 1.0f, 0.0f);
+  glBegin(GL_LINES);
+  glVertex3f(0, 0, 0);
+  glVertex3f(w, h, z);
+  glVertex3f(0, 0, 0);
+  glVertex3f(w, -h, z);
+  glVertex3f(0, 0, 0);
+  glVertex3f(-w, -h, z);
+  glVertex3f(0, 0, 0);
+  glVertex3f(-w, h, z);
+
+  glVertex3f(w, h, z);
+  glVertex3f(w, -h, z);
+
+  glVertex3f(-w, h, z);
+  glVertex3f(-w, -h, z);
+
+  glVertex3f(-w, h, z);
+  glVertex3f(w, h, z);
+
+  glVertex3f(-w, -h, z);
+  glVertex3f(w, -h, z);
+  glEnd();
+
+  glPopMatrix();
+}
+
+static void GetCurrentOpenGLCameraMatrix(const Eigen::Matrix4f &Twc,
+                                             pangolin::OpenGlMatrix &M,
+                                             pangolin::OpenGlMatrix &MOw) {
+  for (int i = 0; i < 4; i++) {
+    M.m[4 * i] = Twc(0, i);
+    M.m[4 * i + 1] = Twc(1, i);
+    M.m[4 * i + 2] = Twc(2, i);
+    M.m[4 * i + 3] = Twc(3, i);
+  }
+
+  MOw.SetIdentity();
+  MOw.m[12] = Twc(0, 3);
+  MOw.m[13] = Twc(1, 3);
+  MOw.m[14] = Twc(2, 3);
+}
+
+
 void Viewer::Run() {
 
   pangolin::CreateWindowAndBind("ORB-SLAM3: Map Viewer", 1024, 768);
@@ -250,7 +308,7 @@ void Viewer::Run() {
   while (isOpen()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    mpMapDrawer.GetCurrentOpenGLCameraMatrix(Twc, Ow);
+    GetCurrentOpenGLCameraMatrix(mpMapDrawer.getCameraPose(), Twc, Ow);
 
     if (menuFollowCamera && bFollow) {
       if (bCameraView)
@@ -306,7 +364,7 @@ void Viewer::Run() {
 
     d_cam.Activate(s_cam);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    mpMapDrawer.DrawCurrentCamera(Twc);
+    DrawCurrentCamera(Twc, mpMapDrawer.getCameraSize(), mpMapDrawer.getCameraLineWidth());
     if (menuShowKeyFrames || menuShowGraph || menuShowInertialGraph ||
         menuShowOptLba)
       mpMapDrawer.DrawKeyFrames(menuShowKeyFrames, menuShowGraph,

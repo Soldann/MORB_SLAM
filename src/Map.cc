@@ -42,7 +42,6 @@ Map::Map()
       mbIMU_BA1(false),
       mbIMU_BA2(false) {
   mnId = nNextId++;
-  mThumbnail = nullptr;
 }
 
 Map::Map(int initKFid)
@@ -61,7 +60,6 @@ Map::Map(int initKFid)
       mbIMU_BA1(false),
       mbIMU_BA2(false) {
   mnId = nNextId++;
-  mThumbnail = nullptr;
 }
 
 Map::~Map() {
@@ -70,9 +68,6 @@ Map::~Map() {
 
   // TODO: erase all keyframes from memory
   mspKeyFrames.clear();
-
-  if (mThumbnail) delete mThumbnail;
-  mThumbnail = nullptr;
 
   mvpReferenceMapPoints.clear();
   mvpKeyFrameOrigins.clear();

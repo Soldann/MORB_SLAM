@@ -21,7 +21,6 @@
 
 #include "MORB_SLAM/ImprovedTypes.hpp"
 #include "MORB_SLAM/Settings.h"
-#include<pangolin/pangolin.h>
 
 #include<mutex>
 
@@ -62,10 +61,11 @@ public:
 
     void DrawMapPoints();
     void DrawKeyFrames(const bool bDrawKF, const bool bDrawGraph, const bool bDrawInertialGraph, const bool bDrawOptLba);
-    void DrawCurrentCamera(pangolin::OpenGlMatrix &Twc);
+    float getCameraSize() const;
+    float getCameraLineWidth() const;
     void SetCurrentCameraPose(const Sophus::SE3f &Tcw);
     void SetReferenceKeyFrame(KeyFrame *pKF);
-    void GetCurrentOpenGLCameraMatrix(pangolin::OpenGlMatrix &M, pangolin::OpenGlMatrix &MOw);
+    Eigen::Matrix4f getCameraPose();
 
 };
 
