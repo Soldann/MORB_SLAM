@@ -5,9 +5,10 @@
 This fork of [MORB_SLAM](https://github.com/UZ-SLAMLab/MORB_SLAM) converts it into a CMake package that can be imported into other projects. Run `morbslam_installer.sh` to install.
 
 In your other projects, import using:
-```
-find_package(MORB_SLAM REQUIRED)
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} MORB_SLAM::MORB_SLAM)
+```cmake
+find_package(MORB_SLAM REQUIRED COMPONENTS MORB_SLAM DBoW2 g2o sophus)
+add_executable(myprogram ${MY_CPP_FILES})
+target_link_libraries(myprogram MORB_SLAM::MORB_SLAM)
 ```
 
 ![MORBSLAM](images/Morbslam.jpg)
