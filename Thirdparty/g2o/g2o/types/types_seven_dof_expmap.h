@@ -38,7 +38,6 @@
 
 namespace g2o {
 
-  using namespace Eigen;
 
   /**
  * \brief Sim3 Vertex, (x,y,z,qw,qx,qy,qz)
@@ -68,20 +67,20 @@ namespace g2o {
       setEstimate(s*estimate());
     }
 
-    Vector2d _principle_point1, _principle_point2;
-    Vector2d _focal_length1, _focal_length2;
+    Eigen::Vector2d _principle_point1, _principle_point2;
+    Eigen::Vector2d _focal_length1, _focal_length2;
 
-    Vector2d cam_map1(const Vector2d & v) const
+    Eigen::Vector2d cam_map1(const Eigen::Vector2d & v) const
     {
-      Vector2d res;
+      Eigen::Vector2d res;
       res[0] = v[0]*_focal_length1[0] + _principle_point1[0];
       res[1] = v[1]*_focal_length1[1] + _principle_point1[1];
       return res;
     }
 
-    Vector2d cam_map2(const Vector2d & v) const
+    Eigen::Vector2d cam_map2(const Eigen::Vector2d & v) const
     {
-      Vector2d res;
+      Eigen::Vector2d res;
       res[0] = v[0]*_focal_length2[0] + _principle_point2[0];
       res[1] = v[1]*_focal_length2[1] + _principle_point2[1];
       return res;
@@ -127,7 +126,7 @@ namespace g2o {
 
 
 /**/
-class EdgeSim3ProjectXYZ : public  BaseBinaryEdge<2, Vector2d,  VertexSBAPointXYZ, VertexSim3Expmap>
+class EdgeSim3ProjectXYZ : public  BaseBinaryEdge<2, Eigen::Vector2d,  VertexSBAPointXYZ, VertexSim3Expmap>
 {
   public:
     
@@ -140,7 +139,7 @@ class EdgeSim3ProjectXYZ : public  BaseBinaryEdge<2, Vector2d,  VertexSBAPointXY
       const VertexSim3Expmap* v1 = static_cast<const VertexSim3Expmap*>(_vertices[1]);
       const VertexSBAPointXYZ* v2 = static_cast<const VertexSBAPointXYZ*>(_vertices[0]);
 
-      Vector2d obs(_measurement);
+      Eigen::Vector2d obs(_measurement);
       _error = obs-v1->cam_map1(project(v1->estimate().map(v2->estimate())));
     }
 
@@ -149,7 +148,7 @@ class EdgeSim3ProjectXYZ : public  BaseBinaryEdge<2, Vector2d,  VertexSBAPointXY
 };
 
 /**/
-class EdgeInverseSim3ProjectXYZ : public  BaseBinaryEdge<2, Vector2d,  VertexSBAPointXYZ, VertexSim3Expmap>
+class EdgeInverseSim3ProjectXYZ : public  BaseBinaryEdge<2, Eigen::Vector2d,  VertexSBAPointXYZ, VertexSim3Expmap>
 {
   public:
     
@@ -162,7 +161,7 @@ class EdgeInverseSim3ProjectXYZ : public  BaseBinaryEdge<2, Vector2d,  VertexSBA
       const VertexSim3Expmap* v1 = static_cast<const VertexSim3Expmap*>(_vertices[1]);
       const VertexSBAPointXYZ* v2 = static_cast<const VertexSBAPointXYZ*>(_vertices[0]);
 
-      Vector2d obs(_measurement);
+      Eigen::Vector2d obs(_measurement);
       _error = obs-v1->cam_map2(project(v1->estimate().inverse().map(v2->estimate())));
     }
 

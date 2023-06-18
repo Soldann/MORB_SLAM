@@ -42,7 +42,7 @@ class LocalMapping {
  public:
   
   LocalMapping(System* pSys, const Atlas_ptr &pAtlas, const float bMonocular,
-               bool bInertial, const string& _strSeqName = std::string());
+               bool bInertial, const std::string& _strSeqName = std::string());
 
   void SetLoopCloser(LoopClosing* pLoopCloser);
 
@@ -72,7 +72,7 @@ class LocalMapping {
   bool isFinished();
 
   int KeyframesInQueue() {
-    unique_lock<std::mutex> lock(mMutexNewKFs);
+    std::unique_lock<std::mutex> lock(mMutexNewKFs);
     return mlNewKeyFrames.size();
   }
 
@@ -104,7 +104,7 @@ class LocalMapping {
 
   // For debugging (erase in normal mode)
   int mIdxIteration;
-  string strSequence;
+  std::string strSequence;
 
   bool mbNotBA1;
   bool mbNotBA2;
@@ -117,19 +117,19 @@ class LocalMapping {
   float mThFarPoints;
 
 #ifdef REGISTER_TIMES
-  vector<double> vdKFInsert_ms;
-  vector<double> vdMPCulling_ms;
-  vector<double> vdMPCreation_ms;
-  vector<double> vdLBA_ms;
-  vector<double> vdKFCulling_ms;
-  vector<double> vdLMTotal_ms;
+  std::vector<double> vdKFInsert_ms;
+  std::vector<double> vdMPCulling_ms;
+  std::vector<double> vdMPCreation_ms;
+  std::vector<double> vdLBA_ms;
+  std::vector<double> vdKFCulling_ms;
+  std::vector<double> vdLMTotal_ms;
 
-  vector<double> vdLBASync_ms;
-  vector<double> vdKFCullingSync_ms;
-  vector<int> vnLBA_edges;
-  vector<int> vnLBA_KFopt;
-  vector<int> vnLBA_KFfixed;
-  vector<int> vnLBA_MPs;
+  std::vector<double> vdLBASync_ms;
+  std::vector<double> vdKFCullingSync_ms;
+  std::vector<int> vnLBA_edges;
+  std::vector<int> vnLBA_KFopt;
+  std::vector<int> vnLBA_KFfixed;
+  std::vector<int> vnLBA_MPs;
   int nLBA_exec;
   int nLBA_abort;
 #endif
@@ -201,7 +201,7 @@ class LocalMapping {
   bool notifyIsDoneVIBA;
 
   // DEBUG
-  ofstream f_lm;
+  std::ofstream f_lm;
 };
 
 }  // namespace MORB_SLAM

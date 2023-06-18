@@ -36,7 +36,7 @@
 #include <MORB_SLAM/System.h>
 #include <MORB_SLAM/Viewer.h>
 
-using namespace std;
+
 
 bool b_continue_session;
 

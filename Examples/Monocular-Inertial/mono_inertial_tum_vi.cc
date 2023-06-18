@@ -29,7 +29,7 @@
 #include<MORB_SLAM/Viewer.h>
 #include "MORB_SLAM/ImuTypes.h"
 
-using namespace std;
+
 
 void LoadImagesTUMVI(const string &strImagePath, const string &strPathTimes,
                 vector<string> &vstrImages, vector<double> &vTimeStamps);

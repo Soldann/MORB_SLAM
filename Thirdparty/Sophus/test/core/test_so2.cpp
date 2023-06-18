@@ -172,14 +172,14 @@ int test_so2() {
   using std::cerr;
   using std::endl;
 
-  cerr << "Test SO2" << endl << endl;
-  cerr << "Double tests: " << endl;
+  std::cerr << "Test SO2" << std::endl << std::endl;
+  std::cerr << "Double tests: " << std::endl;
   Tests<double>().runAll();
-  cerr << "Float tests: " << endl;
+  std::cerr << "Float tests: " << std::endl;
   Tests<float>().runAll();
 
 #if SOPHUS_CERES
-  cerr << "ceres::Jet<double, 3> tests: " << endl;
+  std::cerr << "ceres::Jet<double, 3> tests: " << std::endl;
   Tests<ceres::Jet<double, 3>>().runAll();
 #endif
 

@@ -28,7 +28,7 @@
 #include <cstring>
 
 namespace g2o {
-  using namespace std;
+  
 
   G2OBatchStatistics* G2OBatchStatistics::_globalStats=0;
 

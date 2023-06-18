@@ -21,6 +21,8 @@
 
 #include "MORB_SLAM/Atlas.h"
 
+#include <iostream>
+#include <mutex>
 #include "MORB_SLAM/CameraModels/GeometricCamera.h"
 #include "MORB_SLAM/CameraModels/KannalaBrandt8.h"
 #include "MORB_SLAM/CameraModels/Pinhole.h"
@@ -37,17 +39,17 @@ Atlas::Atlas(int initKFid) : mnLastInitKFidMap(initKFid) {
 Atlas::~Atlas() {}
 
 void Atlas::CreateNewMap() {
-  unique_lock<mutex> lock(mMutexAtlas);
-  cout << "Creation of new map with id: " << Map::nNextId << endl;
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
+  std::cout << "Creation of new std::map with id: " << Map::nNextId << std::endl;
   if (mpCurrentMap) {
     if (!mspMaps.empty() && mnLastInitKFidMap < mpCurrentMap->GetMaxKFid())
       mnLastInitKFidMap = mpCurrentMap->GetMaxKFid() +
                           1;  // The init KF is the next of current maximum
 
     mpCurrentMap->SetStoredMap();
-    cout << "Stored map with ID: " << mpCurrentMap->GetId() << endl;
+    std::cout << "Stored std::map with ID: " << mpCurrentMap->GetId() << std::endl;
   }
-  cout << "Creation of new map with last KF id: " << mnLastInitKFidMap << endl;
+  std::cout << "Creation of new std::map with last KF id: " << mnLastInitKFidMap << std::endl;
 
   mpCurrentMap = std::make_shared<Map>(mnLastInitKFidMap);
   mpCurrentMap->SetCurrentMap();
@@ -55,8 +57,8 @@ void Atlas::CreateNewMap() {
 }
 
 void Atlas::ChangeMap(std::shared_ptr<Map> pMap) {
-  unique_lock<mutex> lock(mMutexAtlas);
-  cout << "Change to map with id: " << pMap->GetId() << endl;
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
+  std::cout << "Change to std::map with id: " << pMap->GetId() << std::endl;
   if (mpCurrentMap) {
     mpCurrentMap->SetStoredMap();
   }
@@ -66,7 +68,7 @@ void Atlas::ChangeMap(std::shared_ptr<Map> pMap) {
 }
 
 unsigned long int Atlas::GetLastInitKFid() {
-  unique_lock<mutex> lock(mMutexAtlas);
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
   return mnLastInitKFidMap;
 }
 
@@ -91,12 +93,12 @@ std::shared_ptr<GeometricCamera> Atlas::AddCamera(const std::shared_ptr<Geometri
     if (pCam->GetType() != pCam_i->GetType()) continue;
 
     if (pCam->GetType() == GeometricCamera::CAM_PINHOLE) {
-      if (reinterpret_pointer_cast<Pinhole>(pCam_i)->IsEqual(pCam)) {
+      if (std::reinterpret_pointer_cast<Pinhole>(pCam_i)->IsEqual(pCam)) {
         bAlreadyInMap = true;
         index_cam = i;
       }
     } else if (pCam->GetType() == GeometricCamera::CAM_FISHEYE) {
-      if (reinterpret_pointer_cast<KannalaBrandt8>(pCam_i)->IsEqual(pCam)) {
+      if (std::reinterpret_pointer_cast<KannalaBrandt8>(pCam_i)->IsEqual(pCam)) {
         bAlreadyInMap = true;
         index_cam = i;
       }
@@ -114,69 +116,69 @@ std::shared_ptr<GeometricCamera> Atlas::AddCamera(const std::shared_ptr<Geometri
 std::vector<std::shared_ptr<GeometricCamera>> Atlas::GetAllCameras() { return mvpCameras; }
 
 void Atlas::SetReferenceMapPoints(const std::vector<MapPoint*>& vpMPs) {
-  unique_lock<mutex> lock(mMutexAtlas);
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
   mpCurrentMap->SetReferenceMapPoints(vpMPs);
 }
 
 void Atlas::InformNewBigChange() {
-  unique_lock<mutex> lock(mMutexAtlas);
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
   mpCurrentMap->InformNewBigChange();
 }
 
 int Atlas::GetLastBigChangeIdx() {
-  unique_lock<mutex> lock(mMutexAtlas);
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
   return mpCurrentMap->GetLastBigChangeIdx();
 }
 
 long unsigned int Atlas::MapPointsInMap() {
-  unique_lock<mutex> lock(mMutexAtlas);
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
   return mpCurrentMap->MapPointsInMap();
 }
 
 long unsigned Atlas::KeyFramesInMap() {
-  unique_lock<mutex> lock(mMutexAtlas);
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
   return mpCurrentMap->KeyFramesInMap();
 }
 
 std::vector<KeyFrame*> Atlas::GetAllKeyFrames() {
-  unique_lock<mutex> lock(mMutexAtlas);
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
   return mpCurrentMap->GetAllKeyFrames();
 }
 
 std::vector<MapPoint*> Atlas::GetAllMapPoints() {
-  unique_lock<mutex> lock(mMutexAtlas);
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
   return mpCurrentMap->GetAllMapPoints();
 }
 
 std::vector<MapPoint*> Atlas::GetReferenceMapPoints() {
-  unique_lock<mutex> lock(mMutexAtlas);
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
   return mpCurrentMap->GetReferenceMapPoints();
 }
 
-vector<std::shared_ptr<Map>> Atlas::GetAllMaps() {
-  unique_lock<mutex> lock(mMutexAtlas);
+std::vector<std::shared_ptr<Map>> Atlas::GetAllMaps() {
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
   struct compFunctor {
     inline bool operator()(std::shared_ptr<Map> elem1, std::shared_ptr<Map> elem2) {
       return elem1->GetId() < elem2->GetId();
     }
   };
-  vector<std::shared_ptr<Map>> vMaps(mspMaps.begin(), mspMaps.end());
+  std::vector<std::shared_ptr<Map>> vMaps(mspMaps.begin(), mspMaps.end());
   sort(vMaps.begin(), vMaps.end(), compFunctor());
   return vMaps;
 }
 
 int Atlas::CountMaps() {
-  unique_lock<mutex> lock(mMutexAtlas);
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
   return mspMaps.size();
 }
 
 void Atlas::clearMap() {
-  unique_lock<mutex> lock(mMutexAtlas);
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
   mpCurrentMap->clear();
 }
 
 void Atlas::clearAtlas() {
-  unique_lock<mutex> lock(mMutexAtlas);
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
   /*for(std::set<Map*>::iterator it=mspMaps.begin(), send=mspMaps.end();
   it!=send; it++)
   {
@@ -189,7 +191,7 @@ void Atlas::clearAtlas() {
 }
 
 std::shared_ptr<Map> Atlas::GetCurrentMap(System* sys) {
-  unique_lock<mutex> lock(mMutexAtlas);
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
   if (!mpCurrentMap) CreateNewMap();
   while (mpCurrentMap->IsBad()) {
     if (sys != nullptr) return nullptr;
@@ -215,22 +217,22 @@ void Atlas::RemoveBadMaps() {
 }
 
 bool Atlas::isInertial() {
-  unique_lock<mutex> lock(mMutexAtlas);
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
   return mpCurrentMap->IsInertial();
 }
 
 void Atlas::SetInertialSensor() {
-  unique_lock<mutex> lock(mMutexAtlas);
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
   mpCurrentMap->SetInertialSensor();
 }
 
 void Atlas::SetImuInitialized() {
-  unique_lock<mutex> lock(mMutexAtlas);
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
   mpCurrentMap->SetImuInitialized();
 }
 
 bool Atlas::isImuInitialized() {
-  unique_lock<mutex> lock(mMutexAtlas);
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
   return mpCurrentMap->isImuInitialized();
 }
 
@@ -264,7 +266,7 @@ void Atlas::PreSave() {
 }
 
 void Atlas::PostLoad() {
-  map<unsigned int, std::shared_ptr<GeometricCamera>> mpCams;
+  std::map<unsigned int, std::shared_ptr<GeometricCamera>> mpCams;
   for (std::shared_ptr<GeometricCamera> pCam : mvpCameras) {
     mpCams[pCam->GetId()] = pCam;
   }
@@ -293,7 +295,7 @@ void Atlas::SetORBVocabulary(ORBVocabulary* pORBVoc) {
 ORBVocabulary* Atlas::GetORBVocabulary() { return mpORBVocabulary; }
 
 long unsigned int Atlas::GetNumLivedKF() {
-  unique_lock<mutex> lock(mMutexAtlas);
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
   long unsigned int num = 0;
   for (std::shared_ptr<Map> pMap_i : mspMaps) {
     num += pMap_i->GetAllKeyFrames().size();
@@ -303,7 +305,7 @@ long unsigned int Atlas::GetNumLivedKF() {
 }
 
 long unsigned int Atlas::GetNumLivedMP() {
-  unique_lock<mutex> lock(mMutexAtlas);
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
   long unsigned int num = 0;
   for (std::shared_ptr<Map> pMap_i : mspMaps) {
     num += pMap_i->GetAllMapPoints().size();
@@ -312,10 +314,10 @@ long unsigned int Atlas::GetNumLivedMP() {
   return num;
 }
 
-map<long unsigned int, KeyFrame*> Atlas::GetAtlasKeyframes() {
-  map<long unsigned int, KeyFrame*> mpIdKFs;
+std::map<long unsigned int, KeyFrame*> Atlas::GetAtlasKeyframes() {
+  std::map<long unsigned int, KeyFrame*> mpIdKFs;
   for (std::shared_ptr<Map>  pMap_i : mvpBackupMaps) {
-    vector<KeyFrame*> vpKFs_Mi = pMap_i->GetAllKeyFrames();
+    std::vector<KeyFrame*> vpKFs_Mi = pMap_i->GetAllKeyFrames();
 
     for (KeyFrame* pKF_j_Mi : vpKFs_Mi) {
       mpIdKFs[pKF_j_Mi->mnId] = pKF_j_Mi;

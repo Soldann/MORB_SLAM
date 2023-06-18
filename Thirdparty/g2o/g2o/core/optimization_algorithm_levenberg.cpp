@@ -36,7 +36,7 @@
 #include "sparse_optimizer.h"
 #include "solver.h"
 #include "batch_stats.h"
-using namespace std;
+
 
 namespace g2o {
 
@@ -66,7 +66,7 @@ namespace g2o {
     if (iteration == 0 && !online) { // built up the CCS structure, here due to easy time measure
       bool ok = _solver->buildStructure();
       if (! ok) {
-        cerr << __PRETTY_FUNCTION__ << ": Failure while building CCS structure" << endl;
+        std::cerr << __PRETTY_FUNCTION__ << ": Failure while building CCS structure" << std::endl;
         return OptimizationAlgorithm::Fail;
       }
     }
@@ -122,7 +122,7 @@ namespace g2o {
 
       _optimizer->computeActiveErrors();
       tempChi = _optimizer->activeRobustChi2();
-      // cout << "tempChi: " << tempChi << endl;
+      // std::cout << "tempChi: " << tempChi << std::endl;
       if (! ok2)
         tempChi=std::numeric_limits<double>::max();
 
@@ -150,7 +150,7 @@ namespace g2o {
 
     if (qmax == _maxTrialsAfterFailure->value() || rho==0)
     {
-      // cout << "qmax = " << qmax << "             rho = " << rho << endl;
+      // std::cout << "qmax = " << qmax << "             rho = " << rho << std::endl;
       return Terminate;
     }
 

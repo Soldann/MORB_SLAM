@@ -11,7 +11,7 @@
 #include "Random.h"
 #include "Timestamp.h"
 #include <cstdlib>
-using namespace std;
+
 
 bool DUtils::Random::m_already_seeded = false;
 

@@ -36,7 +36,6 @@
 
 namespace g2o {
 
-  using namespace Eigen;
 
   template <int D, typename E>
   class BaseEdge : public OptimizableGraph::Edge
@@ -45,8 +44,8 @@ namespace g2o {
 
       static const int Dimension = D;
       typedef E Measurement;
-      typedef Matrix<double, D, 1> ErrorVector;
-      typedef Matrix<double, D, D> InformationType;
+      typedef Eigen::Matrix<double, D, 1> ErrorVector;
+      typedef Eigen::Matrix<double, D, D> InformationType;
 
       BaseEdge() : OptimizableGraph::Edge()
       {

@@ -31,18 +31,18 @@
 
 namespace g2o {
 
-using namespace std;
 
 
-Vector2d project2d(const Vector3d& v)  {
-  Vector2d res;
+
+Eigen::Vector2d project2d(const Eigen::Vector3d& v)  {
+  Eigen::Vector2d res;
   res(0) = v(0)/v(2);
   res(1) = v(1)/v(2);
   return res;
 }
 
-Vector3d unproject2d(const Vector2d& v)  {
-  Vector3d res;
+Eigen::Vector3d unproject2d(const Eigen::Vector2d& v)  {
+  Eigen::Vector3d res;
   res(0) = v(0);
   res(1) = v(1);
   res(2) = 1;
@@ -110,7 +110,7 @@ bool VertexSE3Expmap::write(std::ostream& os) const {
   }
 
 
-EdgeSE3ProjectXYZ::EdgeSE3ProjectXYZ() : BaseBinaryEdge<2, Vector2d, VertexSBAPointXYZ, VertexSE3Expmap>() {
+EdgeSE3ProjectXYZ::EdgeSE3ProjectXYZ() : BaseBinaryEdge<2, Eigen::Vector2d, VertexSBAPointXYZ, VertexSE3Expmap>() {
 }
 
 bool EdgeSE3ProjectXYZ::read(std::istream& is){
@@ -144,15 +144,15 @@ void EdgeSE3ProjectXYZ::linearizeOplus() {
   VertexSE3Expmap * vj = static_cast<VertexSE3Expmap *>(_vertices[1]);
   SE3Quat T(vj->estimate());
   VertexSBAPointXYZ* vi = static_cast<VertexSBAPointXYZ*>(_vertices[0]);
-  Vector3d xyz = vi->estimate();
-  Vector3d xyz_trans = T.map(xyz);
+  Eigen::Vector3d xyz = vi->estimate();
+  Eigen::Vector3d xyz_trans = T.map(xyz);
 
   double x = xyz_trans[0];
   double y = xyz_trans[1];
   double z = xyz_trans[2];
   double z_2 = z*z;
 
-  Matrix<double,2,3> tmp;
+  Eigen::Matrix<double,2,3> tmp;
   tmp(0,0) = fx;
   tmp(0,1) = 0;
   tmp(0,2) = -x/z*fx;
@@ -178,25 +178,25 @@ void EdgeSE3ProjectXYZ::linearizeOplus() {
   _jacobianOplusXj(1,5) = y/z_2 *fy;
 }
 
-Vector2d EdgeSE3ProjectXYZ::cam_project(const Vector3d & trans_xyz) const{
-  Vector2d proj = project2d(trans_xyz);
-  Vector2d res;
+Eigen::Vector2d EdgeSE3ProjectXYZ::cam_project(const Eigen::Vector3d & trans_xyz) const{
+  Eigen::Vector2d proj = project2d(trans_xyz);
+  Eigen::Vector2d res;
   res[0] = proj[0]*fx + cx;
   res[1] = proj[1]*fy + cy;
   return res;
 }
 
 
-Vector3d EdgeStereoSE3ProjectXYZ::cam_project(const Vector3d & trans_xyz, const float &bf) const{
+Eigen::Vector3d EdgeStereoSE3ProjectXYZ::cam_project(const Eigen::Vector3d & trans_xyz, const float &bf) const{
   const float invz = 1.0f/trans_xyz[2];
-  Vector3d res;
+  Eigen::Vector3d res;
   res[0] = trans_xyz[0]*invz*fx + cx;
   res[1] = trans_xyz[1]*invz*fy + cy;
   res[2] = res[0] - bf*invz;
   return res;
 }
 
-EdgeStereoSE3ProjectXYZ::EdgeStereoSE3ProjectXYZ() : BaseBinaryEdge<3, Vector3d, VertexSBAPointXYZ, VertexSE3Expmap>() {
+EdgeStereoSE3ProjectXYZ::EdgeStereoSE3ProjectXYZ() : BaseBinaryEdge<3, Eigen::Vector3d, VertexSBAPointXYZ, VertexSE3Expmap>() {
 }
 
 bool EdgeStereoSE3ProjectXYZ::read(std::istream& is){
@@ -229,10 +229,10 @@ void EdgeStereoSE3ProjectXYZ::linearizeOplus() {
   VertexSE3Expmap * vj = static_cast<VertexSE3Expmap *>(_vertices[1]);
   SE3Quat T(vj->estimate());
   VertexSBAPointXYZ* vi = static_cast<VertexSBAPointXYZ*>(_vertices[0]);
-  Vector3d xyz = vi->estimate();
-  Vector3d xyz_trans = T.map(xyz);
+  Eigen::Vector3d xyz = vi->estimate();
+  Eigen::Vector3d xyz_trans = T.map(xyz);
 
-  const Matrix3d R =  T.rotation().toRotationMatrix();
+  const Eigen::Matrix3d R =  T.rotation().toRotationMatrix();
 
   double x = xyz_trans[0];
   double y = xyz_trans[1];
@@ -305,7 +305,7 @@ bool EdgeSE3ProjectXYZOnlyPose::write(std::ostream& os) const {
 
 void EdgeSE3ProjectXYZOnlyPose::linearizeOplus() {
   VertexSE3Expmap * vi = static_cast<VertexSE3Expmap *>(_vertices[0]);
-  Vector3d xyz_trans = vi->estimate().map(Xw);
+  Eigen::Vector3d xyz_trans = vi->estimate().map(Xw);
 
   double x = xyz_trans[0];
   double y = xyz_trans[1];
@@ -327,18 +327,18 @@ void EdgeSE3ProjectXYZOnlyPose::linearizeOplus() {
   _jacobianOplusXi(1,5) = y*invz_2 *fy;
 }
 
-Vector2d EdgeSE3ProjectXYZOnlyPose::cam_project(const Vector3d & trans_xyz) const{
-  Vector2d proj = project2d(trans_xyz);
-  Vector2d res;
+Eigen::Vector2d EdgeSE3ProjectXYZOnlyPose::cam_project(const Eigen::Vector3d & trans_xyz) const{
+  Eigen::Vector2d proj = project2d(trans_xyz);
+  Eigen::Vector2d res;
   res[0] = proj[0]*fx + cx;
   res[1] = proj[1]*fy + cy;
   return res;
 }
 
 
-Vector3d EdgeStereoSE3ProjectXYZOnlyPose::cam_project(const Vector3d & trans_xyz) const{
+Eigen::Vector3d EdgeStereoSE3ProjectXYZOnlyPose::cam_project(const Eigen::Vector3d & trans_xyz) const{
   const float invz = 1.0f/trans_xyz[2];
-  Vector3d res;
+  Eigen::Vector3d res;
   res[0] = trans_xyz[0]*invz*fx + cx;
   res[1] = trans_xyz[1]*invz*fy + cy;
   res[2] = res[0] - bf*invz;
@@ -374,7 +374,7 @@ bool EdgeStereoSE3ProjectXYZOnlyPose::write(std::ostream& os) const {
 
 void EdgeStereoSE3ProjectXYZOnlyPose::linearizeOplus() {
   VertexSE3Expmap * vi = static_cast<VertexSE3Expmap *>(_vertices[0]);
-  Vector3d xyz_trans = vi->estimate().map(Xw);
+  Eigen::Vector3d xyz_trans = vi->estimate().map(Xw);
 
   double x = xyz_trans[0];
   double y = xyz_trans[1];

@@ -31,7 +31,7 @@
 #include "sparse_optimizer.h"
 
 #include <iostream>
-using namespace std;
+
 
 namespace g2o {
 
@@ -72,7 +72,7 @@ namespace g2o {
     return initState;
   }
 
-  bool OptimizationAlgorithmWithHessian::computeMarginals(SparseBlockMatrix<MatrixXd>& spinv, const std::vector<std::pair<int, int> >& blockIndices)
+  bool OptimizationAlgorithmWithHessian::computeMarginals(SparseBlockMatrix<Eigen::MatrixXd>& spinv, const std::vector<std::pair<int, int> >& blockIndices)
   {
     return _solver ? _solver->computeMarginals(spinv, blockIndices) : false;
   }

@@ -31,14 +31,14 @@
 #include <Eigen/Geometry>
 
 namespace g2o {
-  using namespace Eigen;
+  
 
-  inline Matrix3d skew(const Vector3d&v);
-  inline Vector3d deltaR(const Matrix3d& R);
-  inline Vector2d project(const Vector3d&);
-  inline Vector3d project(const Vector4d&);
-  inline Vector3d unproject(const Vector2d&);
-  inline Vector4d unproject(const Vector3d&);
+  inline Eigen::Matrix3d skew(const Eigen::Vector3d&v);
+  inline Eigen::Vector3d deltaR(const Eigen::Matrix3d& R);
+  inline Eigen::Vector2d project(const Eigen::Vector3d&);
+  inline Eigen::Vector3d project(const Eigen::Vector4d&);
+  inline Eigen::Vector3d unproject(const Eigen::Vector2d&);
+  inline Eigen::Vector4d unproject(const Eigen::Vector3d&);
 
 #include "se3_ops.hpp"
 

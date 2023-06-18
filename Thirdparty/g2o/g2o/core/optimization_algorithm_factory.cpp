@@ -30,7 +30,7 @@
 #include <typeinfo>
 #include <cassert>
 
-using namespace std;
+
 
 namespace g2o {
 
@@ -61,11 +61,11 @@ namespace g2o {
 
   void OptimizationAlgorithmFactory::registerSolver(AbstractOptimizationAlgorithmCreator* c)
   {
-    const string& name = c->property().name;
+    const std::string& name = c->property().name;
     CreatorList::iterator foundIt = findSolver(name);
     if (foundIt != _creator.end()) {
       _creator.erase(foundIt);
-      cerr << "SOLVER FACTORY WARNING: Overwriting Solver creator " << name << endl;
+      std::cerr << "SOLVER FACTORY WARNING: Overwriting Solver creator " << name << std::endl;
       assert(0);
     }
     _creator.push_back(c);
@@ -73,7 +73,7 @@ namespace g2o {
 
   void OptimizationAlgorithmFactory::unregisterSolver(AbstractOptimizationAlgorithmCreator* c)
   {
-    const string& name = c->property().name;
+    const std::string& name = c->property().name;
     CreatorList::iterator foundIt = findSolver(name);
     if (foundIt != _creator.end()) {
       delete *foundIt;
@@ -88,7 +88,7 @@ namespace g2o {
       solverProperty = (*foundIt)->property();
       return (*foundIt)->construct();
     }
-    cerr << "SOLVER FACTORY WARNING: Unable to create solver " << name << endl;
+    std::cerr << "SOLVER FACTORY WARNING: Unable to create solver " << name << std::endl;
     return 0;
   }
 
@@ -110,7 +110,7 @@ namespace g2o {
       os << sp.name;
       for (size_t i = sp.name.size(); i < solverNameColumnLength; ++i)
         os << ' ';
-      os << sp.desc << endl;
+      os << sp.desc << std::endl;
     }
   }
 

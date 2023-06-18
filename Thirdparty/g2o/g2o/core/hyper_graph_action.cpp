@@ -32,7 +32,7 @@
 #include <iostream>
 
 namespace g2o {
-  using namespace std;
+  
 
   HyperGraphActionLibrary* HyperGraphActionLibrary::actionLibInstance = 0;
 
@@ -99,7 +99,7 @@ namespace g2o {
   HyperGraphElementAction* HyperGraphElementActionCollection::operator()(HyperGraph::HyperGraphElement* element, HyperGraphElementAction::Parameters* params)
   {
     ActionMap::iterator it=_actionMap.find(typeid(*element).name());
-    //cerr << typeid(*element).name() << endl;
+    //std::cerr << typeid(*element).name() << std::endl;
     if (it==_actionMap.end())
       return 0;
     HyperGraphElementAction* action=it->second;
@@ -118,12 +118,12 @@ namespace g2o {
   bool HyperGraphElementActionCollection::registerAction(HyperGraphElementAction* action)
   {
 #  ifdef G2O_DEBUG_ACTIONLIB
-    cerr << __PRETTY_FUNCTION__ << " " << action->name() << " " << action->typeName() << endl;
+    std::cerr << __PRETTY_FUNCTION__ << " " << action->name() << " " << action->typeName() << std::endl;
 #  endif
     if (action->name()!=name()){
-      cerr << __PRETTY_FUNCTION__  << ": invalid attempt to register an action in a collection with a different name " <<  name() << " " << action->name() << endl;
+      std::cerr << __PRETTY_FUNCTION__  << ": invalid attempt to register an action in a collection with a different name " <<  name() << " " << action->name() << std::endl;
     }
-    _actionMap.insert(make_pair ( action->typeName(), action) );
+    _actionMap.insert(std::make_pair ( action->typeName(), action) );
     return true;
   }
 
@@ -178,23 +178,23 @@ namespace g2o {
     if (oldAction) {
       collection = dynamic_cast<HyperGraphElementActionCollection*>(oldAction);
       if (! collection) {
-        cerr << __PRETTY_FUNCTION__ << ": fatal error, a collection is not at the first level in the library" << endl;
+        std::cerr << __PRETTY_FUNCTION__ << ": fatal error, a collection is not at the first level in the library" << std::endl;
         return 0;
       }
     }
     if (! collection) {
 #ifdef G2O_DEBUG_ACTIONLIB
-      cerr << __PRETTY_FUNCTION__ << ": creating collection for \"" << action->name() << "\"" << endl;
+      std::cerr << __PRETTY_FUNCTION__ << ": creating collection for \"" << action->name() << "\"" << std::endl;
 #endif
       collection = new HyperGraphElementActionCollection(action->name());
-      _actionMap.insert(make_pair(action->name(), collection));
+      _actionMap.insert(std::make_pair(action->name(), collection));
     }
     return collection->registerAction(action);
   }
   
   bool HyperGraphActionLibrary::unregisterAction(HyperGraphElementAction* action)
   {
-    list<HyperGraphElementActionCollection*> collectionDeleteList;
+    std::list<HyperGraphElementActionCollection*> collectionDeleteList;
 
     // Search all the collections and delete the registered actions; if a collection becomes empty, schedule it for deletion; note that we can't delete the collections as we go because this will screw up the state of the iterators
     for (HyperGraphElementAction::ActionMap::iterator it=_actionMap.begin(); it != _actionMap.end(); ++it) {
@@ -208,8 +208,8 @@ namespace g2o {
     }
 
     // Delete any empty action collections
-    for (list<HyperGraphElementActionCollection*>::iterator itc = collectionDeleteList.begin(); itc != collectionDeleteList.end(); ++itc) {
-      //cout << "Deleting collection " << (*itc)->name() << endl;
+    for (std::list<HyperGraphElementActionCollection*>::iterator itc = collectionDeleteList.begin(); itc != collectionDeleteList.end(); ++itc) {
+      //std::cout << "Deleting collection " << (*itc)->name() << std::endl;
       _actionMap.erase((*itc)->name());
     }
 

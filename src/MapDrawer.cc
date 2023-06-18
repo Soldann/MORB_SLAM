@@ -123,10 +123,10 @@ void MapDrawer::DrawMapPoints() {
   std::shared_ptr<Map> pActiveMap = mpAtlas->GetCurrentMap();
   if (!pActiveMap) return;
 
-  const vector<MapPoint *> &vpMPs = pActiveMap->GetAllMapPoints();
-  const vector<MapPoint *> &vpRefMPs = pActiveMap->GetReferenceMapPoints();
+  const std::vector<MapPoint *> &vpMPs = pActiveMap->GetAllMapPoints();
+  const std::vector<MapPoint *> &vpRefMPs = pActiveMap->GetReferenceMapPoints();
 
-  set<MapPoint *> spRefMPs(vpRefMPs.begin(), vpRefMPs.end());
+  std::set<MapPoint *> spRefMPs(vpRefMPs.begin(), vpRefMPs.end());
 
   if (vpMPs.empty()) return;
 
@@ -145,7 +145,7 @@ void MapDrawer::DrawMapPoints() {
   glBegin(GL_POINTS);
   glColor3f(1.0, 0.0, 0.0);
 
-  for (set<MapPoint *>::iterator sit = spRefMPs.begin(), send = spRefMPs.end();
+  for (std::set<MapPoint *>::iterator sit = spRefMPs.begin(), send = spRefMPs.end();
        sit != send; sit++) {
     if ((*sit)->isBad()) continue;
     Eigen::Matrix<float, 3, 1> pos = (*sit)->GetWorldPos();
@@ -169,7 +169,7 @@ void MapDrawer::DrawKeyFrames(const bool bDrawKF, const bool bDrawGraph,
 
   if (!pActiveMap) return;
 
-  const vector<KeyFrame *> vpKFs = pActiveMap->GetAllKeyFrames();
+  const std::vector<KeyFrame *> vpKFs = pActiveMap->GetAllKeyFrames();
 
   if (bDrawKF) {
     for (size_t i = 0; i < vpKFs.size(); i++) {
@@ -187,7 +187,7 @@ void MapDrawer::DrawKeyFrames(const bool bDrawKF, const bool bDrawGraph,
         glColor3f(1.0f, 0.0f, 0.0f);
         glBegin(GL_LINES);
       } else {
-        // cout << "Child KF: " << vpKFs[i]->mnId << endl;
+        // std::cout << "Child KF: " << vpKFs[i]->mnId << std::endl;
         glLineWidth(mKeyFrameLineWidth);
         if (bDrawOptLba) {
           if (sOptKFs.find(pKF->mnId) != sOptKFs.end()) {
@@ -236,13 +236,13 @@ void MapDrawer::DrawKeyFrames(const bool bDrawKF, const bool bDrawGraph,
     glColor4f(0.0f, 1.0f, 0.0f, 0.6f);
     glBegin(GL_LINES);
 
-    // cout << "-----------------Draw graph-----------------" << endl;
+    // std::cout << "-----------------Draw graph-----------------" << std::endl;
     for (size_t i = 0; i < vpKFs.size(); i++) {
       // Covisibility Graph
-      const vector<KeyFrame *> vCovKFs = vpKFs[i]->GetCovisiblesByWeight(100);
+      const std::vector<KeyFrame *> vCovKFs = vpKFs[i]->GetCovisiblesByWeight(100);
       Eigen::Vector3f Ow = vpKFs[i]->GetCameraCenter();
       if (!vCovKFs.empty()) {
-        for (vector<KeyFrame *>::const_iterator vit = vCovKFs.begin(),
+        for (std::vector<KeyFrame *>::const_iterator vit = vCovKFs.begin(),
                                                 vend = vCovKFs.end();
              vit != vend; vit++) {
           if ((*vit)->mnId < vpKFs[i]->mnId) continue;
@@ -261,8 +261,8 @@ void MapDrawer::DrawKeyFrames(const bool bDrawKF, const bool bDrawGraph,
       }
 
       // Loops
-      set<KeyFrame *> sLoopKFs = vpKFs[i]->GetLoopEdges();
-      for (set<KeyFrame *>::iterator sit = sLoopKFs.begin(),
+      std::set<KeyFrame *> sLoopKFs = vpKFs[i]->GetLoopEdges();
+      for (std::set<KeyFrame *>::iterator sit = sLoopKFs.begin(),
                                      send = sLoopKFs.end();
            sit != send; sit++) {
         if ((*sit)->mnId < vpKFs[i]->mnId) continue;
@@ -295,13 +295,13 @@ void MapDrawer::DrawKeyFrames(const bool bDrawKF, const bool bDrawGraph,
     glEnd();
   }
 
-  vector<std::shared_ptr<Map>> vpMaps = mpAtlas->GetAllMaps();
+  std::vector<std::shared_ptr<Map>> vpMaps = mpAtlas->GetAllMaps();
 
   if (bDrawKF) {
     for (std::shared_ptr<Map> pMap : vpMaps) {
       if (pMap == pActiveMap) continue;
 
-      vector<KeyFrame *> vpKFs = pMap->GetAllKeyFrames();
+      std::vector<KeyFrame *> vpKFs = pMap->GetAllKeyFrames();
 
       for (size_t i = 0; i < vpKFs.size(); i++) {
         KeyFrame *pKF = vpKFs[i];
@@ -357,14 +357,14 @@ float MapDrawer::getCameraSize() const { return mCameraSize; }
 float MapDrawer::getCameraLineWidth() const { return mCameraLineWidth; }
 
 void MapDrawer::SetCurrentCameraPose(const Sophus::SE3f &Tcw) {
-  unique_lock<mutex> lock(mMutexCamera);
+  std::unique_lock<std::mutex> lock(mMutexCamera);
   mCameraPose = Tcw.inverse();
 }
 
 Eigen::Matrix4f MapDrawer::getCameraPose(){
   Eigen::Matrix4f Twc;
   {
-    unique_lock<mutex> lock(mMutexCamera);
+    std::unique_lock<std::mutex> lock(mMutexCamera);
     Twc = mCameraPose.matrix();
   }
   return Twc;

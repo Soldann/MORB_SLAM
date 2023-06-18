@@ -31,7 +31,7 @@
 #include <iostream>
 
 namespace g2o {
-  using namespace std;
+  
 
   Cache::CacheKey::CacheKey() :
     _type(), _parameters()
@@ -130,20 +130,20 @@ namespace g2o {
     Factory* f = Factory::instance();
     HyperGraph::HyperGraphElement* e = f->construct(key.type());
     if (!e) {
-      cerr << __PRETTY_FUNCTION__ << endl;
-      cerr << "fatal error in creating cache of type " << key.type() << endl;
+      std::cerr << __PRETTY_FUNCTION__ << std::endl;
+      std::cerr << "fatal error in creating cache of type " << key.type() << std::endl;
       return 0;
     }
     Cache* c = dynamic_cast<Cache*>(e);
     if (! c){
-      cerr << __PRETTY_FUNCTION__ << endl;
-      cerr << "fatal error in creating cache of type " << key.type() << endl;
+      std::cerr << __PRETTY_FUNCTION__ << std::endl;
+      std::cerr << "fatal error in creating cache of type " << key.type() << std::endl;
       return 0;
     }
     c->_container = this;
     c->_parameters = key._parameters;
     if (c->resolveDependancies()){
-      insert(make_pair(key,c));
+      insert(std::make_pair(key,c));
       c->update();
       return c;
     } 

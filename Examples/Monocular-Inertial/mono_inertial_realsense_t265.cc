@@ -34,7 +34,7 @@
 #include <condition_variable>
 #include "MORB_SLAM/ImuTypes.h"
 
-using namespace std;
+
 
 bool b_continue_session;
 

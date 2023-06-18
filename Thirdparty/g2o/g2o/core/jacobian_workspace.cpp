@@ -30,7 +30,7 @@
 
 #include "optimizable_graph.h"
 
-using namespace std;
+
 
 namespace g2o {
 
@@ -45,7 +45,7 @@ JacobianWorkspace::~JacobianWorkspace()
 
 bool JacobianWorkspace::allocate()
 {
-  //cerr << __PRETTY_FUNCTION__ << " " << PVAR(this) << " " << PVAR(_maxNumVertices) << " " << PVAR(_maxDimension) << endl;
+  //std::cerr << __PRETTY_FUNCTION__ << " " << PVAR(this) << " " << PVAR(_maxNumVertices) << " " << PVAR(_maxDimension) << std::endl;
   if (_maxNumVertices <=0 || _maxDimension <= 0)
     return false;
   _workspace.resize(_maxNumVertices);
@@ -65,11 +65,11 @@ void JacobianWorkspace::updateSize(const HyperGraph::Edge* e_)
   for (int i = 0; i < numVertices; ++i) {
     const OptimizableGraph::Vertex* v = static_cast<const OptimizableGraph::Vertex*>(e->vertex(i));
     assert(v && "Edge has no vertex assigned");
-    maxDimensionForEdge = max(v->dimension() * errorDimension, maxDimensionForEdge);
+    maxDimensionForEdge = std::max(v->dimension() * errorDimension, maxDimensionForEdge);
   }
-  _maxNumVertices = max(numVertices, _maxNumVertices);
-  _maxDimension = max(maxDimensionForEdge, _maxDimension);
-  //cerr << __PRETTY_FUNCTION__ << " " << PVAR(this) << " " << PVAR(_maxNumVertices) << " " << PVAR(_maxDimension) << endl;
+  _maxNumVertices = std::max(numVertices, _maxNumVertices);
+  _maxDimension = std::max(maxDimensionForEdge, _maxDimension);
+  //std::cerr << __PRETTY_FUNCTION__ << " " << PVAR(this) << " " << PVAR(_maxNumVertices) << " " << PVAR(_maxDimension) << std::endl;
 }
 
 void JacobianWorkspace::updateSize(const OptimizableGraph& graph)
@@ -82,8 +82,8 @@ void JacobianWorkspace::updateSize(const OptimizableGraph& graph)
 
 void JacobianWorkspace::updateSize(int numVertices, int dimension)
 {
-  _maxNumVertices = max(numVertices, _maxNumVertices);
-  _maxDimension = max(dimension, _maxDimension);
+  _maxNumVertices = std::max(numVertices, _maxNumVertices);
+  _maxDimension = std::max(dimension, _maxDimension);
 }
 
 } // end namespace

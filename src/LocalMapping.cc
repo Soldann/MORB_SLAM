@@ -34,7 +34,7 @@
 namespace MORB_SLAM {
 
 LocalMapping::LocalMapping(System* pSys, const Atlas_ptr &pAtlas, const float bMonocular,
-                           bool bInertial, const string& _strSeqName)
+                           bool bInertial, const std::string& _strSeqName)
     : mRwg(Eigen::Matrix3d::Identity()),
       mScale(1.0),
       mInitSect(0),
@@ -162,9 +162,9 @@ void LocalMapping::Run() {
                         mpCurrentKeyFrame->mPrevKF->mTimeStamp;
             if (!mpCurrentKeyFrame->GetMap()->GetIniertialBA2()) {
               if ((mTinit < 10.f) && (dist < 0.02)) {
-                cout << "Not enough motion for initializing. Reseting..."
-                     << endl;
-                unique_lock<mutex> lock(mMutexReset);
+                std::cout << "Not enough motion for initializing. Reseting..."
+                     << std::endl;
+                std::unique_lock<std::mutex> lock(mMutexReset);
                 mbResetRequestedActiveMap = true;
                 mpMapToReset = mpCurrentKeyFrame->GetMap();
                 mbBadImu = true;
@@ -243,21 +243,21 @@ void LocalMapping::Run() {
           {
             if (!mpCurrentKeyFrame->GetMap()->GetIniertialBA1()) {
               if (mTinit > 5.0f) {
-                cout << "start VIBA 1" << endl;
+                std::cout << "start VIBA 1" << std::endl;
                 mpCurrentKeyFrame->GetMap()->SetIniertialBA1();
                 InitializeIMU(ImuInitializater::ImuInitType::VIBA1_G, ImuInitializater::ImuInitType::VIBA1_A, true);
 
                 isDoneVIBA = true;
                 notifyIsDoneVIBA = true;
-                cout << "end VIBA 1" << endl;
+                std::cout << "end VIBA 1" << std::endl;
               }
             } else if (!mpCurrentKeyFrame->GetMap()->GetIniertialBA2()) {
                 if (mTinit > 15.0f) {
-                    cout << "start VIBA 2" << endl;
+                    std::cout << "start VIBA 2" << std::endl;
                     mpCurrentKeyFrame->GetMap()->SetIniertialBA2();
                     InitializeIMU(ImuInitializater::ImuInitType::VIBA2_G, ImuInitializater::ImuInitType::VIBA2_A, true);
 
-                    cout << "end VIBA 2" << endl;
+                    std::cout << "end VIBA 2" << std::endl;
                 }
             }
 
@@ -314,19 +314,19 @@ void LocalMapping::Run() {
 }
 
 void LocalMapping::InsertKeyFrame(KeyFrame* pKF) {
-    unique_lock<mutex> lock(mMutexNewKFs);
+    std::unique_lock<std::mutex> lock(mMutexNewKFs);
     mlNewKeyFrames.push_back(pKF);
     mbAbortBA = true;
 }
 
 bool LocalMapping::CheckNewKeyFrames() {
-    unique_lock<mutex> lock(mMutexNewKFs);
+    std::unique_lock<std::mutex> lock(mMutexNewKFs);
     return (!mlNewKeyFrames.empty());
 }
 
 void LocalMapping::ProcessNewKeyFrame() {
     {
-        unique_lock<mutex> lock(mMutexNewKFs);
+        std::unique_lock<std::mutex> lock(mMutexNewKFs);
         mpCurrentKeyFrame = mlNewKeyFrames.front();
         mlNewKeyFrames.pop_front();
     }
@@ -335,7 +335,7 @@ void LocalMapping::ProcessNewKeyFrame() {
     mpCurrentKeyFrame->ComputeBoW();
 
     // Associate MapPoints to the new keyframe and update normal and descriptor
-  const vector<MapPoint*> vpMapPointMatches =
+  const std::vector<MapPoint*> vpMapPointMatches =
         mpCurrentKeyFrame->GetMapPointMatches();
 
     for (size_t i = 0; i < vpMapPointMatches.size(); i++) {
@@ -368,7 +368,7 @@ void LocalMapping::EmptyQueue() {
 
 void LocalMapping::MapPointCulling() {
     // Check Recent Added MapPoints
-  list<MapPoint*>::iterator lit = mlpRecentAddedMapPoints.begin();
+  std::list<MapPoint*>::iterator lit = mlpRecentAddedMapPoints.begin();
     const unsigned long int nCurrentKFid = mpCurrentKeyFrame->mnId;
 
     int nThObs;
@@ -406,14 +406,14 @@ void LocalMapping::CreateNewMapPoints() {
     int nn = 10;
     // For stereo inertial case
     if (mbMonocular) nn = 30;
-  vector<KeyFrame*> vpNeighKFs =
+  std::vector<KeyFrame*> vpNeighKFs =
         mpCurrentKeyFrame->GetBestCovisibilityKeyFrames(nn);
 
     if (mbInertial) {
     KeyFrame* pKF = mpCurrentKeyFrame;
         int count = 0;
     while ((static_cast<int>(vpNeighKFs.size()) <= nn) && (pKF->mPrevKF) && (count++ < nn)) {
-      vector<KeyFrame*>::iterator it =
+      std::vector<KeyFrame*>::iterator it =
                 std::find(vpNeighKFs.begin(), vpNeighKFs.end(), pKF->mPrevKF);
             if (it == vpNeighKFs.end()) vpNeighKFs.push_back(pKF->mPrevKF);
             pKF = pKF->mPrevKF;
@@ -467,7 +467,7 @@ void LocalMapping::CreateNewMapPoints() {
         }
 
         // Search matches that fullfil epipolar constraint
-        vector<pair<size_t, size_t>> vMatchedIndices;
+        std::vector<std::pair<size_t, size_t>> vMatchedIndices;
     bool bCoarse = mbInertial && mpTracker->mState == Tracker::RECENTLY_LOST &&
                        mpCurrentKeyFrame->GetMap()->GetIniertialBA2();
 
@@ -588,7 +588,7 @@ void LocalMapping::CreateNewMapPoints() {
 
             if (bStereo1 || bStereo2) totalStereoPts++;
 
-            cosParallaxStereo = min(cosParallaxStereo1, cosParallaxStereo2);
+            cosParallaxStereo = std::min(cosParallaxStereo1, cosParallaxStereo2);
 
             Eigen::Vector3f x3D;
 
@@ -715,10 +715,10 @@ void LocalMapping::SearchInNeighbors() {
     // Retrieve neighbor keyframes
     int nn = 10;
     if (mbMonocular) nn = 30;
-  const vector<KeyFrame*> vpNeighKFs =
+  const std::vector<KeyFrame*> vpNeighKFs =
         mpCurrentKeyFrame->GetBestCovisibilityKeyFrames(nn);
-  vector<KeyFrame*> vpTargetKFs;
-  for (vector<KeyFrame*>::const_iterator vit = vpNeighKFs.begin(),
+  std::vector<KeyFrame*> vpTargetKFs;
+  for (std::vector<KeyFrame*>::const_iterator vit = vpNeighKFs.begin(),
                                             vend = vpNeighKFs.end();
          vit != vend; vit++) {
     KeyFrame* pKFi = *vit;
@@ -731,9 +731,9 @@ void LocalMapping::SearchInNeighbors() {
     // Add some covisible of covisible
     // Extend to some second neighbors if abort is not requested
     for (int i = 0, imax = vpTargetKFs.size(); i < imax; i++) {
-    const vector<KeyFrame*> vpSecondNeighKFs =
+    const std::vector<KeyFrame*> vpSecondNeighKFs =
             vpTargetKFs[i]->GetBestCovisibilityKeyFrames(20);
-    for (vector<KeyFrame*>::const_iterator vit2 = vpSecondNeighKFs.begin(),
+    for (std::vector<KeyFrame*>::const_iterator vit2 = vpSecondNeighKFs.begin(),
                                                 vend2 = vpSecondNeighKFs.end();
              vit2 != vend2; vit2++) {
       KeyFrame* pKFi2 = *vit2;
@@ -763,8 +763,8 @@ void LocalMapping::SearchInNeighbors() {
 
     // Search matches by projection from current KF in target KFs
     ORBmatcher matcher;
-  vector<MapPoint*> vpMapPointMatches = mpCurrentKeyFrame->GetMapPointMatches();
-  for (vector<KeyFrame*>::iterator vit = vpTargetKFs.begin(),
+  std::vector<MapPoint*> vpMapPointMatches = mpCurrentKeyFrame->GetMapPointMatches();
+  for (std::vector<KeyFrame*>::iterator vit = vpTargetKFs.begin(),
                                       vend = vpTargetKFs.end();
          vit != vend; vit++) {
     KeyFrame* pKFi = *vit;
@@ -776,17 +776,17 @@ void LocalMapping::SearchInNeighbors() {
     if (mbAbortBA) return;
 
     // Search matches by projection from target KFs in current KF
-  vector<MapPoint*> vpFuseCandidates;
+  std::vector<MapPoint*> vpFuseCandidates;
     vpFuseCandidates.reserve(vpTargetKFs.size() * vpMapPointMatches.size());
 
-  for (vector<KeyFrame*>::iterator vitKF = vpTargetKFs.begin(),
+  for (std::vector<KeyFrame*>::iterator vitKF = vpTargetKFs.begin(),
                                       vendKF = vpTargetKFs.end();
          vitKF != vendKF; vitKF++) {
     KeyFrame* pKFi = *vitKF;
 
-    vector<MapPoint*> vpMapPointsKFi = pKFi->GetMapPointMatches();
+    std::vector<MapPoint*> vpMapPointsKFi = pKFi->GetMapPointMatches();
 
-    for (vector<MapPoint*>::iterator vitMP = vpMapPointsKFi.begin(),
+    for (std::vector<MapPoint*>::iterator vitMP = vpMapPointsKFi.begin(),
                                           vendMP = vpMapPointsKFi.end();
              vitMP != vendMP; vitMP++) {
       MapPoint* pMP = *vitMP;
@@ -819,17 +819,17 @@ void LocalMapping::SearchInNeighbors() {
 }
 
 void LocalMapping::RequestStop() {
-    unique_lock<mutex> lock(mMutexStop);
+    std::unique_lock<std::mutex> lock(mMutexStop);
     mbStopRequested = true;
-    unique_lock<mutex> lock2(mMutexNewKFs);
+    std::unique_lock<std::mutex> lock2(mMutexNewKFs);
     mbAbortBA = true;
 }
 
 bool LocalMapping::Stop() {
-    unique_lock<mutex> lock(mMutexStop);
+    std::unique_lock<std::mutex> lock(mMutexStop);
     if (mbStopRequested && !mbNotStop) {
         mbStopped = true;
-        cout << "Local Mapping STOP" << endl;
+        std::cout << "Local Mapping STOP" << std::endl;
         return true;
     }
 
@@ -837,43 +837,43 @@ bool LocalMapping::Stop() {
 }
 
 bool LocalMapping::isStopped() {
-    unique_lock<mutex> lock(mMutexStop);
+    std::unique_lock<std::mutex> lock(mMutexStop);
     return mbStopped;
 }
 
 bool LocalMapping::stopRequested() {
-    unique_lock<mutex> lock(mMutexStop);
+    std::unique_lock<std::mutex> lock(mMutexStop);
     return mbStopRequested;
 }
 
 void LocalMapping::Release() {
-    unique_lock<mutex> lock2(mMutexFinish);
-    unique_lock<mutex> lock(mMutexStop);
+    std::unique_lock<std::mutex> lock2(mMutexFinish);
+    std::unique_lock<std::mutex> lock(mMutexStop);
 
     if (mbFinished) return;
     mbStopped = false;
     mbStopRequested = false;
-  for (list<KeyFrame*>::iterator lit = mlNewKeyFrames.begin(),
+  for (std::list<KeyFrame*>::iterator lit = mlNewKeyFrames.begin(),
                                     lend = mlNewKeyFrames.end();
          lit != lend; lit++)
         delete *lit;
     mlNewKeyFrames.clear();
 
-    cout << "Local Mapping RELEASE" << endl;
+    std::cout << "Local Mapping RELEASE" << std::endl;
 }
 
 bool LocalMapping::AcceptKeyFrames() {
-    unique_lock<mutex> lock(mMutexAccept);
+    std::unique_lock<std::mutex> lock(mMutexAccept);
     return mbAcceptKeyFrames;
 }
 
 void LocalMapping::SetAcceptKeyFrames(bool flag) {
-    unique_lock<mutex> lock(mMutexAccept);
+    std::unique_lock<std::mutex> lock(mMutexAccept);
     mbAcceptKeyFrames = flag;
 }
 
 bool LocalMapping::SetNotStop(bool flag) {
-    unique_lock<mutex> lock(mMutexStop);
+    std::unique_lock<std::mutex> lock(mMutexStop);
 
     if (flag && mbStopped) return false;
 
@@ -891,7 +891,7 @@ void LocalMapping::KeyFrameCulling() {
   // consider close stereo points
     const int Nd = 21;
     mpCurrentKeyFrame->UpdateBestCovisibles();
-  vector<KeyFrame*> vpLocalKeyFrames =
+  std::vector<KeyFrame*> vpLocalKeyFrames =
         mpCurrentKeyFrame->GetVectorCovisibleKeyFrames();
 
     float redundant_th;
@@ -917,14 +917,14 @@ void LocalMapping::KeyFrameCulling() {
         last_ID = aux_KF->mnId;
     }
 
-  for (vector<KeyFrame*>::iterator vit = vpLocalKeyFrames.begin(),
+  for (std::vector<KeyFrame*>::iterator vit = vpLocalKeyFrames.begin(),
                                       vend = vpLocalKeyFrames.end();
          vit != vend; vit++) {
         count++;
     KeyFrame* pKF = *vit;
 
     if ((pKF->mnId == pKF->GetMap()->GetInitKFid()) || pKF->isBad()) continue;
-    const vector<MapPoint*> vpMapPoints = pKF->GetMapPointMatches();
+    const std::vector<MapPoint*> vpMapPoints = pKF->GetMapPointMatches();
 
         int nObs = 3;
         const int thObs = nObs;
@@ -946,17 +946,17 @@ void LocalMapping::KeyFrameCulling() {
                             : (static_cast<int>(i) < pKF->NLeft)
                                 ? pKF->mvKeys[i].octave
                                 : pKF->mvKeysRight[i].octave;
-            const map<KeyFrame*, tuple<int, int>> observations =
+            const std::map<KeyFrame*, std::tuple<int, int>> observations =
                             pMP->GetObservations();
                         int nObs = 0;
-            for (map<KeyFrame*, tuple<int, int>>::const_iterator
+            for (std::map<KeyFrame*, std::tuple<int, int>>::const_iterator
                                  mit = observations.begin(),
                                  mend = observations.end();
                              mit != mend; mit++) {
               KeyFrame* pKFi = mit->first;
                             if (pKFi == pKF) continue;
-                            tuple<int, int> indexes = mit->second;
-              int leftIndex = get<0>(indexes), rightIndex = get<1>(indexes);
+                            std::tuple<int, int> indexes = mit->second;
+              int leftIndex = std::get<0>(indexes), rightIndex = std::get<1>(indexes);
                             int scaleLeveli = -1;
                             if (pKFi->NLeft == -1)
                                 scaleLeveli = pKFi->mvKeysUn[leftIndex].octave;
@@ -1028,50 +1028,50 @@ void LocalMapping::KeyFrameCulling() {
 
 void LocalMapping::RequestReset() {
     {
-        unique_lock<mutex> lock(mMutexReset);
-        cout << "LM: Map reset recieved" << endl;
+        std::unique_lock<std::mutex> lock(mMutexReset);
+        std::cout << "LM: Map reset recieved" << std::endl;
         mbResetRequested = true;
     }
-    cout << "LM: Map reset, waiting..." << endl;
+    std::cout << "LM: Map reset, waiting..." << std::endl;
 
     while (1) {
         {
-            unique_lock<mutex> lock2(mMutexReset);
+            std::unique_lock<std::mutex> lock2(mMutexReset);
             if (!mbResetRequested) break;
         }
         usleep(3000);
     }
-    cout << "LM: Map reset, Done!!!" << endl;
+    std::cout << "LM: Map reset, Done!!!" << std::endl;
 }
 
 void LocalMapping::RequestResetActiveMap(std::shared_ptr<Map> pMap) {
     {
-        unique_lock<mutex> lock(mMutexReset);
-        cout << "LM: Active map reset recieved" << endl;
+        std::unique_lock<std::mutex> lock(mMutexReset);
+        std::cout << "LM: Active map reset recieved" << std::endl;
         mbResetRequestedActiveMap = true;
         mpMapToReset = pMap;
     }
-    cout << "LM: Active map reset, waiting..." << endl;
+    std::cout << "LM: Active map reset, waiting..." << std::endl;
     mbResetRequested = true;
     while (1) {
         {
-            cout << "loop: blocking in LocalMapping.cc" << endl;
-            unique_lock<mutex> lock2(mMutexReset);
+            std::cout << "loop: blocking in LocalMapping.cc" << std::endl;
+            std::unique_lock<std::mutex> lock2(mMutexReset);
             if (!mbResetRequestedActiveMap) break;
         }
         usleep(100);
     }
-    cout << "LM: Active map reset, Done!!!" << endl;
+    std::cout << "LM: Active map reset, Done!!!" << std::endl;
 }
 
 void LocalMapping::ResetIfRequested() {
     bool executed_reset = false;
     {
-        unique_lock<mutex> lock(mMutexReset);
+        std::unique_lock<std::mutex> lock(mMutexReset);
         if (mbResetRequested) {
             executed_reset = true;
 
-            cout << "LM: Reseting Atlas in Local Mapping..." << endl;
+            std::cout << "LM: Reseting Atlas in Local Mapping..." << std::endl;
             mlNewKeyFrames.clear();
             mlpRecentAddedMapPoints.clear();
             mbResetRequested = false;
@@ -1085,12 +1085,12 @@ void LocalMapping::ResetIfRequested() {
 
             mIdxInit = 0;
 
-            cout << "LM: End reseting Local Mapping..." << endl;
+            std::cout << "LM: End reseting Local Mapping..." << std::endl;
         }
 
         if (mbResetRequestedActiveMap) {
             executed_reset = true;
-            cout << "LM: Reseting current map in Local Mapping..." << endl;
+            std::cout << "LM: Reseting current map in Local Mapping..." << std::endl;
             mlNewKeyFrames.clear();
             mlpRecentAddedMapPoints.clear();
 
@@ -1102,31 +1102,31 @@ void LocalMapping::ResetIfRequested() {
 
             mbResetRequested = false;
             mbResetRequestedActiveMap = false;
-            cout << "LM: End reseting Local Mapping..." << endl;
+            std::cout << "LM: End reseting Local Mapping..." << std::endl;
         }
     }
-    if (executed_reset) cout << "LM: Reset free the mutex" << endl;
+    if (executed_reset) std::cout << "LM: Reset free the mutex" << std::endl;
 }
 
 void LocalMapping::RequestFinish() {
-    unique_lock<mutex> lock(mMutexFinish);
+    std::unique_lock<std::mutex> lock(mMutexFinish);
     mbFinishRequested = true;
 }
 
 bool LocalMapping::CheckFinish() {
-    unique_lock<mutex> lock(mMutexFinish);
+    std::unique_lock<std::mutex> lock(mMutexFinish);
     return mbFinishRequested;
 }
 
 void LocalMapping::SetFinish() {
-    unique_lock<mutex> lock(mMutexFinish);
+    std::unique_lock<std::mutex> lock(mMutexFinish);
     mbFinished = true;
-    unique_lock<mutex> lock2(mMutexStop);
+    std::unique_lock<std::mutex> lock2(mMutexStop);
     mbStopped = true;
 }
 
 bool LocalMapping::isFinished() {
-    unique_lock<mutex> lock(mMutexFinish);
+    std::unique_lock<std::mutex> lock(mMutexFinish);
     return mbFinished;
 }
 
@@ -1142,14 +1142,14 @@ void LocalMapping::InitializeIMU(ImuInitializater::ImuInitType priorG, ImuInitia
     }
 
     // Retrieve all keyframe in temporal order
-  list<KeyFrame*> lpKF;
+  std::list<KeyFrame*> lpKF;
   KeyFrame* pKF = mpCurrentKeyFrame;
     while (pKF->mPrevKF) {
         lpKF.push_front(pKF);
         pKF = pKF->mPrevKF;
     }
     lpKF.push_front(pKF);
-  vector<KeyFrame*> vpKF(lpKF.begin(), lpKF.end());
+  std::vector<KeyFrame*> vpKF(lpKF.begin(), lpKF.end());
 
     if (vpKF.size() < nMinKF) {
     std::cout << "cannot initialize, not enough frames in map vpKF?" << std::endl;
@@ -1177,7 +1177,7 @@ void LocalMapping::InitializeIMU(ImuInitializater::ImuInitType priorG, ImuInitia
         dirG.setZero();
     // std::cout << "Keyframes---------------------------------------------: " << N << std::endl;
 
-    for (vector<KeyFrame*>::iterator itKF = vpKF.begin(); itKF != vpKF.end(); itKF++) {
+    for (std::vector<KeyFrame*>::iterator itKF = vpKF.begin(); itKF != vpKF.end(); itKF++) {
 
       // std::cout << "Hello" << std::endl;
       if (!(*itKF)->mpImuPreintegrated) continue; // || isnan((*itKF)->mpImuPreintegrated->GetUpdatedDeltaVelocity().sum())
@@ -1237,14 +1237,14 @@ void LocalMapping::InitializeIMU(ImuInitializater::ImuInitType priorG, ImuInitia
   // std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now(); // UNUSED
 
     if (mScale < 1e-1) {
-        cout << "scale too small" << endl;
+        std::cout << "scale too small" << std::endl;
         bInitializing = false;
         return;
     }
 
-    // Before this line we are not changing the map
+    // Before this line we are not changing the std::map
     {
-        unique_lock<mutex> lock(mpAtlas->GetCurrentMap()->mMutexMapUpdate);
+        std::unique_lock<std::mutex> lock(mpAtlas->GetCurrentMap()->mMutexMapUpdate);
         if ((fabs(mScale - 1.f) > 0.00001) || !mbMonocular) {
       Sophus::SE3f Twg(mRwg.cast<float>().transpose(), Eigen::Vector3f::Zero());
       mpAtlas->GetCurrentMap()->ApplyScaledRotation(Twg, mScale, true);
@@ -1284,7 +1284,7 @@ void LocalMapping::InitializeIMU(ImuInitializater::ImuInitType priorG, ImuInitia
                        Verbose::VERBOSITY_NORMAL);
 
     // Get Map Mutex
-    unique_lock<mutex> lock(mpAtlas->GetCurrentMap()->mMutexMapUpdate);
+    std::unique_lock<std::mutex> lock(mpAtlas->GetCurrentMap()->mMutexMapUpdate);
 
     unsigned long GBAid = mpCurrentKeyFrame->mnId;
 
@@ -1296,15 +1296,15 @@ void LocalMapping::InitializeIMU(ImuInitializater::ImuInitType priorG, ImuInitia
     }
 
     // Correct keyframes starting at map first keyframe
-  list<KeyFrame*> lpKFtoCheck(
+  std::list<KeyFrame*> lpKFtoCheck(
         mpAtlas->GetCurrentMap()->mvpKeyFrameOrigins.begin(),
         mpAtlas->GetCurrentMap()->mvpKeyFrameOrigins.end());
 
     while (!lpKFtoCheck.empty()) {
     KeyFrame* pKF = lpKFtoCheck.front();
-    const set<KeyFrame*> sChilds = pKF->GetChilds();
+    const std::set<KeyFrame*> sChilds = pKF->GetChilds();
         Sophus::SE3f Twc = pKF->GetPoseInverse();
-    for (set<KeyFrame*>::const_iterator sit = sChilds.begin();
+    for (std::set<KeyFrame*>::const_iterator sit = sChilds.begin();
              sit != sChilds.end(); sit++) {
       KeyFrame* pChild = *sit;
             if (!pChild || pChild->isBad()) continue;
@@ -1336,14 +1336,14 @@ void LocalMapping::InitializeIMU(ImuInitializater::ImuInitType priorG, ImuInitia
             pKF->SetVelocity(pKF->mVwbGBA);
             pKF->SetNewBias(pKF->mBiasGBA);
         } else {
-            cout << "KF " << pKF->mnId << " not set to inertial!! \n";
+            std::cout << "KF " << pKF->mnId << " not set to inertial!! \n";
         }
 
         lpKFtoCheck.pop_front();
     }
 
     // Correct MapPoints
-  const vector<MapPoint*> vpMPs = mpAtlas->GetCurrentMap()->GetAllMapPoints();
+  const std::vector<MapPoint*> vpMPs = mpAtlas->GetCurrentMap()->GetAllMapPoints();
 
     for (size_t i = 0; i < vpMPs.size(); i++) {
     MapPoint* pMP = vpMPs[i];
@@ -1372,7 +1372,7 @@ void LocalMapping::InitializeIMU(ImuInitializater::ImuInitType priorG, ImuInitia
     mnKFs = vpKF.size();
     mIdxInit++;
 
-  for (list<KeyFrame*>::iterator lit = mlNewKeyFrames.begin(),
+  for (std::list<KeyFrame*>::iterator lit = mlNewKeyFrames.begin(),
                                     lend = mlNewKeyFrames.end();
          lit != lend; lit++) {
         (*lit)->SetBadFlag();
@@ -1392,18 +1392,18 @@ void LocalMapping::ScaleRefinement() {
     // Minimum number of keyframes to compute a solution
     // Minimum time (seconds) between first and last keyframe to compute a
     // solution. Make the difference between monocular and stereo
-    // unique_lock<mutex> lock0(mMutexImuInit);
+    // std::unique_lock<std::mutex> lock0(mMutexImuInit);
     if (mbResetRequested) return;
 
     // Retrieve all keyframes in temporal order
-  list<KeyFrame*> lpKF;
+  std::list<KeyFrame*> lpKF;
   KeyFrame* pKF = mpCurrentKeyFrame;
     while (pKF->mPrevKF) {
         lpKF.push_front(pKF);
         pKF = pKF->mPrevKF;
     }
     lpKF.push_front(pKF);
-  vector<KeyFrame*> vpKF(lpKF.begin(), lpKF.end());
+  std::vector<KeyFrame*> vpKF(lpKF.begin(), lpKF.end());
 
     while (CheckNewKeyFrames()) {
         ProcessNewKeyFrame();
@@ -1422,14 +1422,14 @@ void LocalMapping::ScaleRefinement() {
 
     if (mScale < 1e-1)  // 1e-1
     {
-        cout << "scale too small" << endl;
+        std::cout << "scale too small" << std::endl;
         bInitializing = false;
         return;
     }
 
     Sophus::SO3d so3wg(mRwg);
     // Before this line we are not changing the map
-    unique_lock<mutex> lock(mpAtlas->GetCurrentMap()->mMutexMapUpdate);
+    std::unique_lock<std::mutex> lock(mpAtlas->GetCurrentMap()->mMutexMapUpdate);
   // std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now(); // UNUSED
     if ((fabs(mScale - 1.f) > 0.002) || !mbMonocular) {
     Sophus::SE3f Tgw(mRwg.cast<float>().transpose(), Eigen::Vector3f::Zero());
@@ -1439,7 +1439,7 @@ void LocalMapping::ScaleRefinement() {
     }
   // std::chrono::steady_clock::time_point t3 = std::chrono::steady_clock::now(); // UNUSED
 
-  for (list<KeyFrame*>::iterator lit = mlNewKeyFrames.begin(),
+  for (std::list<KeyFrame*>::iterator lit = mlNewKeyFrames.begin(),
                                     lend = mlNewKeyFrames.end();
          lit != lend; lit++) {
         (*lit)->SetBadFlag();

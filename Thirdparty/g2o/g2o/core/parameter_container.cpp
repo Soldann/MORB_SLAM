@@ -37,7 +37,7 @@
 
 namespace g2o {
 
-  using namespace std;
+  
 
   ParameterContainer::ParameterContainer(bool isMainStorage_) :
     _isMainStorage(isMainStorage_)
@@ -63,7 +63,7 @@ namespace g2o {
     iterator it=find(p->id());
     if (it!=end())
       return false;
-    insert(make_pair(p->id(), p));
+    insert(std::make_pair(p->id(), p));
     return true;
   }
 
@@ -89,14 +89,14 @@ namespace g2o {
       os << factory->tag(it->second) << " ";
       os << it->second->id() << " ";
       it->second->write(os);
-      os << endl;
+      os << std::endl;
     }
     return true;
   }
 
   bool ParameterContainer::read(std::istream& is, const std::map<std::string, std::string>* _renamedTypesLookup){
-    stringstream currentLine;
-    string token;
+    std::stringstream currentLine;
+    std::string token;
 
     Factory* factory = Factory::instance();
     HyperGraph::GraphElemBitset elemBitset;
@@ -110,7 +110,7 @@ namespace g2o {
       if (bytesRead == 0 || token.size() == 0 || token[0] == '#')
         continue;
       if (_renamedTypesLookup && _renamedTypesLookup->size()>0){
-	map<string, string>::const_iterator foundIt = _renamedTypesLookup->find(token);
+	std::map<std::string, std::string>::const_iterator foundIt = _renamedTypesLookup->find(token);
 	if (foundIt != _renamedTypesLookup->end()) {
 	  token = foundIt->second;
 	}
@@ -127,11 +127,11 @@ namespace g2o {
       p->setId(pid);
       bool r = p->read(currentLine);
       if (! r) {
-        cerr << __PRETTY_FUNCTION__ << ": Error reading data " << token << " for parameter " << pid << endl;
+        std::cerr << __PRETTY_FUNCTION__ << ": Error reading data " << token << " for parameter " << pid << std::endl;
         delete p;
       } else {
         if (! addParameter(p) ){
-          cerr << __PRETTY_FUNCTION__ << ": Parameter of type:" << token << " id:" << pid << " already defined" << endl;
+          std::cerr << __PRETTY_FUNCTION__ << ": Parameter of type:" << token << " id:" << pid << " already defined" << std::endl;
         }
       }
     } // while read line

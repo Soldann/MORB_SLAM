@@ -36,8 +36,6 @@
 
 namespace g2o {
 
-  using namespace Eigen;
-
   template <int D, typename E, typename VertexXi, typename VertexXj>
   class BaseBinaryEdge : public BaseEdge<D, E>
   {
@@ -51,13 +49,13 @@ namespace g2o {
 
       static const int Dimension = BaseEdge<D, E>::Dimension;
       typedef typename BaseEdge<D,E>::Measurement Measurement;
-      typedef typename Matrix<double, D, Di>::AlignedMapType JacobianXiOplusType;
-      typedef typename Matrix<double, D, Dj>::AlignedMapType JacobianXjOplusType;
+      typedef typename Eigen::Matrix<double, D, Di>::AlignedMapType JacobianXiOplusType;
+      typedef typename Eigen::Matrix<double, D, Dj>::AlignedMapType JacobianXjOplusType;
       typedef typename BaseEdge<D,E>::ErrorVector ErrorVector;
       typedef typename BaseEdge<D,E>::InformationType InformationType;
 
-      typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & PacketAccessBit ? Aligned : Unaligned > HessianBlockType;
-      typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & PacketAccessBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      typedef Eigen::Map<Eigen::Matrix<double, Di, Dj>, Eigen::Matrix<double, Di, Dj>::Flags & Eigen::PacketAccessBit ? Eigen::Aligned : Eigen::Unaligned > HessianBlockType;
+      typedef Eigen::Map<Eigen::Matrix<double, Dj, Di>, Eigen::Matrix<double, Dj, Di>::Flags & Eigen::PacketAccessBit ? Eigen::Aligned : Eigen::Unaligned > HessianBlockTransposedType;
 
       BaseBinaryEdge() : BaseEdge<D,E>(),
       _hessianRowMajor(false),

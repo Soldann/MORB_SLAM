@@ -27,7 +27,7 @@
 #include<MORB_SLAM/System.h>
 #include<MORB_SLAM/Viewer.h>
 
-using namespace std;
+
 
 void LoadImages(const string &strPathToSequence, vector<string> &vstrImageLeft,
                 vector<string> &vstrImageRight, vector<double> &vTimestamps);

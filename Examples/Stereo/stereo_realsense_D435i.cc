@@ -36,7 +36,7 @@
 
 #include "librealsense2/rsutil.h"
 
-using namespace std;
+
 
 bool b_continue_session;
 

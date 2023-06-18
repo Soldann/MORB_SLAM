@@ -29,7 +29,7 @@
 #include <MORB_SLAM/Viewer.h>
 #include "MORB_SLAM/Converter.h"
 
-using namespace std;
+
 
 void LoadImages(const string &strImagePath, const string &strPathTimes,
                 vector<string> &vstrImages, vector<double> &vTimeStamps);

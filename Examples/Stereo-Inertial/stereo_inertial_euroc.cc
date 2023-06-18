@@ -32,7 +32,7 @@
 #include "MORB_SLAM/ImuTypes.h"
 #include "MORB_SLAM/Optimizer.h"
 
-using namespace std;
+
 
 void LoadImages(const string &strPathLeft, const string &strPathRight, const string &strPathTimes,
                 vector<string> &vstrImageLeft, vector<string> &vstrImageRight, vector<double> &vTimeStamps);

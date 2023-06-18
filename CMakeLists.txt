@@ -68,6 +68,7 @@ find_package(Pangolin REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(Boost REQUIRED COMPONENTS serialization regex)
 find_package(Boost REQUIRED)
+find_package(OpenSSL REQUIRED)
 
 file(GLOB CPP_FILES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
 file(GLOB CPP_CAMERA_MODELS_FILES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/CameraModels/*.cpp)
@@ -90,6 +91,7 @@ target_link_libraries( ${TARGET_NAME} PUBLIC Threads::Threads )
 target_link_libraries( ${TARGET_NAME} PUBLIC Eigen3::Eigen )
 target_link_libraries( ${TARGET_NAME} PUBLIC Boost::serialization Boost::regex )
 target_link_libraries( ${TARGET_NAME} PUBLIC ${OpenCV_LIBS} )
+target_link_libraries( ${TARGET_NAME} PRIVATE OpenSSL::SSL )
 target_link_libraries( ${TARGET_NAME} PRIVATE ${Pangolin_LIBRARIES} )
 
 

@@ -37,7 +37,7 @@ namespace g2o {
 /**
  * \brief Point vertex, XYZ
  */
- class VertexSBAPointXYZ : public BaseVertex<3, Vector3d>
+ class VertexSBAPointXYZ : public BaseVertex<3, Eigen::Vector3d>
 {
   public:
         
@@ -51,7 +51,7 @@ namespace g2o {
 
     virtual void oplusImpl(const double* update)
     {
-      Eigen::Map<const Vector3d> v(update);
+      Eigen::Map<const Eigen::Vector3d> v(update);
       _estimate += v;
     }
 };

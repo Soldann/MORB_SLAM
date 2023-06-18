@@ -616,7 +616,7 @@ namespace g2o {
     virtual void setFixed(HyperGraph::VertexSet& vset, bool fixed);
 
     /**
-     * set the renamed types lookup from a string, format is for example:
+     * set the renamed types lookup from a std::string, format is for example:
      * VERTEX_CAM=VERTEX_SE3:EXPMAP,EDGE_PROJECT_P2MC=EDGE_PROJECT_XYZ:EXPMAP
      * This will change the occurance of VERTEX_CAM in the file to VERTEX_SE3:EXPMAP
      */
@@ -645,7 +645,7 @@ namespace g2o {
     /**
      * verify that all the information of the edges are semi positive definite, i.e.,
      * all Eigenvalues are >= 0.
-     * @param verbose output edges with not PSD information matrix on cerr
+     * @param verbose output edges with not PSD information matrix on std::cerr
      * @return true if all edges have PSD information matrix
      */
     bool verifyInformationMatrices(bool verbose = false) const;

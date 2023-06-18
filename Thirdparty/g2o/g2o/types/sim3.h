@@ -32,10 +32,10 @@
 
 namespace g2o
 {
-  using namespace Eigen;
+  
 
-  typedef  Matrix <double, 7, 1> Vector7d;
-  typedef  Matrix <double, 7, 7> Matrix7d;
+  typedef  Eigen::Matrix <double, 7, 1> Vector7d;
+  typedef  Eigen::Matrix <double, 7, 7> Matrix7d;
   
 
   struct Sim3
@@ -43,8 +43,8 @@ namespace g2o
     
 
   protected:
-    Quaterniond r;
-    Vector3d t;
+    Eigen::Quaterniond r;
+    Eigen::Vector3d t;
     double s;
 
 
@@ -56,13 +56,13 @@ public:
       s=1.;
     }
 
-    Sim3(const Quaterniond & r, const Vector3d & t, double s)
+    Sim3(const Eigen::Quaterniond & r, const Eigen::Vector3d & t, double s)
       : r(r),t(t),s(s)
     {
     }
 
-    Sim3(const Matrix3d & R, const Vector3d & t, double s)
-      : r(Quaterniond(R)),t(t),s(s)
+    Sim3(const Eigen::Matrix3d & R, const Eigen::Vector3d & t, double s)
+      : r(Eigen::Quaterniond(R)),t(t),s(s)
     {
     }
 
@@ -70,22 +70,22 @@ public:
     Sim3(const Vector7d & update)
     {
 
-      Vector3d omega;
+      Eigen::Vector3d omega;
       for (int i=0; i<3; i++)
         omega[i]=update[i];
 
-      Vector3d upsilon;
+      Eigen::Vector3d upsilon;
       for (int i=0; i<3; i++)
         upsilon[i]=update[i+3];
 
       double sigma = update[6];
       double theta = omega.norm();
-      Matrix3d Omega = skew(omega);
+      Eigen::Matrix3d Omega = skew(omega);
       s = std::exp(sigma);
-      Matrix3d Omega2 = Omega*Omega;
-      Matrix3d I;
+      Eigen::Matrix3d Omega2 = Omega*Omega;
+      Eigen::Matrix3d I;
       I.setIdentity();
-      Matrix3d R;
+      Eigen::Matrix3d R;
 
       double eps = 0.00001;
       double A,B,C;
@@ -133,15 +133,15 @@ public:
 
         }
       }
-      r = Quaterniond(R);
+      r = Eigen::Quaterniond(R);
 
 
 
-      Matrix3d W = A*Omega + B*Omega2 + C*I;
+      Eigen::Matrix3d W = A*Omega + B*Omega2 + C*I;
       t = W*upsilon;
     }
 
-     Vector3d map (const Vector3d& xyz) const {
+     Eigen::Vector3d map (const Eigen::Vector3d& xyz) const {
       return s*(r*xyz) + t;
     }
 
@@ -153,17 +153,17 @@ public:
       
 
    
-      Vector3d omega;
-      Vector3d upsilon;
+      Eigen::Vector3d omega;
+      Eigen::Vector3d upsilon;
 
 
-      Matrix3d R = r.toRotationMatrix();
+      Eigen::Matrix3d R = r.toRotationMatrix();
       double d =  0.5*(R(0,0)+R(1,1)+R(2,2)-1);
 
-      Matrix3d Omega;
+      Eigen::Matrix3d Omega;
 
       double eps = 0.00001;
-      Matrix3d I = Matrix3d::Identity();
+      Eigen::Matrix3d I = Eigen::Matrix3d::Identity();
 
       double A,B,C;
       if (fabs(sigma)<eps)
@@ -212,7 +212,7 @@ public:
         }
       }
 
-      Matrix3d W = A*Omega + B*Omega*Omega + C*I;
+      Eigen::Matrix3d W = A*Omega + B*Omega*Omega + C*I;
 
       upsilon = W.lu().solve(t);
 
@@ -277,13 +277,13 @@ public:
       return *this;
     }
 
-    inline const Vector3d& translation() const {return t;}
+    inline const Eigen::Vector3d& translation() const {return t;}
 
-    inline Vector3d& translation() {return t;}
+    inline Eigen::Vector3d& translation() {return t;}
 
-    inline const Quaterniond& rotation() const {return r;}
+    inline const Eigen::Quaterniond& rotation() const {return r;}
 
-    inline Quaterniond& rotation() {return r;}
+    inline Eigen::Quaterniond& rotation() {return r;}
 
     inline const double& scale() const {return s;}
 

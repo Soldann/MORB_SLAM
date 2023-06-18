@@ -26,7 +26,7 @@
 
 #include "optimization_algorithm.h"
 
-using namespace std;
+
 
 namespace g2o {
 
@@ -41,12 +41,12 @@ OptimizationAlgorithm::~OptimizationAlgorithm()
 
 void OptimizationAlgorithm::printProperties(std::ostream& os) const
 {
-  os << "------------- Algorithm Properties -------------"  << endl;
+  os << "------------- Algorithm Properties -------------"  << std::endl;
   for (PropertyMap::const_iterator it = _properties.begin(); it != _properties.end(); ++it) {
     BaseProperty* p = it->second;
-    os << it->first << "\t" << p->toString() << endl;
+    os << it->first << "\t" << p->toString() << std::endl;
   }
-  os << "------------------------------------------------" << endl;
+  os << "------------------------------------------------" << std::endl;
 }
 
 bool OptimizationAlgorithm::updatePropertiesFromString(const std::string& propString)

@@ -44,7 +44,7 @@
 #include "g2o/config.h"
 
 namespace g2o{
-  using namespace std;
+  
 
 
   SparseOptimizer::SparseOptimizer() :
@@ -80,7 +80,7 @@ namespace g2o{
       OptimizableGraph::Edge* e = _activeEdges[k];
       bool hasNan = arrayHasNaN(e->errorData(), e->dimension());
       if (hasNan) {
-        cerr << "computeActiveErrors(): found NaN in error for edge " << e << endl;
+        std::cerr << "computeActiveErrors(): found NaN in error for edge " << e << std::endl;
       }
     }
 #  endif
@@ -205,7 +205,7 @@ namespace g2o{
 
   bool SparseOptimizer::initializeOptimization(HyperGraph::VertexSet& vset, int level){
     if (edges().size() == 0) {
-      cerr << __PRETTY_FUNCTION__ << ": Attempt to initialize an empty graph" << endl;
+      std::cerr << __PRETTY_FUNCTION__ << ": Attempt to initialize an empty graph" << std::endl;
       return false;
     }
     bool workspaceAllocated = _jacobianWorkspace.allocate(); (void) workspaceAllocated;
@@ -214,7 +214,7 @@ namespace g2o{
     _activeVertices.clear();
     _activeVertices.reserve(vset.size());
     _activeEdges.clear();
-    set<Edge*> auxEdgeSet; // temporary structure to avoid duplicates
+    std::set<Edge*> auxEdgeSet; // temporary structure to avoid duplicates
     for (HyperGraph::VertexSet::iterator it=vset.begin(); it!=vset.end(); ++it){
       OptimizableGraph::Vertex* v= (OptimizableGraph::Vertex*) *it;
       const OptimizableGraph::EdgeSet& vEdges=v->edges();
@@ -225,7 +225,7 @@ namespace g2o{
         if (level < 0 || e->level() == level) {
 
           bool allVerticesOK = true;
-          for (vector<HyperGraph::Vertex*>::const_iterator vit = e->vertices().begin(); vit != e->vertices().end(); ++vit) {
+          for (std::vector<HyperGraph::Vertex*>::const_iterator vit = e->vertices().begin(); vit != e->vertices().end(); ++vit) {
             if (vset.find(*vit) == vset.end()) {
               allVerticesOK = false;
               break;
@@ -250,7 +250,7 @@ namespace g2o{
             int k;
             bool hasNan = arrayHasNaN(estimateData.data(), estimateDim, &k);
             if (hasNan)
-              cerr << __PRETTY_FUNCTION__ << ": Vertex " << v->id() << " contains a nan entry at index " << k << endl;
+              std::cerr << __PRETTY_FUNCTION__ << ": Vertex " << v->id() << " contains a nan entry at index " << k << std::endl;
           }
         }
 #      endif
@@ -259,7 +259,7 @@ namespace g2o{
     }
 
     _activeEdges.reserve(auxEdgeSet.size());
-    for (set<Edge*>::iterator it = auxEdgeSet.begin(); it != auxEdgeSet.end(); ++it)
+    for (std::set<Edge*>::iterator it = auxEdgeSet.begin(); it != auxEdgeSet.end(); ++it)
       _activeEdges.push_back(*it);
 
     sortVectorContainers();
@@ -273,17 +273,17 @@ namespace g2o{
     _activeVertices.clear();
     _activeEdges.clear();
     _activeEdges.reserve(eset.size());
-    set<Vertex*> auxVertexSet; // temporary structure to avoid duplicates
+    std::set<Vertex*> auxVertexSet; // temporary structure to avoid duplicates
     for (HyperGraph::EdgeSet::iterator it=eset.begin(); it!=eset.end(); ++it){
       OptimizableGraph::Edge* e=(OptimizableGraph::Edge*)(*it);
-      for (vector<HyperGraph::Vertex*>::const_iterator vit = e->vertices().begin(); vit != e->vertices().end(); ++vit) {
+      for (std::vector<HyperGraph::Vertex*>::const_iterator vit = e->vertices().begin(); vit != e->vertices().end(); ++vit) {
         auxVertexSet.insert(static_cast<OptimizableGraph::Vertex*>(*vit));
       }
       _activeEdges.push_back(reinterpret_cast<OptimizableGraph::Edge*>(*it));
     }
 
     _activeVertices.reserve(auxVertexSet.size());
-    for (set<Vertex*>::iterator it = auxVertexSet.begin(); it != auxVertexSet.end(); ++it)
+    for (std::set<Vertex*>::iterator it = auxVertexSet.begin(); it != auxVertexSet.end(); ++it)
       _activeVertices.push_back(*it);
 
     sortVectorContainers();
@@ -318,7 +318,7 @@ namespace g2o{
           for (EdgeSet::const_iterator vedgeIt = v->edges().begin(); vedgeIt != v->edges().end(); ++vedgeIt) {
             OptimizableGraph::Edge* vedge = static_cast<OptimizableGraph::Edge*>(*vedgeIt);
             if (vedge->vertices().size() == 1 && vedge->initialEstimatePossible(emptySet, v) > 0.) {
-              //cerr << "Initialize with prior for " << v->id() << endl;
+              //std::cerr << "Initialize with prior for " << v->id() << std::endl;
               vedge->initialEstimate(emptySet, v);
               fixedVertices.insert(v);
             }
@@ -344,17 +344,17 @@ namespace g2o{
     }
     if (verbose()) {
       computeActiveErrors();
-      cerr << "iteration= -1\t chi2= " << activeChi2()
+      std::cerr << "iteration= -1\t chi2= " << activeChi2()
           << "\t time= 0.0"
           << "\t cumTime= 0.0"
-          << "\t (using initial guess from " << costFunction.name() << ")" << endl;
+          << "\t (using initial guess from " << costFunction.name() << ")" << std::endl;
     }
   }
 
   int SparseOptimizer::optimize(int iterations, bool online)
   {
     if (_ivMap.size() == 0) {
-      cerr << __PRETTY_FUNCTION__ << ": 0 vertices to optimize, maybe forgot to call initializeOptimization()" << endl;
+      std::cerr << __PRETTY_FUNCTION__ << ": 0 vertices to optimize, maybe forgot to call initializeOptimization()" << std::endl;
       return -1;
     }
 
@@ -364,7 +364,7 @@ namespace g2o{
 
     ok = _algorithm->init(online);
     if (! ok) {
-      cerr << __PRETTY_FUNCTION__ << " Error while initializing" << endl;
+      std::cerr << __PRETTY_FUNCTION__ << " Error while initializing" << std::endl;
       return -1;
     }
 
@@ -401,13 +401,13 @@ namespace g2o{
         cumTime += dts;
         if (! errorComputed)
           computeActiveErrors();
-        cerr << "iteration= " << i
+        std::cerr << "iteration= " << i
           << "\t chi2= " << FIXED(activeRobustChi2())
           << "\t time= " << dts
           << "\t cumTime= " << cumTime
           << "\t edges= " << _activeEdges.size();
-        _algorithm->printVerbose(cerr);
-        cerr << endl;
+        _algorithm->printVerbose(std::cerr);
+        std::cerr << std::endl;
       }
       ++cjIterations; 
       postIteration(i);
@@ -427,7 +427,7 @@ namespace g2o{
 #ifndef NDEBUG
       bool hasNan = arrayHasNaN(update, v->dimension());
       if (hasNan)
-        cerr << __PRETTY_FUNCTION__ << ": Update contains a nan for vertex " << v->id() << endl;
+        std::cerr << __PRETTY_FUNCTION__ << ": Update contains a nan for vertex " << v->id() << std::endl;
 #endif
       v->oplus(update);
       update += v->dimension();
@@ -475,13 +475,13 @@ namespace g2o{
     }
 
     //if (newVertices.size() != vset.size())
-    //cerr << __PRETTY_FUNCTION__ << ": something went wrong " << PVAR(vset.size()) << " " << PVAR(newVertices.size()) << endl;
+    //std::cerr << __PRETTY_FUNCTION__ << ": something went wrong " << PVAR(vset.size()) << " " << PVAR(newVertices.size()) << std::endl;
     return _algorithm->updateStructure(newVertices, eset);
   }
 
   void SparseOptimizer::sortVectorContainers()
   {
-    // sort vector structures to get deterministic ordering based on IDs
+    // sort std::vector structures to get deterministic ordering based on IDs
     sort(_activeVertices.begin(), _activeVertices.end(), VertexIDCompare());
     sort(_activeEdges.begin(), _activeEdges.end(), EdgeIDCompare());
   }
@@ -532,7 +532,7 @@ namespace g2o{
       if (v)
 	v->push();
       else 
-	cerr << __FUNCTION__ << ": FATAL PUSH SET" << endl;
+	std::cerr << __FUNCTION__ << ": FATAL PUSH SET" << std::endl;
     }
   }
 
@@ -543,7 +543,7 @@ namespace g2o{
       if (v)
 	v->pop();
       else 
-	cerr << __FUNCTION__ << ": FATAL POP SET" << endl;
+	std::cerr << __FUNCTION__ << ": FATAL POP SET" << std::endl;
     }
   }
 
@@ -567,7 +567,7 @@ namespace g2o{
       _algorithm->setOptimizer(this);
   }
 
-  bool SparseOptimizer::computeMarginals(SparseBlockMatrix<MatrixXd>& spinv, const std::vector<std::pair<int, int> >& blockIndices){
+  bool SparseOptimizer::computeMarginals(SparseBlockMatrix<Eigen::MatrixXd>& spinv, const std::vector<std::pair<int, int> >& blockIndices){
     return _algorithm->computeMarginals(spinv, blockIndices);
   }
 

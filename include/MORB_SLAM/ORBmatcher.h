@@ -88,7 +88,7 @@ class ORBmatcher {
 
   // Matching to triangulate new MapPoints. Check Epipolar Constraint.
   int SearchForTriangulation(KeyFrame *pKF1, KeyFrame *pKF2,
-                             std::vector<pair<size_t, size_t> > &vMatchedPairs,
+                             std::vector<std::pair<size_t, size_t> > &vMatchedPairs,
                              const bool bOnlyStereo,
                              const bool bCoarse = false);
 
@@ -102,14 +102,14 @@ class ORBmatcher {
                    const Sophus::Sim3f &S12, const float th);
 
   // Project MapPoints into KeyFrame and search for duplicated MapPoints.
-  int Fuse(KeyFrame *pKF, const vector<MapPoint *> &vpMapPoints,
+  int Fuse(KeyFrame *pKF, const std::vector<MapPoint *> &vpMapPoints,
            const float th = 3.0, const bool bRight = false);
 
   // Project MapPoints into KeyFrame using a given Sim3 and search for
   // duplicated MapPoints.
   int Fuse(KeyFrame *pKF, Sophus::Sim3f &Scw,
            const std::vector<MapPoint *> &vpPoints, float th,
-           vector<MapPoint *> &vpReplacePoint);
+           std::vector<MapPoint *> &vpReplacePoint);
 
  public:
   static const int TH_LOW;

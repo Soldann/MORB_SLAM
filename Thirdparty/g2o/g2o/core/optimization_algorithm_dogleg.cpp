@@ -34,7 +34,7 @@
 #include "sparse_optimizer.h"
 #include "solver.h"
 #include "batch_stats.h"
-using namespace std;
+
 
 namespace g2o {
 
@@ -65,7 +65,7 @@ namespace g2o {
     if (iteration == 0 && !online) { // built up the CCS structure, here due to easy time measure
       bool ok = _solver->buildStructure();
       if (! ok) {
-        cerr << __PRETTY_FUNCTION__ << ": Failure while building CCS structure" << endl;
+        std::cerr << __PRETTY_FUNCTION__ << ": Failure while building CCS structure" << std::endl;
         return OptimizationAlgorithm::Fail;
       }
 
@@ -187,7 +187,7 @@ namespace g2o {
       if (fabs(linearGain) < 1e-12)
         linearGain = 1e-12;
       double rho = nonLinearGain / linearGain;
-      //cerr << PVAR(nonLinearGain) << " " << PVAR(linearGain) << " " << PVAR(rho) << endl;
+      //std::cerr << PVAR(nonLinearGain) << " " << PVAR(linearGain) << " " << PVAR(rho) << std::endl;
       if (rho > 0) { // step is good and will be accepted
         _optimizer->discardTop();
         goodStep = true;

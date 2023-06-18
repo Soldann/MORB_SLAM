@@ -111,13 +111,13 @@ int test_velocities() {
   using std::cerr;
   using std::endl;
 
-  cerr << "Test Velocities" << endl << endl;
-  cerr << "Double tests: " << endl;
+  std::cerr << "Test Velocities" << std::endl << std::endl;
+  std::cerr << "Double tests: " << std::endl;
   bool passed = tests_linear_velocities<double>();
   passed &= tests_rotational_velocities<double>();
   processTestResult(passed);
 
-  cerr << "Float tests: " << endl;
+  std::cerr << "Float tests: " << std::endl;
   passed = tests_linear_velocities<float>();
   passed &= tests_rotational_velocities<float>();
   processTestResult(passed);

@@ -25,7 +25,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace g2o {
-  using namespace Eigen;
+  
 
   namespace {
     struct TripletEntry
@@ -239,8 +239,8 @@ namespace g2o {
     }
 
     // map the memory by Eigen
-    Eigen::Map<VectorXd> destVec(dest, rows());
-    const Eigen::Map<const VectorXd> srcVec(src, cols());
+    Eigen::Map<Eigen::VectorXd> destVec(dest, rows());
+    const Eigen::Map<const Eigen::VectorXd> srcVec(src, cols());
 
     for (size_t i=0; i<_blockCols.size(); ++i){
       int srcOffset = i ? _colBlockIndices[i-1] : 0;
@@ -263,8 +263,8 @@ namespace g2o {
     }
 
     // map the memory by Eigen
-    Eigen::Map<VectorXd> destVec(dest, rows());
-    const Eigen::Map<const VectorXd> srcVec(src, cols());
+    Eigen::Map<Eigen::VectorXd> destVec(dest, rows());
+    const Eigen::Map<const Eigen::VectorXd> srcVec(src, cols());
 
     for (size_t i=0; i<_blockCols.size(); ++i){
       int srcOffset = colBaseOfBlock(i);
@@ -291,8 +291,8 @@ namespace g2o {
     }
 
     // map the memory by Eigen
-    Eigen::Map<VectorXd> destVec(dest, destSize);
-    Eigen::Map<const VectorXd> srcVec(src, rows());
+    Eigen::Map<Eigen::VectorXd> destVec(dest, destSize);
+    Eigen::Map<const Eigen::VectorXd> srcVec(src, rows());
 
 #   ifdef G2O_OPENMP
 #   pragma omp parallel for default (shared) schedule(dynamic, 10)
@@ -432,7 +432,7 @@ namespace g2o {
     }
     // now ready to permute the columns
     for (size_t i=0; i<n; ++i){
-      //cerr << PVAR(i) <<  " ";
+      //std::cerr << PVAR(i) <<  " ";
       int pi=pinv[i];
       for (typename SparseBlockMatrix<MatrixType>::IntBlockMap::const_iterator it=_blockCols[i].begin(); 
           it!=_blockCols[i].end(); ++it){
@@ -454,7 +454,7 @@ namespace g2o {
           *b=s->transpose();
         }
       }
-      //cerr << endl;
+      //std::cerr << std::endl;
       // within each row, 
     }
     return true;

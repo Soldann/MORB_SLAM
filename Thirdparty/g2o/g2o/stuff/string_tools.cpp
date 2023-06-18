@@ -43,15 +43,15 @@
 
 namespace g2o {
 
-using namespace std;
+
 
 std::string trim(const std::string& s)
 {
   if(s.length() == 0)
     return s;
-  string::size_type b = s.find_first_not_of(" \t\n");
-  string::size_type e = s.find_last_not_of(" \t\n");
-  if(b == string::npos)
+  std::string::size_type b = s.find_first_not_of(" \t\n");
+  std::string::size_type e = s.find_last_not_of(" \t\n");
+  if(b == std::string::npos)
     return "";
   return std::string(s, b, e - b + 1);
 }
@@ -60,9 +60,9 @@ std::string trimLeft(const std::string& s)
 {
   if(s.length() == 0)
     return s;
-  string::size_type b = s.find_first_not_of(" \t\n");
-  string::size_type e = s.length() - 1;
-  if(b == string::npos)
+  std::string::size_type b = s.find_first_not_of(" \t\n");
+  std::string::size_type e = s.length() - 1;
+  if(b == std::string::npos)
     return "";
   return std::string(s, b, e - b + 1);
 }
@@ -71,23 +71,23 @@ std::string trimRight(const std::string& s)
 {
   if(s.length() == 0)
     return s;
-  string::size_type b = 0;
-  string::size_type e = s.find_last_not_of(" \t\n");
-  if(b == string::npos)
+  std::string::size_type b = 0;
+  std::string::size_type e = s.find_last_not_of(" \t\n");
+  if(b == std::string::npos)
     return "";
   return std::string(s, b, e - b + 1);
 }
 
 std::string strToLower(const std::string& s)
 {
-  string ret;
+  std::string ret;
   std::transform(s.begin(), s.end(), back_inserter(ret), (int(*)(int)) std::tolower);
   return ret;
 }
 
 std::string strToUpper(const std::string& s)
 {
-  string ret;
+  std::string ret;
   std::transform(s.begin(), s.end(), back_inserter(ret), (int(*)(int)) std::toupper);
   return ret;
 }
@@ -99,11 +99,11 @@ std::string formatString(const char* fmt, ...)
   va_start(arg_list, fmt);
   int numChar = vasprintf(&auxPtr, fmt, arg_list);
   va_end(arg_list);
-  string retString;
+  std::string retString;
   if (numChar != -1)
     retString = auxPtr;
   else {
-    cerr << __PRETTY_FUNCTION__ << ": Error while allocating memory" << endl;
+    std::cerr << __PRETTY_FUNCTION__ << ": Error while allocating memory" << std::endl;
   }
   free(auxPtr);
   return retString;
@@ -124,7 +124,7 @@ int strPrintf(std::string& str, const char* fmt, ...)
 std::string strExpandFilename(const std::string& filename)
 {
 #if (defined (UNIX) || defined(CYGWIN)) && !defined(ANDROID)
-  string result = filename;
+  std::string result = filename;
   wordexp_t p;
 
   wordexp(filename.c_str(), &p, 0);
@@ -143,14 +143,14 @@ std::string strExpandFilename(const std::string& filename)
 std::vector<std::string> strSplit(const std::string& str, const std::string& delimiters)
 {
   std::vector<std::string> tokens;
-  string::size_type lastPos = 0;
-  string::size_type pos     = 0;
+  std::string::size_type lastPos = 0;
+  std::string::size_type pos     = 0;
 
   do {
     pos = str.find_first_of(delimiters, lastPos);
     tokens.push_back(str.substr(lastPos, pos - lastPos));
     lastPos = pos + 1;
-  }  while (string::npos != pos);
+  }  while (std::string::npos != pos);
 
   return tokens;
 }

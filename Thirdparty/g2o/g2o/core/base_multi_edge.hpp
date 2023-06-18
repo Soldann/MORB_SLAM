@@ -39,7 +39,7 @@ void BaseMultiEdge<D, E>::constructQuadraticForm()
     double error = this->chi2();
     Eigen::Vector3d rho;
     this->robustKernel()->robustify(error, rho);
-    Matrix<double, D, 1> omega_r = - _information * _error;
+    Eigen::Matrix<double, D, 1> omega_r = - _information * _error;
     omega_r *= rho[1];
     computeQuadraticForm(this->robustInformation(rho), omega_r);
   } else {
@@ -175,13 +175,13 @@ void BaseMultiEdge<D, E>::computeQuadraticForm(const InformationType& omega, con
     bool istatus = !(from->fixed());
 
     if (istatus) {
-      const MatrixXd& A = _jacobianOplus[i];
+      const Eigen::MatrixXd& A = _jacobianOplus[i];
 
-      MatrixXd AtO = A.transpose() * omega;
+      Eigen::MatrixXd AtO = A.transpose() * omega;
       int fromDim = from->dimension();
       assert(fromDim >= 0);
-      Eigen::Map<MatrixXd> fromMap(from->hessianData(), fromDim, fromDim);
-      Eigen::Map<VectorXd> fromB(from->bData(), fromDim);
+      Eigen::Map<Eigen::MatrixXd> fromMap(from->hessianData(), fromDim, fromDim);
+      Eigen::Map<Eigen::VectorXd> fromB(from->bData(), fromDim);
 
       // ii block in the hessian
 #ifdef G2O_OPENMP
@@ -198,7 +198,7 @@ void BaseMultiEdge<D, E>::computeQuadraticForm(const InformationType& omega, con
 #endif
         bool jstatus = !(to->fixed());
         if (jstatus) {
-          const MatrixXd& B = _jacobianOplus[j];
+          const Eigen::MatrixXd& B = _jacobianOplus[j];
           int idx = internal::computeUpperTriangleIndex(i, j);
           assert(idx < (int)_hessian.size());
           HessianHelper& hhelper = _hessian[idx];

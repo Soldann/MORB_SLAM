@@ -22,7 +22,7 @@
 #include "MORB_SLAM/ImprovedTypes.hpp"
 #include "MORB_SLAM/Settings.h"
 
-#include<mutex>
+#include <mutex>
 
 namespace MORB_SLAM
 {

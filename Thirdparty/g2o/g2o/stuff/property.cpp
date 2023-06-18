@@ -32,7 +32,7 @@
 #include "macros.h"
 
 #include "string_tools.h"
-using namespace std;
+
 
 namespace g2o {
 
@@ -42,7 +42,7 @@ namespace g2o {
   BaseProperty::~BaseProperty(){}
 
   bool PropertyMap::addProperty(BaseProperty* p) {
-    std::pair<PropertyMapIterator,bool> result = insert(make_pair(p->name(), p));
+    std::pair<PropertyMapIterator,bool> result = insert(std::make_pair(p->name(), p));
     return result.second;
   }
 
@@ -88,15 +88,15 @@ namespace g2o {
   bool PropertyMap::updateMapFromString(const std::string& values)
   {
     bool status = true;
-    vector<string> valuesMap = strSplit(values, ",");
+    std::vector<std::string> valuesMap = strSplit(values, ",");
     for (size_t i = 0; i < valuesMap.size(); ++i) {
-      vector<string> m = strSplit(valuesMap[i], "=");
+      std::vector<std::string> m = strSplit(valuesMap[i], "=");
       if (m.size() != 2) {
-        cerr << __PRETTY_FUNCTION__ << ": unable to extract name=value pair from " << valuesMap[i] << endl;
+        std::cerr << __PRETTY_FUNCTION__ << ": unable to extract name=value pair from " << valuesMap[i] << std::endl;
         continue;
       }
-      string name = trim(m[0]);
-      string value = trim(m[1]);
+      std::string name = trim(m[0]);
+      std::string value = trim(m[1]);
       status = status && updatePropertyFromString(name, value);
     }
     return status;

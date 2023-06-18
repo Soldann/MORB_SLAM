@@ -123,7 +123,7 @@ namespace g2o {
   /**Sim3ProjectXYZ*/
 
   EdgeSim3ProjectXYZ::EdgeSim3ProjectXYZ() :
-  BaseBinaryEdge<2, Vector2d, VertexSBAPointXYZ, VertexSim3Expmap>()
+  BaseBinaryEdge<2, Eigen::Vector2d, VertexSBAPointXYZ, VertexSim3Expmap>()
   {
   }
 
@@ -159,7 +159,7 @@ namespace g2o {
 /**InverseSim3ProjectXYZ*/
 
   EdgeInverseSim3ProjectXYZ::EdgeInverseSim3ProjectXYZ() :
-  BaseBinaryEdge<2, Vector2d, VertexSBAPointXYZ, VertexSim3Expmap>()
+  BaseBinaryEdge<2, Eigen::Vector2d, VertexSBAPointXYZ, VertexSim3Expmap>()
   {
   }
 

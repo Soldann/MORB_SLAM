@@ -27,6 +27,10 @@
 #include <memory>
 #include <boost/serialization/base_object.hpp>
 #include <stdexcept>
+#include <map>
+#include <string>
+#include <list>
+#include <vector>
 
 
 namespace MORB_SLAM
@@ -130,12 +134,12 @@ public:
     unsigned int GetLowerKFID();
 
     void PreSave(std::set<std::shared_ptr<GeometricCamera>> &spCams, std::shared_ptr<Map> sharedMap);
-    void PostLoad(KeyFrameDatabase* pKFDB, ORBVocabulary* pORBVoc/*, map<long unsigned int, KeyFrame*>& mpKeyFrameId*/, map<unsigned int, std::shared_ptr<GeometricCamera>> &mpCams, std::shared_ptr<Map> sharedMap);
+    void PostLoad(KeyFrameDatabase* pKFDB, ORBVocabulary* pORBVoc/*, std::map<long unsigned int, KeyFrame*>& mpKeyFrameId*/, std::map<unsigned int, std::shared_ptr<GeometricCamera>> &mpCams, std::shared_ptr<Map> sharedMap);
 
-    void printReprojectionError(list<KeyFrame*> &lpLocalWindowKFs, KeyFrame* mpCurrentKF, string &name, string &name_folder);
+    void printReprojectionError(std::list<KeyFrame*> &lpLocalWindowKFs, KeyFrame* mpCurrentKF, std::string &name, std::string &name_folder);
 
-    vector<KeyFrame*> mvpKeyFrameOrigins;
-    vector<unsigned long int> mvBackupKeyFrameOriginsId;
+    std::vector<KeyFrame*> mvpKeyFrameOrigins;
+    std::vector<unsigned long int> mvBackupKeyFrameOriginsId;
     KeyFrame* mpFirstRegionKF;
     std::mutex mMutexMapUpdate;
 
