@@ -40,6 +40,7 @@
 #include <thread>
 #include <string>
 #include <iostream>
+#include <filesystem>
 
 #include "MORB_SLAM/Converter.h"
 
@@ -1407,6 +1408,14 @@ void System::SaveAtlas(int type) {
     mpAtlas->PreSave();
     std::cout << "presaved\n";
     std::string pathSaveFileName = mStrSaveAtlasToFile;  
+
+    // Create the folder if it does not exist
+    std::filesystem::path fsPath = pathSaveFileName;
+    fsPath = fsPath.parent_path();
+    if(!std::filesystem::exists(fsPath)){
+      std::filesystem::create_directory(fsPath);
+    }
+
     auto time = std::chrono::system_clock::now();
     std::time_t time_time = std::chrono::system_clock::to_time_t(time);
     std::string str_time = std::ctime(&time_time);
