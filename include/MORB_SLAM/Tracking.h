@@ -76,7 +76,7 @@ class Tracking {
   Sophus::SE3f GrabImageMonocular(const cv::Mat& im, const double& timestamp,
                                   const std::string &filename, const Camera_ptr &cam);
 
-  void GrabImuData(const IMU::Point& imuMeasurement);
+  void GrabImuData(const std::vector<IMU::Point>& imuMeasurements);
 
   void SetLocalMapper(LocalMapping* pLocalMapper);
   void SetLoopClosing(LoopClosing* pLoopClosing);

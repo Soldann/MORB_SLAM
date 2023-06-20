@@ -1519,9 +1519,10 @@ Sophus::SE3f Tracking::GrabImageMonocular(const cv::Mat& im,
   return mCurrentFrame.GetPose();
 }
 
-void Tracking::GrabImuData(const IMU::Point& imuMeasurement) {
+void Tracking::GrabImuData(const std::vector<IMU::Point>& imuMeasurements) {
   std::unique_lock<std::mutex> lock(mMutexImuQueue);
-  mlQueueImuData.push_back(imuMeasurement);
+  for(auto &point : imuMeasurements)
+    mlQueueImuData.emplace_back(point); // copy ctor
 }
 
 void Tracking::PreintegrateIMU() {
@@ -1540,32 +1541,28 @@ void Tracking::PreintegrateIMU() {
     return;
   }
 
-  while (true) {
-    std::unique_lock<std::mutex> lock(mMutexImuQueue);
-    bool bSleep = false;
+  // std::cout << "mImuPer " << mImuPer << std::endl;
   {
-    if (!mlQueueImuData.empty()) {
-      IMU::Point* m = &mlQueueImuData.front();
-      std::cout.precision(17);
-      if (m->t < mCurrentFrame.mpPrevFrame->mTimeStamp - mImuPer) {
-        mlQueueImuData.pop_front();
-      } else if (m->t < mCurrentFrame.mTimeStamp - mImuPer) {
-        mvImuFromLastFrame.push_back(*m);
-        mlQueueImuData.pop_front();
-      } else {
-        mvImuFromLastFrame.push_back(*m);
+    std::unique_lock<std::mutex> lock(mMutexImuQueue);
+    auto itr = mlQueueImuData.begin();
+    auto lastItr = itr;
+    for(; itr != mlQueueImuData.end(); ++itr){
+      IMU::Point &point = *itr;
+      if(point.t < mCurrentFrame.mpPrevFrame->mTimeStamp - mImuPer) {
+        // pass
+      }else if(point.t < mCurrentFrame.mTimeStamp - mImuPer){
+        mvImuFromLastFrame.emplace_back(point);
+      }else{
         break;
       }
-    } else {
-      break;
-      bSleep = true;
+      lastItr = itr;
     }
-  }
-    if (bSleep) usleep(500);
+    if(!mvImuFromLastFrame.empty())
+      mlQueueImuData.erase(mlQueueImuData.begin(), lastItr);
   }
 
   const int n = mvImuFromLastFrame.size() - 1;
-  if (n == 0) {
+  if (n <= 0) {
     std::cout << "Empty IMU measurements vector!!!\n";
     return;
   }
