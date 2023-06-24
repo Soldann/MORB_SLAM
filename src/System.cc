@@ -1400,7 +1400,7 @@ void System::SaveAtlas(int type) {
     std::time_t time_time = std::chrono::system_clock::to_time_t(time);
     std::string str_time = std::ctime(&time_time);
     pathSaveFileName =
-        "stereoFiles" + str_time + ".osa";  // pathSaveFileName.append(".osa");
+         "stereoFiles" + str_time + ".osa";  //pathSaveFileName.append(".osa"); //
 
     std::cout << "About to Calculate \n";
 
