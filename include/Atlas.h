@@ -71,7 +71,7 @@ class Atlas {
   }
 
  public:
-  
+
 
   Atlas();
   Atlas(int initKFid);  // When its initialization the first map is created

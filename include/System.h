@@ -87,7 +87,7 @@ public:
     };
 
 public:
-    
+
     // Initialize the SLAM system. It launches the Local Mapping, Loop Closing and Viewer threads.
     System(const string &strVocFile, const string &strSettingsFile, const CameraType::eSensor sensor, const string &strSequence = std::string());
 
@@ -171,6 +171,8 @@ public:
     void ChangeDataset();
 
     float GetImageScale();
+
+    void CreatePCD(const string &filename);
 
 #ifdef REGISTER_TIMES
     void InsertRectTime(double& time);

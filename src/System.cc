@@ -1383,6 +1383,62 @@ void System::InsertTrackTime(double& time) {
 }
 #endif
 
+
+void System::CreatePCD(const string &filename){
+    cout << endl << "Saving map points to " << filename << endl;
+    std::cout << "Alright in the process pf building" << std::endl;
+    int width = mpAtlas->GetNumLivedMP();
+    // vector<MapPoint*> vMPs = mpMap->GetAllMapPoints();
+
+    // Create PCD init string
+    std::string begin = std::string("# .PCD v.7 - Point Cloud Data file format\nVERSION .7\n");
+    begin += "FIELDS x y z\n";
+    begin += "SIZE 4 4 4\n";
+    begin += "TYPE F F F\n";
+    begin += "COUNT 1 1 1\n";
+
+    // int width = vMPs.size();
+    begin += "WIDTH ";
+    begin += std::to_string(width);
+    begin += "\nHEIGHT 1\n";
+    begin += "VIEWPOINT 0 0 0 1 0 0 0\n";
+    begin += "POINTS ";
+    begin += std::to_string(width);
+    begin += "\nDATA ascii\n";
+
+    // File Opening:
+    ofstream f;
+    f.open(filename.c_str());
+    f << begin;
+
+    // Write the point clouds:
+
+    // unique_lock<mutex> lock(mMutexAtlas);
+
+    auto mspMaps = mpAtlas->GetAllMaps();
+    for (Map* pMap_i : mspMaps) {
+      // num += pMap_i->GetAllMapPoints().size();
+
+      vector<MapPoint*> vMPs = pMap_i->GetAllMapPoints();
+      for(size_t i= 0; i < vMPs.size(); ++i){
+              MapPoint *pMP = vMPs[i];
+              if (pMP->isBad()) continue;
+              auto MPPositions = pMP->GetWorldPos();
+              f << setprecision(7) << MPPositions[0] << " " <<
+              MPPositions[1]<< " " << MPPositions[2] << endl;
+      }
+
+
+    }
+
+
+
+
+    f.close();
+    cout << endl << "Map Points saved!" << endl;
+
+  }
+
 void System::SaveAtlas(int type) {
   std::cout << "Thread ID is: " << std::this_thread::get_id() << std::endl;
   std::cout << "trying to save \n";
@@ -1392,8 +1448,10 @@ void System::SaveAtlas(int type) {
 
     // Save the current session
     mpAtlas->PreSave();
+
     std::cout << "presaved\n";
     string pathSaveFileName = "./";
+    string pcdFileName = "./";
     pathSaveFileName = pathSaveFileName.append(mStrSaveAtlasToFile);
     std::cout << "string append\n";
     auto time = std::chrono::system_clock::now();
@@ -1401,8 +1459,13 @@ void System::SaveAtlas(int type) {
     std::string str_time = std::ctime(&time_time);
     pathSaveFileName =
          "stereoFiles" + str_time + ".osa";  //pathSaveFileName.append(".osa"); //
+    pcdFileName =
+         "./pcdFile" + str_time + ".pcd";
 
+    CreatePCD(pcdFileName);
     std::cout << "About to Calculate \n";
+
+
 
     string strVocabularyChecksum =
         CalculateCheckSum(mStrVocabularyFilePath, TEXT_FILE);
