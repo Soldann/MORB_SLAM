@@ -127,7 +127,6 @@ class Optimizer {
   void static InertialOptimization(std::shared_ptr<Map> pMap, Eigen::Matrix3d &Rwg,
                                    double &scale, Eigen::Vector3d &bg,
                                    Eigen::Vector3d &ba, bool bMono,
-                                   Eigen::MatrixXd &covInertial,
                                    bool bFixedVel = false, bool bGauss = false,
                                    ImuInitializater::ImuInitType priorG = ImuInitializater::ImuInitType::DEFAULT_G, 
                                    ImuInitializater::ImuInitType priorA = ImuInitializater::ImuInitType::DEFAULT_A);

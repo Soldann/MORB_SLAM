@@ -4,12 +4,12 @@
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path" # change directories so working directory is where the script is
 
-rm Vocabulary/ORBvoc.txt  2> /dev/null
-rm -r build  2> /dev/null
-rm -r bin 2> /dev/null
+rm -rf Vocabulary/ORBvoc.txt  2> /dev/null
+rm -rf build  2> /dev/null
+rm -rf bin 2> /dev/null
 
 # Clean executable examples
-rm Examples/RGB-D/rgbd_tum \
+rm -rf Examples/RGB-D/rgbd_tum \
     Examples/RGB-D/rgbd_realsense_D435i \
     Examples/RGB-D-Inertial/rgbd_inertial_realsense_D435i \
     Examples/Monocular/mono_realsense_D435i \
@@ -44,6 +44,6 @@ rm Examples/RGB-D/rgbd_tum \
     Examples/Tests/sophus_test \
     2> /dev/null
 
-rm -r Examples/ROS/MORB_SLAM/build 2> /dev/null
+rm -rf Examples/ROS/MORB_SLAM/build 2> /dev/null
 
 echo cleaning complete

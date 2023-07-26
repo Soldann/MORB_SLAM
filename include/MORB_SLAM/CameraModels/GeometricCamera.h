@@ -50,9 +50,8 @@ class GeometricCamera {
 
  public:
   GeometricCamera() {}
-  GeometricCamera(const std::vector<float>& _vParameters)
-      : mvParameters(_vParameters) {}
-  ~GeometricCamera() {}
+  GeometricCamera(const std::vector<float>& _vParameters) : mvParameters(_vParameters) {}
+  virtual ~GeometricCamera() {}
 
   virtual cv::Point2f project(const cv::Point3f& p3D) const = 0;
   virtual Eigen::Vector2d project(const Eigen::Vector3d& v3D) const = 0;
@@ -64,8 +63,7 @@ class GeometricCamera {
   virtual Eigen::Vector3f unprojectEig(const cv::Point2f& p2D) const = 0;
   virtual cv::Point3f unproject(const cv::Point2f& p2D) const = 0;
 
-  virtual Eigen::Matrix<double, 2, 3> projectJac(
-      const Eigen::Vector3d& v3D) = 0;
+  virtual Eigen::Matrix<double, 2, 3> projectJac(const Eigen::Vector3d& v3D) = 0;
 
   virtual bool ReconstructWithTwoViews(const std::vector<cv::KeyPoint>& vKeys1,
                                        const std::vector<cv::KeyPoint>& vKeys2,

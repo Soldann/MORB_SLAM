@@ -40,22 +40,16 @@
 #include "MORB_SLAM/System.h"
 #include "MORB_SLAM/ImprovedTypes.hpp"
 #include "MORB_SLAM/Camera.hpp"
+#include "MORB_SLAM/Packet.hpp"
 
 namespace MORB_SLAM {
-
-class Atlas;
-class LocalMapping;
-class LoopClosing;
-class System;
-class Settings;
 
 class Tracking {
  public:
   
   Tracking(System* pSys, ORBVocabulary* pVoc,
            const Atlas_ptr &pAtlas, KeyFrameDatabase* pKFDB,
-           const std::string& strSettingPath, const CameraType::eSensor sensor, Settings* settings,
-           const std::string& _nameSeq = std::string());
+           const std::string& strSettingPath, const CameraType sensor, Settings* settings);
 
   ~Tracking();
 
@@ -66,14 +60,14 @@ class Tracking {
 
   // Preprocess the input and call Track(). Extract features and performs stereo
   // matching.
-  Sophus::SE3f GrabImageStereo(const cv::Mat& imRectLeft,
+  StereoPacket GrabImageStereo(const cv::Mat& imRectLeft,
                                const cv::Mat& imRectRight,
                                const double& timestamp, const std::string &filename,
                                const Camera_ptr &cam);
-  Sophus::SE3f GrabImageRGBD(const cv::Mat& imRGB, const cv::Mat& imD,
+  RGBDPacket GrabImageRGBD(const cv::Mat& imRGB, const cv::Mat& imD,
                              const double& timestamp, const std::string &filename,
                              const Camera_ptr &cam);
-  Sophus::SE3f GrabImageMonocular(const cv::Mat& im, const double& timestamp,
+  MonoPacket GrabImageMonocular(const cv::Mat& im, const double& timestamp,
                                   const std::string &filename, const Camera_ptr &cam);
 
   void GrabImuData(const std::vector<IMU::Point>& imuMeasurements);
@@ -90,23 +84,14 @@ class Tracking {
   // to localize the camera.
   void InformOnlyTracking(const bool& flag);
 
-  void UpdateFrameIMU(const float s, const IMU::Bias& b,
-                      KeyFrame* pCurrentKeyFrame);
+  void UpdateFrameIMU(const float s, const IMU::Bias& b, KeyFrame* pCurrentKeyFrame);
   KeyFrame* GetLastKeyFrame() { return mpLastKeyFrame; }
 
   void CreateMapInAtlas();
   // std::mutex mMutexTracks;
 
   //--
-  void NewDataset();
-  int GetNumberDataset();
   int GetMatchesInliers();
-
-  // DEBUG
-  void SaveSubTrajectory(std::string strNameFile_frames, std::string strNameFile_kf,
-                         std::string strFolder = "");
-  void SaveSubTrajectory(std::string strNameFile_frames, std::string strNameFile_kf,
-                         std::shared_ptr<Map> pMap);
 
   float GetImageScale();
 
@@ -119,17 +104,15 @@ class Tracking {
 
  public:
 
-  Tracker::eTrackingState mState;
-  Tracker::eTrackingState mLastProcessedState;
+  TrackingState mState;
+  TrackingState mLastProcessedState;
 
   // Input sensor
-  CameraType::eSensor mSensor;
+  CameraType mSensor;
 
   // Current Frame
   Frame mCurrentFrame;
   Frame mLastFrame;
-
-  cv::Mat mImGray;
 
   // Initialization Variables (Monocular)
   std::vector<int> mvIniLastMatches;
@@ -137,37 +120,25 @@ class Tracking {
   std::vector<cv::Point2f> mvbPrevMatched;
   std::vector<cv::Point3f> mvIniP3D;
   Frame mInitialFrame;
-  Frame mLastValidFrame;
 
   // Lists used to recover the full camera trajectory at the end of the
   // execution. Basically we store the reference keyframe for each frame and its
   // relative transformation
+protected:
   std::list<Sophus::SE3f> mlRelativeFramePoses;
   std::list<KeyFrame*> mlpReferences;
-  std::list<double> mlFrameTimes;
   std::list<bool> mlbLost;
+public:
 
-  // frames with estimated pose
-  int mTrackedFr;
-  bool mbStep;
-
-  // True if local mapping is deactivated and we are performing only
-  // localization
+  // True if local mapping is deactivated and we are performing only localization
   bool mbOnlyTracking;
 
   void Reset(bool bLocMap = false);
   void ResetActiveMap(bool bLocMap = false);
 
-  float mMeanTrack;
-  bool mbInitWith3KFs;
-  double t0;     // time-stamp of first read frame
-  double t0vis;  // time-stamp of first inserted keyframe
-  double t0IMU;  // time-stamp of IMU initialization
+ protected:
   bool mFastInit = false;
-
-  std::vector<MapPoint*> GetLocalMapMPS();
-
-  bool mbWriteStats;
+ public:
 
 #ifdef REGISTER_TIMES
   void LocalMapStats2File();
@@ -231,7 +202,6 @@ class Tracking {
 
   // Vector of IMU measurements from previous to current frame (to be filled by
   // PreintegrateIMU)
-  std::vector<IMU::Point> mvImuFromLastFrame;
   std::mutex mMutexImuQueue;
 
   // Imu calibration parameters
@@ -245,7 +215,7 @@ class Tracking {
   // enough matches with temporal points. In that case we are doing visual
   // odometry. The system will try to do relocalization to recover "zero-drift"
   // localization to the map.
-  bool mbVO;
+  bool notEnoughMatchPoints_trackOnlyMode;
 
   // Other Thread Pointers
   LocalMapping* mpLocalMapper;
@@ -320,25 +290,10 @@ class Tracking {
   bool mbCreatedMap;
 
   // Motion Model
-  bool mbVelocity{false};
+  bool imuMotionModelPrepedAfterRecentlyLostTracking{false};
   Sophus::SE3f mVelocity;
 
-  // Color order (true RGB, false BGR, ignored if grayscale)
-  bool mbRGB;
-
   std::list<MapPoint*> mlpTemporalPoints;
-
-  // int nMapChangeIndex;
-
-  int mnNumDataset;
-
-  std::ofstream f_track_stats;
-
-  std::ofstream f_track_times;
-  double mTime_PreIntIMU;
-  double mTime_PosePred;
-  double mTime_LocalMapTrack;
-  double mTime_NewKF_Dec;
 
   std::shared_ptr<GeometricCamera> mpCamera;
   std::shared_ptr<GeometricCamera> mpCamera2;
@@ -357,10 +312,9 @@ class Tracking {
   bool mbNotStop;
   std::mutex mMutexStop;
 #endif
-
- public:
-  cv::Mat mImRight;
 };
+typedef std::shared_ptr<Tracking> Tracking_ptr;
+typedef std::weak_ptr<Tracking> Tracking_wptr;
 
 }  // namespace MORB_SLAM
 

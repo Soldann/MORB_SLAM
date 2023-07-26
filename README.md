@@ -1,8 +1,16 @@
 # MORB_SLAM
 
-[![CMake Build](https://github.com/Soldann/MORB_SLAM/actions/workflows/cmake.yml/badge.svg)](https://github.com/Soldann/MORB_SLAM/actions/workflows/cmake.yml)
+> This fork of [ORB_SLAM3](https://github.com/UZ-SLAMLab/ORB_SLAM3) converts it into a CMake package that can be imported into other projects. It is continued from the original now deprecated/abandoned fork [MORB_SLAM](https://github.com/Soldann/MORB_SLAM).
 
-This fork of [MORB_SLAM](https://github.com/UZ-SLAMLab/MORB_SLAM) converts it into a CMake package that can be imported into other projects. Run `morbslam_installer.sh` to install.
+Install the library dependencies:
+```bash
+./dependencies.sh
+```
+
+Build and install MORB_SLAM:
+```bash
+./build.sh
+```
 
 In your other projects, import using:
 ```cmake

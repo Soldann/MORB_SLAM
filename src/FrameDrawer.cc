@@ -30,8 +30,7 @@
 
 namespace MORB_SLAM {
 
-FrameDrawer::FrameDrawer(const Atlas_ptr &pAtlas) : both(false), mpAtlas(pAtlas) {
-  mState = Tracker::SYSTEM_NOT_READY;
+FrameDrawer::FrameDrawer(const Atlas_ptr &pAtlas) : both(false), mState(TrackingState::SYSTEM_NOT_READY), mpAtlas(pAtlas) {
   mIm = cv::Mat(480, 640, CV_8UC3, cv::Scalar(0, 0, 0));
   mImRight = cv::Mat(480, 640, CV_8UC3, cv::Scalar(0, 0, 0));
 }
@@ -45,7 +44,7 @@ cv::Mat FrameDrawer::DrawFrame(float imageScale) {
   std::vector<cv::KeyPoint> vCurrentKeys;  // KeyPoints in current frame
   std::vector<bool> vbVO, vbMap;           // Tracked MapPoints in current frame
   std::vector<std::pair<cv::Point2f, cv::Point2f>> vTracks;
-  int state;  // Tracking state
+  TrackingState state(TrackingState::SYSTEM_NOT_READY);  // Tracking state
 
   cv::Scalar standardColor(0, 255, 0);
   cv::Scalar odometryColor(255, 0, 0);
@@ -54,20 +53,20 @@ cv::Mat FrameDrawer::DrawFrame(float imageScale) {
   {
     std::unique_lock<std::mutex> lock(mMutex);
     state = mState;
-    if (state == Tracker::SYSTEM_NOT_READY) state = Tracker::NO_IMAGES_YET;
+    if (state == TrackingState::SYSTEM_NOT_READY) state = TrackingState::NO_IMAGES_YET;
 
     mIm.copyTo(im);
 
-    if (state == Tracker::NOT_INITIALIZED) {
+    if (state == TrackingState::NOT_INITIALIZED) {
       vCurrentKeys = mvCurrentKeys;
       vIniKeys = mvIniKeys;
       vMatches = mvIniMatches;
       vTracks = mvTracks;
-    } else if (state == Tracker::OK) {
+    } else if (state == TrackingState::OK) {
       vCurrentKeys = mvCurrentKeys;
       vbVO = mvbVO;
       vbMap = mvbMap;
-    } else if (state == Tracker::LOST) {
+    } else if (state == TrackingState::LOST) {
       vCurrentKeys = mvCurrentKeys;
     }
   }
@@ -82,7 +81,7 @@ cv::Mat FrameDrawer::DrawFrame(float imageScale) {
     cv::cvtColor(im, im, cv::COLOR_GRAY2BGR);
 
   // Draw
-  if (state == Tracker::NOT_INITIALIZED) {
+  if (state == TrackingState::NOT_INITIALIZED) {
     for (unsigned int i = 0; i < vMatches.size(); i++) {
       if (vMatches[i] >= 0) {
         cv::Point2f pt1, pt2;
@@ -108,7 +107,7 @@ cv::Mat FrameDrawer::DrawFrame(float imageScale) {
       cv::line(im, pt1, pt2, standardColor, 5);
     }
 
-  } else if (state == Tracker::OK)  // TRACKING
+  } else if (state == TrackingState::OK)  // TRACKING
   {
     mnTracked = 0;
     mnTrackedVO = 0;
@@ -164,25 +163,25 @@ cv::Mat FrameDrawer::DrawRightFrame(float imageScale) {
   std::vector<int> vMatches;
   std::vector<cv::KeyPoint> vCurrentKeys;  // KeyPoints in current frame
   std::vector<bool> vbVO, vbMap;           // Tracked MapPoints in current frame
-  int state;                          // Tracking state
+  TrackingState state(TrackingState::SYSTEM_NOT_READY); // Tracking state
 
   // Copy variables within scoped mutex
   {
     std::unique_lock<std::mutex> lock(mMutex);
     state = mState;
-    if (mState == Tracker::SYSTEM_NOT_READY) mState = Tracker::NO_IMAGES_YET;
+    if (mState == TrackingState::SYSTEM_NOT_READY) mState = TrackingState::NO_IMAGES_YET;
 
     mImRight.copyTo(im);
 
-    if (mState == Tracker::NOT_INITIALIZED) {
+    if (mState == TrackingState::NOT_INITIALIZED) {
       vCurrentKeys = mvCurrentKeysRight;
       vIniKeys = mvIniKeys;
       vMatches = mvIniMatches;
-    } else if (mState == Tracker::OK) {
+    } else if (mState == TrackingState::OK) {
       vCurrentKeys = mvCurrentKeysRight;
       vbVO = mvbVO;
       vbMap = mvbMap;
-    } else if (mState == Tracker::LOST) {
+    } else if (mState == TrackingState::LOST) {
       vCurrentKeys = mvCurrentKeysRight;
     }
   }  // destroy scoped mutex -> release mutex
@@ -197,7 +196,7 @@ cv::Mat FrameDrawer::DrawRightFrame(float imageScale) {
     cvtColor(im, im, cv::COLOR_GRAY2BGR);
 
   // Draw
-  if (state == Tracker::NOT_INITIALIZED)  // INITIALIZING
+  if (state == TrackingState::NOT_INITIALIZED)  // INITIALIZING
   {
     for (unsigned int i = 0; i < vMatches.size(); i++) {
       if (vMatches[i] >= 0) {
@@ -213,7 +212,7 @@ cv::Mat FrameDrawer::DrawRightFrame(float imageScale) {
         cv::line(im, pt1, pt2, cv::Scalar(0, 255, 0));
       }
     }
-  } else if (state == Tracker::OK)  // TRACKING
+  } else if (state == TrackingState::OK)  // TRACKING
   {
     mnTracked = 0;
     mnTrackedVO = 0;
@@ -263,13 +262,13 @@ cv::Mat FrameDrawer::DrawRightFrame(float imageScale) {
   return imWithInfo;
 }
 
-void FrameDrawer::DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText) {
+void FrameDrawer::DrawTextInfo(cv::Mat &im, TrackingState nState, cv::Mat &imText) {
   std::stringstream s;
-  if (nState == Tracker::NO_IMAGES_YET)
+  if (nState == TrackingState::NO_IMAGES_YET)
     s << " WAITING FOR IMAGES";
-  else if (nState == Tracker::NOT_INITIALIZED)
+  else if (nState == TrackingState::NOT_INITIALIZED)
     s << " TRYING TO INITIALIZE ";
-  else if (nState == Tracker::OK) {
+  else if (nState == TrackingState::OK) {
     if (!mbOnlyTracking)
       s << "SLAM MODE |  ";
     else
@@ -280,9 +279,9 @@ void FrameDrawer::DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText) {
     s << "Maps: " << nMaps << ", KFs: " << nKFs << ", MPs: " << nMPs
       << ", Matches: " << mnTracked;
     if (mnTrackedVO > 0) s << ", + VO matches: " << mnTrackedVO;
-  } else if (nState == Tracker::LOST) {
+  } else if (nState == TrackingState::LOST) {
     s << " TRACK LOST. TRYING TO RELOCALIZE ";
-  } else if (nState == Tracker::SYSTEM_NOT_READY) {
+  } else if (nState == TrackingState::SYSTEM_NOT_READY) {
     s << " LOADING ORB VOCABULARY. PLEASE WAIT...";
   }
 
@@ -298,16 +297,22 @@ void FrameDrawer::DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText) {
               cv::FONT_HERSHEY_PLAIN, 1, cv::Scalar(255, 255, 255), 1, 8);
 }
 
-void FrameDrawer::Update(const Tracking_ptr &pTracker) {
+void FrameDrawer::Update(const Tracking_ptr &pTracker, const Packet &pose) {
   std::unique_lock<std::mutex> lock(mMutex);
-  pTracker->mImGray.copyTo(mIm);
+  if(const StereoPacket *sp = dynamic_cast<const StereoPacket*>(&pose))
+    sp->imgLeft.copyTo(mIm);
+  else if(const RGBDPacket *rp = dynamic_cast<const RGBDPacket*>(&pose))
+    rp->img.copyTo(mIm);
+  else if(const MonoPacket *mp = dynamic_cast<const MonoPacket*>(&pose))
+    mp->img.copyTo(mIm);
   mvCurrentKeys = pTracker->mCurrentFrame.mvKeys;
   mThDepth = pTracker->mCurrentFrame.mThDepth;
   mvCurrentDepth = pTracker->mCurrentFrame.mvDepth;
 
   if (both) {
     mvCurrentKeysRight = pTracker->mCurrentFrame.mvKeysRight;
-    pTracker->mImRight.copyTo(mImRight);
+    if(const StereoPacket *sp = dynamic_cast<const StereoPacket*>(&pose))
+      sp->imgRight.copyTo(mImRight);
     N = mvCurrentKeys.size() + mvCurrentKeysRight.size();
   } else {
     N = mvCurrentKeys.size();
@@ -317,10 +322,10 @@ void FrameDrawer::Update(const Tracking_ptr &pTracker) {
   mvbMap = std::vector<bool>(N, false);
   mbOnlyTracking = pTracker->mbOnlyTracking;
 
-  if (pTracker->mLastProcessedState == Tracker::NOT_INITIALIZED) {
+  if (pTracker->mLastProcessedState == TrackingState::NOT_INITIALIZED) {
     mvIniKeys = pTracker->mInitialFrame.mvKeys;
     mvIniMatches = pTracker->mvIniMatches;
-  } else if (pTracker->mLastProcessedState == Tracker::OK) {
+  } else if (pTracker->mLastProcessedState == TrackingState::OK) {
     for (int i = 0; i < N; i++) {
       MapPoint *pMP = pTracker->mCurrentFrame.mvpMapPoints[i];
       if (pMP) {
@@ -333,7 +338,7 @@ void FrameDrawer::Update(const Tracking_ptr &pTracker) {
       }
     }
   }
-  mState = static_cast<int>(pTracker->mLastProcessedState);
+  mState = pTracker->mLastProcessedState;
 }
 
 }  // namespace MORB_SLAM

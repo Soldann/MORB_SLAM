@@ -25,10 +25,12 @@
 #include <opencv2/opencv.hpp>
 #include <vector>
 #include "MORB_SLAM/ImprovedTypes.hpp"
+#include "MORB_SLAM/Atlas.h"
+#include "MORB_SLAM/Tracking.h"
+#include "MORB_SLAM/Packet.hpp"
 
 namespace MORB_SLAM {
 
-class MapPoint;
 class Viewer;
 
 class FrameDrawer {
@@ -37,7 +39,7 @@ class FrameDrawer {
   FrameDrawer(const Atlas_ptr &pAtlas);
 
   // Update info from the last processed frame.
-  void Update(const Tracking_ptr &pTracker);
+  void Update(const Tracking_ptr &pTracker, const Packet &pose);
 
   // Draw last processed frame.
   cv::Mat DrawFrame(float imageScale = 1.f);
@@ -47,7 +49,7 @@ class FrameDrawer {
 
  protected:
   bool both;
-  void DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText);
+  void DrawTextInfo(cv::Mat &im, TrackingState nState, cv::Mat &imText);
 
   // Info of the frame to be drawn
   cv::Mat mIm, mImRight;
@@ -58,7 +60,7 @@ class FrameDrawer {
   int mnTracked, mnTrackedVO;
   std::vector<cv::KeyPoint> mvIniKeys;
   std::vector<int> mvIniMatches;
-  int mState;
+  TrackingState mState;
   std::vector<float> mvCurrentDepth;
   float mThDepth;
 

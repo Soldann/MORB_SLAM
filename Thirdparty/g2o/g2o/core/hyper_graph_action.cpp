@@ -254,13 +254,13 @@ namespace g2o {
   {
     for (HyperGraph::VertexIDMap::iterator it=graph->vertices().begin(); 
         it!=graph->vertices().end(); ++it){
-      if ( typeName.empty() || typeid(*it->second).name()==typeName){
+      if ( typeName.empty() || typeid(std::remove_pointer_t<decltype(it->second)>).name()==typeName){
         (*action)(it->second, params);
       }
     }
     for (HyperGraph::EdgeSet::iterator it=graph->edges().begin(); 
         it!=graph->edges().end(); ++it){
-      if ( typeName.empty() || typeid(**it).name()==typeName)
+      if ( typeName.empty() || typeid(std::remove_pointer_t<decltype(*it)>).name()==typeName)
         (*action)(*it, params);
     }
   }

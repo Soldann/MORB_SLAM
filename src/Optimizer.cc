@@ -2979,7 +2979,6 @@ Eigen::MatrixXd Optimizer::Marginalize(const Eigen::MatrixXd& H,
 void Optimizer::InertialOptimization(std::shared_ptr<Map> pMap, Eigen::Matrix3d& Rwg,
                                      double& scale, Eigen::Vector3d& bg,
                                      Eigen::Vector3d& ba, bool bMono,
-                                     Eigen::MatrixXd& covInertial,
                                      bool bFixedVel, bool bGauss, 
                                      ImuInitializater::ImuInitType priorG,
                                      ImuInitializater::ImuInitType priorA) {
@@ -3000,7 +2999,7 @@ void Optimizer::InertialOptimization(std::shared_ptr<Map> pMap, Eigen::Matrix3d&
   g2o::OptimizationAlgorithmLevenberg* solver =
       new g2o::OptimizationAlgorithmLevenberg(solver_ptr);
 
-  if (priorG != 0.f) solver->setUserLambdaInit(1e3);
+  if (priorG != ImuInitializater::ImuInitType::VIBA2_G) solver->setUserLambdaInit(1e3);
 
   optimizer.setAlgorithm(solver);
 
@@ -4494,7 +4493,7 @@ int Optimizer::PoseInertialOptimizationLastKeyFrame(Frame* pFrame,
           Eigen::Matrix<double, 3, 1> obs;
           obs << kpUn.pt.x, kpUn.pt.y, kp_ur;
 
-          EdgeStereoOnlyPose* e = new EdgeStereoOnlyPose(pMP->GetWorldPos());
+          EdgeStereoOnlyPose* e = new EdgeStereoOnlyPose(pMP->GetWorldPos()); 
 
           e->setVertex(0, VP);
           e->setMeasurement(obs);
@@ -4516,7 +4515,7 @@ int Optimizer::PoseInertialOptimizationLastKeyFrame(Frame* pFrame,
         }
 
         // Right monocular observation
-        if (bRight && i >= Nleft) {
+        if (bRight && i >= Nleft) { // else ?!
           nInitialMonoCorrespondences++;
           pFrame->mvbOutlier[i] = false;
 

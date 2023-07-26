@@ -179,8 +179,8 @@ namespace g2o {
     for (size_t i=0; i<_parameters.size(); i++){
       int index = _parameterIds[i];
       *_parameters[i] = graph()->parameter(index);
-      if (typeid(**_parameters[i]).name()!=_parameterTypes[i]){
-        std::cerr << __PRETTY_FUNCTION__ << ": FATAL, parameter type mismatch - encountered " << typeid(**_parameters[i]).name() << "; should be " << _parameterTypes[i] << std::endl;
+      if (typeid(std::remove_pointer_t<decltype(*_parameters[i])>).name()!=_parameterTypes[i]){
+        std::cerr << __PRETTY_FUNCTION__ << ": FATAL, parameter type mismatch - encountered " << typeid(std::remove_pointer_t<decltype(*_parameters[i])>).name() << "; should be " << _parameterTypes[i] << std::endl;
       }
       if (!*_parameters[i]) {
         std::cerr << __PRETTY_FUNCTION__ << ": FATAL, *_parameters[i] == 0" << std::endl;

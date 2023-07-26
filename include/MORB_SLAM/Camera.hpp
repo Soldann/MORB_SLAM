@@ -63,7 +63,7 @@ class Camera{
     std::deque<std::pair<ManagedPromise<bool>, std::function<void(void)>>> rjobs;
 
     std::string name;
-    CameraType::eSensor type;
+    CameraType type;
     std::mutex camMutex;
     
     std::condition_variable camCV;
@@ -75,14 +75,14 @@ class Camera{
 
     void threadExec(std::deque<std::pair<ManagedPromise<bool>, std::function<void(void)>>> *jobs);
 public:
-    Camera(CameraType::eSensor type, const std::string &name="camera");
+    Camera(CameraType type, const std::string &name="camera");
     virtual ~Camera();
 
     ManagedFuture<bool> queue(std::function<void(void)> func, bool isLeft=true);
     ManagedFuture<bool> queueLeft(const std::function<void(void)> &func);
     ManagedFuture<bool> queueRight(const std::function<void(void)> &func);
 
-    CameraType::eSensor getType() const;
+    CameraType getType() const;
     const std::string &getName() const;
 };
 

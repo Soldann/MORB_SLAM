@@ -71,7 +71,6 @@ class KeyFrame {
     // Variables of local mapping
     // ar & mnBALocalForKF;
     // ar & mnBAFixedForKF;
-    // ar & mnNumberOfOpt;
     // Variables used by KeyFrameDatabase
     // ar & mnLoopQuery;
     // ar & mnLoopWords;
@@ -85,7 +84,6 @@ class KeyFrame {
     // ar & mnPlaceRecognitionQuery;
     // ar & mnPlaceRecognitionWords;
     // ar & mPlaceRecognitionScore;
-    // ar & mbCurrentPlaceRecognition;
     // Variables of loop closing
     // serializeMatrix(ar,mTcwGBA,version);
     // serializeMatrix(ar,mTcwBefGBA,version);
@@ -162,8 +160,6 @@ class KeyFrame {
     ar& mbNotErase;
     ar& mbToBeErased;
     ar& mbBad;
-
-    ar& mHalfBaseline;
 
     ar& mnOriginMapId;
 
@@ -331,9 +327,6 @@ class KeyFrame {
   long unsigned int mnBALocalForKF;
   long unsigned int mnBAFixedForKF;
 
-  // Number of optimizations by BA(amount of iterations in BA)
-  long unsigned int mnNumberOfOpt;
-
   // Variables used by the keyframe database
   long unsigned int mnLoopQuery;
   int mnLoopWords;
@@ -347,8 +340,6 @@ class KeyFrame {
   long unsigned int mnPlaceRecognitionQuery;
   int mnPlaceRecognitionWords;
   float mPlaceRecognitionScore;
-
-  bool mbCurrentPlaceRecognition;
 
   // Variables used by loop closing
   Sophus::SE3f mTcwGBA;
@@ -416,10 +407,6 @@ class KeyFrame {
 
   unsigned int mnOriginMapId;
 
-  std::string mNameFile;
-
-  int mnDataset;
-
   std::vector<KeyFrame*> mvpLoopCandKFs;
   std::vector<KeyFrame*> mvpMergeCandKFs;
 
@@ -483,8 +470,6 @@ class KeyFrame {
   bool mbToBeErased;
   bool mbBad;
 
-  float mHalfBaseline;  // Only for visualization
-
   std::shared_ptr<Map> mpMap;
 
   // Backup variables for inertial
@@ -527,20 +512,6 @@ class KeyFrame {
   Eigen::Matrix<float, 3, 3> GetRightRotation();
   Eigen::Vector3f GetRightTranslation();
 
-  void PrintPointDistribution() {
-    int left = 0, right = 0;
-    int Nlim = (NLeft != -1) ? NLeft : N;
-    for (int i = 0; i < N; i++) {
-      if (mvpMapPoints[i]) {
-        if (i < Nlim)
-          left++;
-        else
-          right++;
-      }
-    }
-    std::cout << "Point distribution in KeyFrame: left-> " << left << " --- right-> "
-         << right << std::endl;
-  }
 };
 
 }  // namespace MORB_SLAM

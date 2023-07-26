@@ -41,8 +41,7 @@ class Atlas;
 class LocalMapping {
  public:
   
-  LocalMapping(System* pSys, const Atlas_ptr &pAtlas, const float bMonocular,
-               bool bInertial, const std::string& _strSeqName = std::string());
+  LocalMapping(System* pSys, const Atlas_ptr &pAtlas, const float bMonocular, bool bInertial);
 
   void SetLoopCloser(LoopClosing* pLoopCloser);
 
@@ -71,16 +70,10 @@ class LocalMapping {
   void RequestFinish();
   bool isFinished();
 
-  int KeyframesInQueue() {
-    std::unique_lock<std::mutex> lock(mMutexNewKFs);
-    return mlNewKeyFrames.size();
-  }
+  int KeyframesInQueue();
 
   inline bool getIsDoneVIBA() { return isDoneVIBA; }
   inline void setIsDoneVIBA(bool viba) { isDoneVIBA = viba; }
-
-  inline bool getNotifyIsDoneVIBA() { return notifyIsDoneVIBA; }
-  inline void setNotifyIsDoneVIBA(bool viba) { notifyIsDoneVIBA = viba; }
 
   bool IsInitializing();
   double GetCurrKFTime();
@@ -93,8 +86,6 @@ class LocalMapping {
   Eigen::Vector3d mbg;
   Eigen::Vector3d mba;
   double mScale;
-  double mInitTime;
-  double mCostTime;
 
   unsigned int mInitSect;
   unsigned int mIdxInit;
@@ -102,15 +93,9 @@ class LocalMapping {
   double mFirstTs;
   int mnMatchesInliers;
 
-  // For debugging (erase in normal mode)
-  int mIdxIteration;
-  std::string strSequence;
-
   bool mbNotBA1;
   bool mbNotBA2;
   bool mbBadImu;
-
-  bool mbWriteStats;
 
   // not consider far points (clouds)
   bool mbFarPoints;
@@ -189,19 +174,9 @@ class LocalMapping {
 
   bool bInitializing;
 
-  Eigen::MatrixXd infoInertial;
-  int mNumLM;
-  int mNumKFCulling;
-
   float mTinit;
 
-  int countRefinement;
-
   bool isDoneVIBA;
-  bool notifyIsDoneVIBA;
-
-  // DEBUG
-  std::ofstream f_lm;
 };
 
 }  // namespace MORB_SLAM

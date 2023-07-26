@@ -22,7 +22,7 @@
 #include "MORB_SLAM/ORBmatcher.h"
 
 #include <limits.h>
-#include <stdint-gcc.h>
+#include <cinttypes>
 
 #include <opencv2/core/core.hpp>
 

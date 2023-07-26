@@ -159,5 +159,7 @@ class Atlas {
   std::mutex mMutexAtlas;
 
 };  // class Atlas
+typedef std::shared_ptr<Atlas> Atlas_ptr;
+typedef std::weak_ptr<Atlas> Atlas_wptr;
 
 }  // namespace MORB_SLAM

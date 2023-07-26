@@ -171,19 +171,18 @@ bool Viewer::ParseViewerParamFile(cv::FileStorage &fSettings) {
 
   if(!b_miss_params){
     std::string sCameraName = fSettings["Camera.type"];
-    if ((mpTracker->mSensor == CameraType::STEREO || mpTracker->mSensor == CameraType::IMU_STEREO ||
-          mpTracker->mSensor == CameraType::IMU_RGBD || mpTracker->mSensor == CameraType::RGBD) &&
-          sCameraName == "KannalaBrandt8")
+    if (mpTracker->mSensor.hasMulticam() && sCameraName == "KannalaBrandt8")
           setBoth(true);
   }
 
   return !b_miss_params;
 }
 
-void Viewer::update(const Sophus::SE3f &pose){
-  if(mpTracker->mState != Tracker::NOT_INITIALIZED){
-    mpFrameDrawer.Update(mpTracker);
-    mpMapDrawer.SetCurrentCameraPose(pose);
+void Viewer::update(const Packet &pose){
+  if(mpTracker->mState != TrackingState::NOT_INITIALIZED){
+    mpFrameDrawer.Update(mpTracker, pose);
+    if(pose.pose)
+      mpMapDrawer.SetCurrentCameraPose(*pose.pose);
   }
 }
 
@@ -296,9 +295,7 @@ void Viewer::Run() {
   bool bLocalizationMode = false;
   bool bCameraView = true;
 
-  if (mpTracker->mSensor == CameraType::MONOCULAR ||
-      mpTracker->mSensor == CameraType::STEREO ||
-      mpTracker->mSensor == CameraType::RGBD) {
+  if (!mpTracker->mSensor.isInertial()) {
     menuShowGraph = true;
   }
 

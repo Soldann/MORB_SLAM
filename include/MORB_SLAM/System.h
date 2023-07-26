@@ -37,6 +37,7 @@
 #include "MORB_SLAM/ImuTypes.h"
 #include "MORB_SLAM/Settings.h"
 #include "MORB_SLAM/Camera.hpp"
+#include "MORB_SLAM/Packet.hpp"
 
 
 namespace MORB_SLAM
@@ -88,23 +89,23 @@ public:
 public:
     
     // Initialize the SLAM system. It launches the Local Mapping, Loop Closing and Viewer threads.
-    System(const std::string &strVocFile, const std::string &strSettingsFile, const CameraType::eSensor sensor, const std::string &strSequence = std::string());
+    System(const std::string &strVocFile, const std::string &strSettingsFile, const CameraType sensor);
 
     // Proccess the given stereo frame. Images must be synchronized and rectified.
     // Input images: RGB (CV_8UC3) or grayscale (CV_8U). RGB is converted to grayscale.
     // Returns the camera pose (empty if tracking fails).
-    Sophus::SE3f TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, double timestamp, const std::vector<IMU::Point>& vImuMeas = std::vector<IMU::Point>(), std::string filename="");
+    StereoPacket TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, double timestamp, const std::vector<IMU::Point>& vImuMeas = std::vector<IMU::Point>(), std::string filename="");
 
     // Process the given rgbd frame. Depthmap must be registered to the RGB frame.
     // Input image: RGB (CV_8UC3) or grayscale (CV_8U). RGB is converted to grayscale.
     // Input depthmap: Float (CV_32F).
     // Returns the camera pose (empty if tracking fails).
-    Sophus::SE3f TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, double timestamp, const std::vector<IMU::Point>& vImuMeas = std::vector<IMU::Point>(), std::string filename="");
+    RGBDPacket TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, double timestamp, const std::vector<IMU::Point>& vImuMeas = std::vector<IMU::Point>(), std::string filename="");
 
     // Proccess the given monocular frame and optionally imu data
     // Input images: RGB (CV_8UC3) or grayscale (CV_8U). RGB is converted to grayscale.
     // Returns the camera pose (empty if tracking fails).
-    Sophus::SE3f TrackMonocular(const cv::Mat &im, double timestamp, const std::vector<IMU::Point>& vImuMeas = std::vector<IMU::Point>(), std::string filename="");
+    MonoPacket TrackMonocular(const cv::Mat &im, double timestamp, const std::vector<IMU::Point>& vImuMeas = std::vector<IMU::Point>(), std::string filename="");
 
 
     // This stops local mapping thread (map building) and performs only camera tracking.
@@ -125,40 +126,13 @@ public:
     // This function must be called before saving the trajectory.
     virtual ~System();
 
-    // Save camera trajectory in the TUM RGB-D dataset format.
-    // Only for stereo and RGB-D. This method does not work for monocular.
-    // Call first Shutdown()
-    // See format details at: http://vision.in.tum.de/data/datasets/rgbd-dataset
-    void SaveTrajectoryTUM(const std::string &filename);
-
-    // Save keyframe poses in the TUM RGB-D dataset format.
-    // This method works for all sensor input.
-    // Call first Shutdown()
-    // See format details at: http://vision.in.tum.de/data/datasets/rgbd-dataset
-    void SaveKeyFrameTrajectoryTUM(const std::string &filename);
-
-    void SaveTrajectoryEuRoC(const std::string &filename);
-    void SaveKeyFrameTrajectoryEuRoC(const std::string &filename);
-
-    void SaveTrajectoryEuRoC(const std::string &filename, std::shared_ptr<Map> pMap);
-    void SaveKeyFrameTrajectoryEuRoC(const std::string &filename, std::shared_ptr<Map> pMap);
-
-    // Save data used for initialization debug
-    void SaveDebugData(const int &iniIdx);
-
-    // Save camera trajectory in the KITTI dataset format.
-    // Only for stereo and RGB-D. This method does not work for monocular.
-    // Call first Shutdown()
-    // See format details at: http://www.cvlibs.net/datasets/kitti/eval_odometry.php
-    void SaveTrajectoryKITTI(const std::string &filename);
-
     // TODO: Save/Load functions
     // SaveMap(const std::string &filename);
     // LoadMap(const std::string &filename);
 
     // Information from most recent processed frame
     // You can call this right after TrackMonocular (or stereo or RGBD)
-    Tracker::eTrackingState GetTrackingState();
+    TrackingState GetTrackingState();
     std::vector<MapPoint*> GetTrackedMapPoints();
     std::vector<cv::KeyPoint> GetTrackedKeyPointsUn();
 
@@ -166,8 +140,6 @@ public:
     double GetTimeFromIMUInit();
     bool isLost();
     bool isFinished();
-
-    void ChangeDataset();
 
     float GetImageScale();
 
@@ -182,7 +154,7 @@ public:
     bool getHasMergedLocalMap();
     bool getIsDoneVIBA();
 
-    void setTrackingState(Tracker::eTrackingState state);
+    void setTrackingState(TrackingState state);
 
     // Loop Closer. It searches loops with every new keyframe. If there is a loop it performs
     // a pose graph optimization and full bundle adjustment (in a new thread) afterwards.
@@ -196,7 +168,7 @@ private:
     std::string CalculateCheckSum(std::string filename, int type);
 
     // Input sensor
-    CameraType::eSensor mSensor;
+    CameraType mSensor;
     std::vector<Camera_ptr> cameras;
 
     // ORB vocabulary used for place recognition and feature matching.
@@ -233,7 +205,7 @@ private:
     bool mbDeactivateLocalizationMode;
 
     // Tracking state
-    Tracker::eTrackingState mTrackingState;
+    TrackingState mTrackingState;
     std::vector<MapPoint*> mTrackedMapPoints;
     std::vector<cv::KeyPoint> mTrackedKeyPointsUn;
     std::mutex mMutexState;
@@ -246,5 +218,7 @@ private:
 
     Settings* settings_;
 };
+typedef std::shared_ptr<System> System_ptr;
+typedef std::weak_ptr<System> System_wptr;
 
 }// namespace ORB_SLAM

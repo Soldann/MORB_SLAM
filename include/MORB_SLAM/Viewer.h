@@ -25,10 +25,12 @@
 #include <memory>
 #include <thread>
 
+#include "MORB_SLAM/Tracking.h"
 #include "MORB_SLAM/ImprovedTypes.hpp"
 #include "MORB_SLAM/FrameDrawer.h"
 #include "MORB_SLAM/MapDrawer.h"
 #include "MORB_SLAM/Settings.h"
+#include "MORB_SLAM/Packet.hpp"
 
 namespace MORB_SLAM {
 
@@ -45,7 +47,7 @@ class Viewer {
 
   virtual ~Viewer();
 
-  void update(const Sophus::SE3f &pose);
+  void update(const Packet &pose);
 
   void close();
   bool isClosed() const;

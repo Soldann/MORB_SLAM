@@ -21,7 +21,7 @@
 
 #include "MORB_SLAM/ImprovedTypes.hpp"
 #include "MORB_SLAM/Settings.h"
-
+#include "MORB_SLAM/Atlas.h"
 #include <mutex>
 
 namespace MORB_SLAM

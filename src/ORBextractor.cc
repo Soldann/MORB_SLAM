@@ -403,8 +403,7 @@ static int bit_pattern_31_[256 * 4] = {
     -1,  -6,  0,   -11 /*mean (0.127148), correlation (0.547401)*/
 };
 
-ORBextractor::ORBextractor(int _nfeatures, float _scaleFactor, int _nlevels,
-                           int _iniThFAST, int _minThFAST)
+ORBextractor::ORBextractor(int _nfeatures, float _scaleFactor, int _nlevels, int _iniThFAST, int _minThFAST)
     : nfeatures(_nfeatures),
       scaleFactor(_scaleFactor),
       nlevels(_nlevels),
@@ -463,17 +462,12 @@ ORBextractor::ORBextractor(int _nfeatures, float _scaleFactor, int _nlevels,
   }
 }
 
-static void computeOrientation(const Mat& image, std::vector<KeyPoint>& keypoints,
-                               const std::vector<int>& umax) {
-  for (std::vector<KeyPoint>::iterator keypoint = keypoints.begin(),
-                                  keypointEnd = keypoints.end();
-       keypoint != keypointEnd; ++keypoint) {
-    keypoint->angle = IC_Angle(image, keypoint->pt, umax);
-  }
+static void computeOrientation(const Mat& image, std::vector<KeyPoint>& keypoints, const std::vector<int>& umax) {
+  for (KeyPoint &keypoint : keypoints)
+    keypoint.angle = IC_Angle(image, keypoint.pt, umax);
 }
 
-void ExtractorNode::DivideNode(ExtractorNode& n1, ExtractorNode& n2,
-                               ExtractorNode& n3, ExtractorNode& n4) {
+void ExtractorNode::DivideNode(ExtractorNode& n1, ExtractorNode& n2, ExtractorNode& n3, ExtractorNode& n4) {
   const int halfX = ceil(static_cast<float>(UR.x - UL.x) / 2);
   const int halfY = ceil(static_cast<float>(BR.y - UL.y) / 2);
 
@@ -503,8 +497,7 @@ void ExtractorNode::DivideNode(ExtractorNode& n1, ExtractorNode& n2,
   n4.vKeys.reserve(vKeys.size());
 
   // Associate points to children
-  for (size_t i = 0; i < vKeys.size(); i++) {
-    const cv::KeyPoint& kp = vKeys[i];
+  for (const cv::KeyPoint& kp : vKeys) {
     if (kp.pt.x < n1.UR.x) {
       if (kp.pt.y < n1.BR.y)
         n1.vKeys.push_back(kp);
@@ -522,19 +515,8 @@ void ExtractorNode::DivideNode(ExtractorNode& n1, ExtractorNode& n2,
   if (n4.vKeys.size() == 1) n4.bNoMore = true;
 }
 
-static bool compareNodes(std::pair<int, ExtractorNode*>& e1,
-                         std::pair<int, ExtractorNode*>& e2) {
-  if (e1.first < e2.first) {
-    return true;
-  } else if (e1.first > e2.first) {
-    return false;
-  } else {
-    if (e1.second->UL.x < e2.second->UL.x) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+static bool compareNodes(std::pair<int, ExtractorNode*>& e1, std::pair<int, ExtractorNode*>& e2) {
+  return (e1.first < e2.first) || (e1.first == e2.first && e1.second->UL.x < e2.second->UL.x);
 }
 
 std::vector<cv::KeyPoint> ORBextractor::DistributeOctTree(
@@ -716,9 +698,8 @@ std::vector<cv::KeyPoint> ORBextractor::DistributeOctTree(
   // Retain the best point in each node
   std::vector<cv::KeyPoint> vResultKeys;
   vResultKeys.reserve(nfeatures);
-  for (std::list<ExtractorNode>::iterator lit = lNodes.begin(); lit != lNodes.end();
-       lit++) {
-    std::vector<cv::KeyPoint>& vNodeKeys = lit->vKeys;
+  for (ExtractorNode &node : lNodes) {
+    std::vector<cv::KeyPoint>& vNodeKeys = node.vKeys;
     cv::KeyPoint* pKP = &vNodeKeys[0];
     float maxResponse = pKP->response;
 
@@ -903,24 +884,21 @@ int ORBextractor::operator()(InputArray _image, InputArray _mask,
 
     // offset += nkeypointsLevel;
 
-    float scale =
-        mvScaleFactor[level];  // getScale(level, firstLevel, scaleFactor);
+    float scale = mvScaleFactor[level];  // getScale(level, firstLevel, scaleFactor);
     int i = 0;
-    for (std::vector<KeyPoint>::iterator keypoint = keypoints.begin(),
-                                    keypointEnd = keypoints.end();
-         keypoint != keypointEnd; ++keypoint) {
+    for (KeyPoint& keypoint : keypoints) {
       // Scale keypoint coordinates
       if (level != 0) {
-        keypoint->pt *= scale;
+        keypoint.pt *= scale;
       }
 
-      if (keypoint->pt.x >= vLappingArea[0] &&
-          keypoint->pt.x <= vLappingArea[1]) {
-        _keypoints.push_back(*keypoint);
+      if (keypoint.pt.x >= vLappingArea[0] &&
+          keypoint.pt.x <= vLappingArea[1]) {
+        _keypoints.push_back(keypoint);
         desc.row(i).copyTo(descriptors.row(stereoIndex));
         stereoIndex--;
       } else {
-        _keypoints.push_back(*keypoint);
+        _keypoints.push_back(keypoint);
         desc.row(i).copyTo(descriptors.row(monoIndex));
         monoIndex++;
       }

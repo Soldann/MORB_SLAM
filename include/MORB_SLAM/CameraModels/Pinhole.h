@@ -55,7 +55,7 @@ class Pinhole : public GeometricCamera {
     mnType = CAM_PINHOLE;
   }
 
-  ~Pinhole() {
+  virtual ~Pinhole() {
     if (tvr) delete tvr;
   }
 

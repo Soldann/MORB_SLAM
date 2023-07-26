@@ -327,7 +327,6 @@ bool LoopClosing::NewDetectCommonRegions() {
     // Avoid that a keyframe can be erased while it is being process by this
     // thread
     mpCurrentKF->SetNotErase();
-    mpCurrentKF->mbCurrentPlaceRecognition = true;
 
     mpLastMap = mpCurrentKF->GetMap();
   }
@@ -531,7 +530,6 @@ bool LoopClosing::NewDetectCommonRegions() {
   }
 
   mpCurrentKF->SetErase();
-  mpCurrentKF->mbCurrentPlaceRecognition = false;
 
   return false;
 }

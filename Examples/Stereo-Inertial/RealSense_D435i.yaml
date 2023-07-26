@@ -22,9 +22,6 @@ Camera.height: 480
 # Camera frames per second
 Camera.fps: 30
 
-# Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
-Camera.RGB: 1
-
 # Close/Far threshold. Baseline times.
 Stereo.ThDepth: 40.0
 

@@ -46,7 +46,6 @@ MapPoint::MapPoint()
       mnFound(1),
       mbBad(false),
       mpReplaced(nullptr) {
-  mpReplaced = nullptr;
 }
 
 MapPoint::MapPoint(const Eigen::Vector3f& Pos, KeyFrame* pRefKF, std::shared_ptr<Map> pMap)
@@ -269,11 +268,9 @@ void MapPoint::SetBadFlag() {
     obs = mObservations;
     mObservations.clear();
   }
-  for (std::map<KeyFrame*, std::tuple<int, int>>::iterator mit = obs.begin(),
-                                                 mend = obs.end();
-       mit != mend; mit++) {
-    KeyFrame* pKF = mit->first;
-    int leftIndex = std::get<0>(mit->second), rightIndex = std::get<1>(mit->second);
+  for (auto &pair : obs) {
+    KeyFrame* pKF = pair.first;
+    int leftIndex = std::get<0>(pair.second), rightIndex = std::get<1>(pair.second);
     if (leftIndex != -1) {
       pKF->EraseMapPointMatch(leftIndex);
     }
@@ -307,13 +304,11 @@ void MapPoint::Replace(MapPoint* pMP) {
     mpReplaced = pMP;
   }
 
-  for (std::map<KeyFrame*, std::tuple<int, int>>::iterator mit = obs.begin(),
-                                                 mend = obs.end();
-       mit != mend; mit++) {
+  for (auto &pair : obs) {
     // Replace measurement in keyframe
-    KeyFrame* pKF = mit->first;
+    KeyFrame* pKF = pair.first;
 
-    std::tuple<int, int> indexes = mit->second;
+    std::tuple<int, int> indexes = pair.second;
     int leftIndex = std::get<0>(indexes), rightIndex = std::get<1>(indexes);
 
     if (!pMP->IsInKeyFrame(pKF)) {
@@ -380,21 +375,14 @@ void MapPoint::ComputeDistinctiveDescriptors() {
 
   vDescriptors.reserve(observations.size());
 
-  for (std::map<KeyFrame*, std::tuple<int, int>>::iterator mit = observations.begin(),
-                                                 mend = observations.end();
-       mit != mend; mit++) {
-    KeyFrame* pKF = mit->first;
+  for (auto &pair : observations) {
+    KeyFrame* pKF = pair.first;
 
     if (!pKF->isBad()) {
-      std::tuple<int, int> indexes = mit->second;
-      int leftIndex = std::get<0>(indexes), rightIndex = std::get<1>(indexes);
-
-      if (leftIndex != -1) {
-        vDescriptors.push_back(pKF->mDescriptors.row(leftIndex));
-      }
-      if (rightIndex != -1) {
-        vDescriptors.push_back(pKF->mDescriptors.row(rightIndex));
-      }
+      if (std::get<0>(pair.second) != -1)
+        vDescriptors.push_back(pKF->mDescriptors.row(std::get<0>(pair.second)));
+      if (std::get<1>(pair.second) != -1)
+        vDescriptors.push_back(pKF->mDescriptors.row(std::get<1>(pair.second)));
     }
   }
 
@@ -403,12 +391,11 @@ void MapPoint::ComputeDistinctiveDescriptors() {
   // Compute distances between them
   const size_t N = vDescriptors.size();
 
-  float Distances[N][N];
+  int Distances[N][N];
   for (size_t i = 0; i < N; i++) {
     Distances[i][i] = 0;
     for (size_t j = i + 1; j < N; j++) {
-      int distij =
-          ORBmatcher::DescriptorDistance(vDescriptors[i], vDescriptors[j]);
+      int distij = ORBmatcher::DescriptorDistance(vDescriptors[i], vDescriptors[j]);
       Distances[i][j] = distij;
       Distances[j][i] = distij;
     }
@@ -472,24 +459,22 @@ void MapPoint::UpdateNormalAndDepth() {
   Eigen::Vector3f normal;
   normal.setZero();
   int n = 0;
-  for (std::map<KeyFrame*, std::tuple<int, int>>::iterator mit = observations.begin(),
-                                                 mend = observations.end();
-       mit != mend; mit++) {
-    KeyFrame* pKF = mit->first;
+  for (auto &pair : observations) {
+    KeyFrame* pKF = pair.first;
 
-    std::tuple<int, int> indexes = mit->second;
+    std::tuple<int, int> indexes = pair.second;
     int leftIndex = std::get<0>(indexes), rightIndex = std::get<1>(indexes);
 
     if (leftIndex != -1) {
       Eigen::Vector3f Owi = pKF->GetCameraCenter();
       Eigen::Vector3f normali = Pos - Owi;
-      normal = normal + normali / normali.norm();
+      normal += normali / normali.norm();
       n++;
     }
     if (rightIndex != -1) {
       Eigen::Vector3f Owi = pKF->GetRightCameraCenter();
       Eigen::Vector3f normali = Pos - Owi;
-      normal = normal + normali / normali.norm();
+      normal += normali / normali.norm();
       n++;
     }
   }

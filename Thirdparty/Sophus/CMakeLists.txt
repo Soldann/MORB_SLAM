@@ -41,21 +41,12 @@ target_include_directories(${TARGET_NAME} INTERFACE
 target_link_libraries( ${TARGET_NAME} INTERFACE Eigen3::Eigen )
 
 # the following is from orb-sam-3
-# Set compiler specific settings (FixMe: Should not cmake do this for us automatically?)
-IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  set_target_properties(${TARGET_NAME} PROPERTIES CMAKE_CXX_FLAGS_DEBUG  "-O0 -g")
-  set_target_properties(${TARGET_NAME} PROPERTIES CMAKE_CXX_FLAGS_RELEASE "-O3")
-  set_target_properties(${TARGET_NAME} PROPERTIES CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra  -Wno-deprecated-register -Qunused-arguments -fcolor-diagnostics")
-ELSEIF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-  set_target_properties(${TARGET_NAME} PROPERTIES CMAKE_CXX_FLAGS_DEBUG  "-O0 -g")
-  set_target_properties(${TARGET_NAME} PROPERTIES CMAKE_CXX_FLAGS_RELEASE "-O3")
-  set_target_properties(${TARGET_NAME} PROPERTIES CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra -std=c++11 -Wno-deprecated-declarations -ftemplate-backtrace-limit=0")
-  set_target_properties(${TARGET_NAME} PROPERTIES CMAKE_CXX_FLAGS_COVERAGE "${CMAKE_CXX_FLAGS_DEBUG} --coverage -fno-inline -fno-inline-small-functions -fno-default-inline")
-  set_target_properties(${TARGET_NAME} PROPERTIES CMAKE_EXE_LINKER_FLAGS_COVERAGE "${CMAKE_EXE_LINKER_FLAGS_DEBUG} --coverage")
-  set_target_properties(${TARGET_NAME} PROPERTIES CMAKE_SHARED_LINKER_FLAGS_COVERAGE "${CMAKE_SHARED_LINKER_FLAGS_DEBUG} --coverage")
-ELSEIF(CMAKE_CXX_COMPILER_ID MATCHES "^MSVC$")
-  target_compile_definitions(${TARGET_NAME} "-D _USE_MATH_DEFINES /bigobj /wd4305 /wd4244 /MP")
-ENDIF()
+# There were a bunch of manually set compile options here. They were removed because they were being applied to an interface library (header only) which would have no impact on the end user.
+# The only impact would be on the test and examples built by sophus itself. Which we do not use. Furthermore these specific ones were not being used by the original orb-slam-3 because
+# it compiled sophus as a completely seperate library and interfaced with everything manually. Meaning it also didn't propogate the changes. Since we have updated cmake to be more
+# modern in its use, we do not want to propogate to the end user so the items are removed all together as they are not required and should be up to the user to include. If the user
+# who is building this library wants the examples or tests to be built with these flags add them to those targets manually in their respective cmakelist files.
+
 if(MSVC)
   # Define common math constants if we compile with MSVC
   target_compile_definitions (${TARGET_NAME} INTERFACE _USE_MATH_DEFINES)
@@ -94,8 +85,6 @@ endif()
 # https://cmake.org/cmake/help/latest/guide/importing-exporting/index.html#creating-a-package-version-file
 # https://cmake.org/cmake/help/latest/manual/cmake-packages.7.html#creating-packages
 # https://mail.kde.org/pipermail/kde-buildsystem/2008-April/004544.html
-set_property(TARGET ${TARGET_NAME} PROPERTY VERSION 1.1.0) # x.x.x used for symlinks
-set_property(TARGET ${TARGET_NAME} PROPERTY SOVERSION 1) # ABI/API compatibility at so level must be integer
 set_property(TARGET ${TARGET_NAME} PROPERTY "INTERFACE_${TARGET_NAME}_MAJOR_VERSION" 1)
 set_property(TARGET ${TARGET_NAME} APPEND PROPERTY COMPATIBLE_INTERFACE_STRING "${TARGET_NAME}_MAJOR_VERSION")
 
