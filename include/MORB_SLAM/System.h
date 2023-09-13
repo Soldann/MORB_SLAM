@@ -153,6 +153,7 @@ public:
 
     bool getHasMergedLocalMap();
     bool getIsDoneVIBA();
+    std::vector<MapPoint*> GetMapPoints();
 
     void setTrackingState(TrackingState state);
 

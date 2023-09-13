@@ -763,4 +763,8 @@ bool System::getIsDoneVIBA() {
   return mpLocalMapper->getIsDoneVIBA();
 }
 
+std::vector<MapPoint*> System::GetMapPoints() {
+  return mpAtlas->GetAllMapPoints();
+}
+
 }  // namespace MORB_SLAM
