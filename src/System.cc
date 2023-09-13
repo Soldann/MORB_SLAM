@@ -755,16 +755,20 @@ void System::setTrackingState(TrackingState state) {
   mpTracker->mState = state;
 }
 
-bool System::getHasMergedLocalMap() { 
+bool System::GetHasMergedLocalMap() { 
   return mpLoopCloser->hasMergedLocalMap; 
 }
 
-bool System::getIsDoneVIBA() {
+bool System::GetIsDoneVIBA() {
   return mpLocalMapper->getIsDoneVIBA();
 }
 
 std::vector<MapPoint*> System::GetMapPoints() {
   return mpAtlas->GetAllMapPoints();
+}
+
+int System::GetVIBAStatus() {
+  return mpAtlas->GetVIBAStatus();
 }
 
 }  // namespace MORB_SLAM

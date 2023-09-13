@@ -227,6 +227,8 @@ void LocalMapping::Run() {
                 std::cout << "start VIBA 1" << std::endl;
                 mpCurrentKeyFrame->GetMap()->SetIniertialBA1();
                 InitializeIMU(ImuInitializater::ImuInitType::VIBA1_G, ImuInitializater::ImuInitType::VIBA1_A, true);
+                
+                isDoneVIBA = true;
                 std::cout << "end VIBA 1" << std::endl;
               }
             } else if (!mpCurrentKeyFrame->GetMap()->GetIniertialBA2()) {
@@ -234,7 +236,6 @@ void LocalMapping::Run() {
                     std::cout << "start VIBA 2" << std::endl;
                     mpCurrentKeyFrame->GetMap()->SetIniertialBA2();
                     InitializeIMU(ImuInitializater::ImuInitType::VIBA2_G, ImuInitializater::ImuInitType::VIBA2_A, true);
-                    isDoneVIBA = true;
                     std::cout << "end VIBA 2" << std::endl;
                 }
             }

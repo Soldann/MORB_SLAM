@@ -151,9 +151,10 @@ public:
 
     friend Viewer;
 
-    bool getHasMergedLocalMap();
-    bool getIsDoneVIBA();
+    bool GetHasMergedLocalMap();
+    bool GetIsDoneVIBA();
     std::vector<MapPoint*> GetMapPoints();
+    int GetVIBAStatus();
 
     void setTrackingState(TrackingState state);
 

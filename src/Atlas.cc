@@ -236,6 +236,20 @@ bool Atlas::isImuInitialized() {
   return mpCurrentMap->isImuInitialized();
 }
 
+int Atlas::GetVIBAStatus() {
+  std::unique_lock<std::mutex> lock(mMutexAtlas);
+
+  if (mpCurrentMap->GetIniertialBA2()) {
+    return 2;
+  }
+  
+  if (mpCurrentMap->GetIniertialBA1()) {
+    return 1;
+  }
+
+  return 0;
+}
+
 void Atlas::PreSave() {
   if (mpCurrentMap) {
     if (!mspMaps.empty() && mnLastInitKFidMap < mpCurrentMap->GetMaxKFid())
